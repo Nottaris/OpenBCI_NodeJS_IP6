@@ -16,7 +16,7 @@ const verbose = true; // Adds verbosity to functions
 
 const Cyton = require('openbci-cyton');
 let ourBoard = new Cyton({
-	simulate: true,
+	simulate: false,
   debug: debug,
   verbose: verbose
 });
@@ -45,14 +45,16 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
 
         ourBoard.on('sample', (sample) => {
           /** Work with sample */
-          for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
-            console.log(`Channel ${(i + 1)}: ${sample.channelData[i].toFixed(8)} Volts.`);
+          //for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
+            //console.log(`Channel ${(i + 1)}: ${sample.channelData[i].toFixed(8)} Volts.`);
+            //console.log(sample);
+            console.dir(sample);
             // prints to the console
             //  "Channel 1: 0.00001987 Volts."
             //  "Channel 2: 0.00002255 Volts."
             //  ...
             //  "Channel 8: -0.00001875 Volts."
-          }
+         // }
         });
       });
   } else {
