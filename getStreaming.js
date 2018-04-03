@@ -11,6 +11,9 @@
  *   do `npm install`
  *   then `npm start`
  */
+
+const blink = require('./blink');
+
 const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
 
@@ -44,17 +47,7 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
           });
 
         ourBoard.on('sample', (sample) => {
-          /** Work with sample */
-          //for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
-            //console.log(`Channel ${(i + 1)}: ${sample.channelData[i].toFixed(8)} Volts.`);
-            //console.log(sample);
-            console.dir(sample);
-            // prints to the console
-            //  "Channel 1: 0.00001987 Volts."
-            //  "Channel 2: 0.00002255 Volts."
-            //  ...
-            //  "Channel 8: -0.00001875 Volts."
-         // }
+          blink.getBlinks(sample);
         });
       });
   } else {
