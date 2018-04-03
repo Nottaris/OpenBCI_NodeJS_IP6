@@ -13,13 +13,14 @@
  */
 
 const blink = require('./blink');
+const saveData = require('./saveData');
 
 const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
 
 const Cyton = require('openbci-cyton');
 let ourBoard = new Cyton({
-	simulate: false,
+	simulate: true,
   debug: debug,
   verbose: verbose
 });
@@ -50,7 +51,8 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
           });
 
         ourBoard.on('sample', (sample) => {
-          blink.getBlinks(sample);
+          //blink.getBlinks(sample);
+          saveData.saveData(sample);
         });
       });
   } else {
