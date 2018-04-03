@@ -1,5 +1,10 @@
 /**
  * extract blinks from eeg signal
+ * 
+ * first approach: direct volt from channel 2
+ * 
+ * blinks last from 100 to 400ms in real
+ * (EEG data: 20-40Hz)
  */
 module.exports = {
     getBlinks: function (sample) {
@@ -27,11 +32,11 @@ averages = [];
 // sum up volts from electrode 2 and build average
 function getAveragesFrom2(sample) {
   
+    //multiply volts for easier visual comparison
     var volt2 = sample.channelData[1].toFixed(20) * 100000;
       
     if (count < 25) {
         average = average+Number(volt2);
-       // console.log("avg count up"+average);
         count++;
     } else if (count === 25) {
         average = average / 25;
@@ -46,27 +51,20 @@ function getAveragesFrom2(sample) {
 function compareAverages(sample) {
     var size = averages.length;
     if (size > 7) {
-        /*
-        console.log("---");
-        console.log("-1   "+Math.abs(averages[size-1]));
-        console.log("-2   "+Math.abs(averages[size-2]));
-        console.log("-3   "+Math.abs(averages[size-3]));
-        console.log("-4   "+Math.abs(averages[size-4]));
-        console.log("-5   "+Math.abs(averages[size-5]));
-        */
-        
         // varianz over 3 values
         // var varianz = (Math.abs(averages[size-3])+Math.abs(averages[size-4])+Math.abs(averages[size-5])) / 3;
         
         // varianz over all values
         var varianz = averages.reduce(function(sum, a) { return sum + Math.abs(a) }, 0) / (averages.length||1);
-
+        
+        // blink as difference of current slot to last slot
         var blink = averages[size-1] - averages[size-2];
         
-        console.log("blink   "+blink);
-        console.log("varianz "+varianz);
+//        console.log("blink   "+blink);
+//        console.log("varianz "+varianz);
+        process.stdout.write("listening to EEG " + timeConverter(sample.timestamp) + "\r");
         if (blink > varianz) {
-            console.log(timeConverter(sample.timestamp));
+            console.log("You blinked at "+timeConverter(sample.timestamp));
         }
     }
 }
@@ -83,9 +81,5 @@ function timeConverter(UNIX_timestamp) {
     var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
     var millisec = a.getMilliseconds() < 10 ? '00' + a.getMilliseconds() : a.getMilliseconds() < 100 ? '0' + a.getMilliseconds() : a.getMilliseconds();;
     var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec + ':' + millisec;
-    return time + " @ " + UNIX_timestamp;
+    return time; // + " @ " + UNIX_timestamp;
 }
-
-
-
-
