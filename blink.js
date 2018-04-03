@@ -27,10 +27,10 @@ averages = [];
 // sum up volts from electrode 2 and build average
 function getAveragesFrom2(sample) {
   
-    var volt2 = sample.channelData[1].toFixed(20);
+    var volt2 = sample.channelData[1].toFixed(20) * 100000;
       
     if (count < 25) {
-        average = average+Number(volt2*100000);
+        average = average+Number(volt2);
        // console.log("avg count up"+average);
         count++;
     } else if (count === 25) {
@@ -46,11 +46,26 @@ function getAveragesFrom2(sample) {
 function compareAverages(sample) {
     var size = averages.length;
     if (size > 7) {
-        var varianz = (Math.abs(averages[size-3])+Math.abs(averages[size-4])+Math.abs(averages[size-5])) / 3;
+        /*
+        console.log("---");
+        console.log("-1   "+Math.abs(averages[size-1]));
+        console.log("-2   "+Math.abs(averages[size-2]));
+        console.log("-3   "+Math.abs(averages[size-3]));
+        console.log("-4   "+Math.abs(averages[size-4]));
+        console.log("-5   "+Math.abs(averages[size-5]));
+        */
+        
+        // varianz over 3 values
+        // var varianz = (Math.abs(averages[size-3])+Math.abs(averages[size-4])+Math.abs(averages[size-5])) / 3;
+        
+        // varianz over all values
+        var varianz = averages.reduce(function(sum, a) { return sum + Math.abs(a) }, 0) / (averages.length||1);
+
         var blink = averages[size-1] - averages[size-2];
-       // console.log("blink   "+blink);
-       // console.log("varianz "+varianz);
-        if (blink > varianz*3) {
+        
+        console.log("blink   "+blink);
+        console.log("varianz "+varianz);
+        if (blink > varianz) {
             console.log(timeConverter(sample.timestamp));
         }
     }
