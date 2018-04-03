@@ -1,16 +1,18 @@
 {
-  "name": "get-streaming",
+  "name": "OpenBCI_NodeJS_IP6",
   "version": "1.0.0",
-  "description": "Get streaming example",
+  "description": "OpenBCI NodeJS IP6",
   "main": "getStreaming.js",
   "scripts": {
-    "start": "node getStreaming.js",
+    "start": "node app.js blink",
+    "blink": "node app.js blink",
+    "save": "node app.js save",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "get"
   ],
-  "author": "AJ Keller",
+  "author": "Michael Job, Ina Widmer",
   "license": "MIT",
   "dependencies": {
     "openbci": "^2.0.0",
