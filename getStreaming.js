@@ -24,6 +24,9 @@ let ourBoard = new Cyton({
   verbose: verbose
 });
 
+//for blink.js only channel 2:
+//ourBoard.channelSet(2,false,24,'normal',true,true,false);
+
 ourBoard.autoFindOpenBCIBoard().then(portName => {
   if (portName) {
     /**

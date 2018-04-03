@@ -5,17 +5,17 @@ module.exports = {
     getBlinks: function (sample) {
         /** Work with sample */
         //console.log(timeConverter(sample.timestamp));
-        getAveragesFrom2(sample.channelData[2].toFixed(8));
+        var volt2 = sample.channelData[1].toFixed(8);
+        getAveragesFrom2(volt2);
 
-        //for (let i = 0; i < ourBoard.numberOfChannels(); i++) {
-        //console.log(`Channel ${(i + 1)}: ${sample.channelData[i].toFixed(8)} Volts.`);
-        // prints to the console
-        //  "Channel 1: 0.00001987 Volts."
-        //  "Channel 2: 0.00002255 Volts."
-        //  ...
-        //  "Channel 8: -0.00001875 Volts."
-        //console.log(sample);
-        // }
+        //for (let i = 0; i < 8; i++) {
+          //  console.log("Channel " + (i + 1) + ": " + sample.channelData[i].toFixed(8) + " Volts.");
+            // prints to the console
+            //  "Channel 1: 0.00001987 Volts."
+            //  "Channel 2: 0.00002255 Volts."
+            //  ...
+            //  "Channel 8: -0.00001875 Volts."
+          //}
     }
 }
 
@@ -28,7 +28,8 @@ var averages = [];
 // sum up volts from electrode 2 and build average
 function getAveragesFrom2(volt2) {
     if (count < 25) {
-        average += volt2;
+        average = average+Number(volt2);
+        count++;
     } else if (count === 25) {
         average = average / 25;
         averages.push(average);
@@ -41,11 +42,13 @@ function getAveragesFrom2(volt2) {
 function compareAverages() {
     var size = averages.length;
     if (size > 7) {
-        var varianz = averages[size-2]+averages[size-3]+averages[size-4]+averages[size-5]+averages[size-6]/5;
+        var varianz = (averages[size-2]+averages[size-3]+averages[size-4]+averages[size-5]+averages[size-6]) / 5;
+        console.log(varianz);
         if (averages[size] - averages[size - 1] > varianz) {
             console.log("did you blink?");
         }
     }
+    
 }
 
 // get human readable time
