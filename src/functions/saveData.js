@@ -23,11 +23,21 @@
  *       _count: 283 }
  * 
  */
+
+options = {
+    year: 'numeric', month: 'numeric', day: 'numeric',
+    hour: 'numeric', minute: 'numeric', second: 'numeric',
+    hour12: false
+};
+datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
+formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
+
 module.exports = {
+
     saveData: function (sample) {
         var record = JSON.stringify(sample);
         var fs = require('fs');
-        var stream = fs.createWriteStream("data/data.json", {flags:'a'});
+        var stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
         stream.write(record + "\n");
     }
 }
