@@ -64,6 +64,12 @@ ourBoard.autoFindOpenBCIBoard().then(portName => {
             process.exit(0);
           });
 
+        //log firmware version
+        console.log("Firmware:");
+        console.log("== v2: "+ourBoard.usingVersionTwoFirmware());
+        console.log("== v3: "+ourBoard.usingVersionThreeFirmware());
+        console.log(">= v2: "+ourBoard.usingAtLeastVersionTwoFirmware());
+       
         ourBoard.on('sample', (sample) => {
           worker(sample);
         });
