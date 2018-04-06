@@ -2,7 +2,7 @@
   "name": "OpenBCI_NodeJS_IP6",
   "version": "1.0.0",
   "description": "OpenBCI NodeJS IP6",
-  "main": "getStreaming.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js blink",
     "blink": "node app.js blink",
