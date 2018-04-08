@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Plot EEG</title>
+
+<style>
+    .bar{
+      fill: steelblue;
+    }
+  
+    .bar:hover{
+      fill: brown;
+    }
+  
+      .axis {
+        font: 10px sans-serif;
+      }
+  
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+      </style>
+
+
+</head>
+<body>
+<h1>Plot EEG...</h1>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+// set the dimensions of the canvas
+var margin = {top: 20, right: 20, bottom: 70, left: 40},
+    width = 600 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+// set the ranges
+var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+var y = d3.scale.linear().range([height, 0]);
+
+// define the axis
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+
+// add the SVG element
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("data.json", function(error, data) {
+  if (error) return console.warn(error);
+  data.forEach(function(d) {
+        d.datetime = parseDateTime(d.timestamp);
+      //  console.log(d);
+
+    });
+
+  x.domain(d3.extent(data, function(d) { return d.datetime; }));
+  y.domain(d3.extent(data, function(d) { return +d.channelData[1]; }));
+
+  xAxis();
+  yAxis();
+
+  context.beginPath();
+  line(data);
+  context.lineWidth = 1.5;
+  context.strokeStyle = "steelblue";
+  context.stroke();
+});
+
+function xAxis() {
+  var tickCount = 10,
+      tickSize = 6,
+      ticks = x.ticks(tickCount),
+      tickFormat = x.tickFormat();
+
+  context.beginPath();
+  ticks.forEach(function(d) {
+    context.moveTo(x(d), height);
+    context.lineTo(x(d), height + tickSize);
+  });
+  context.strokeStyle = "black";
+  context.stroke();
+
+  context.textAlign = "center";
+  context.textBaseline = "top";
+  ticks.forEach(function(d) {
+    context.fillText(tickFormat(d), x(d), height + tickSize);
+  });
+}
+
+function yAxis() {
+  var tickCount = 10,
+      tickSize = 6,
+      tickPadding = 3,
+      ticks = y.ticks(tickCount),
+      tickFormat = y.tickFormat(tickCount);
+
+  context.beginPath();
+  ticks.forEach(function(d) {
+    context.moveTo(0, y(d));
+    context.lineTo(-6, y(d));
+  });
+  context.strokeStyle = "black";
+  context.stroke();
+
+  context.beginPath();
+  context.moveTo(-tickSize, 0);
+  context.lineTo(0.5, 0);
+  context.lineTo(0.5, height);
+  context.lineTo(-tickSize, height);
+  context.strokeStyle = "black";
+  context.stroke();
+
+  context.textAlign = "right";
+  context.textBaseline = "middle";
+  ticks.forEach(function(d) {
+    context.fillText(tickFormat(d), -tickSize - tickPadding, y(d));
+  });
+
+  context.save();
+  context.rotate(-Math.PI / 2);
+  context.textAlign = "right";
+  context.textBaseline = "top";
+  context.font = "bold 10px sans-serif";
+  context.fillText("Price (US$)", -10, 10);
+  context.restore();
+}
+
+
+// get human readable time
+var parseDateTime = function timeConverter(UNIX_timestamp) {
+    var a = new Date(UNIX_timestamp);
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
+    var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
+    var millisec = a.getMilliseconds() < 10 ? '00' + a.getMilliseconds() : a.getMilliseconds() < 100 ? '0' + a.getMilliseconds() : a.getMilliseconds();;
+    var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec + ':' + millisec;
+    return time; // + " @ " + UNIX_timestamp;
+}
+
+
+</script>
+</body>
+
+</html> 

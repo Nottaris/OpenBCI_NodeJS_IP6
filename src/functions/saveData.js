@@ -24,6 +24,7 @@
  * 
  */
 
+//get date in format for file name like "data-2018-4-6-21-13-08.json" 
 options = {
     year: 'numeric', month: 'numeric', day: 'numeric',
     hour: 'numeric', minute: 'numeric', second: 'numeric',
@@ -38,9 +39,11 @@ module.exports = {
         var record = JSON.stringify(sample);
         var fs = require('fs');
         var stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
-        stream.write(record + "\n");
+        stream.write(record + ",\n");
     }
 }
+
+//TODO: valid json format see plot folder
 
 
 

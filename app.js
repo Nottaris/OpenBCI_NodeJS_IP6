@@ -13,6 +13,7 @@
 
 const blink = require('./src/blink/blink');
 const saveData = require('./src/functions/saveData');
+const plot = require('./src/plot/plot');
 
 const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
@@ -35,6 +36,9 @@ switch(process.argv[2])
   case "save" : 
     worker = saveData.saveData;
    break;
+  case "plot" : 
+   worker = plot.plot;
+  break;
   default: 
     console.log("no arguments");
 }
