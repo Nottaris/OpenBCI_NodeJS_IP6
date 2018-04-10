@@ -29,7 +29,8 @@
 </head>
 <body>
 <h1>Plot EEG...</h1>
-<script src="https://d3js.org/d3.v3.min.js"></script>
+<!--script src="https://d3js.org/d3.v3.min.js"></script-->
+<script src="d3.min.js"></script>
 <script>
 // set the dimensions of the canvas
 var margin = {top: 20, right: 20, bottom: 70, left: 40},
@@ -37,7 +38,8 @@ var margin = {top: 20, right: 20, bottom: 70, left: 40},
     height = 300 - margin.top - margin.bottom;
 
 // set the ranges
-var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+//var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+var x = d3.scale.linear().range([0, width]);
 var y = d3.scale.linear().range([height, 0]);
 
 // define the axis

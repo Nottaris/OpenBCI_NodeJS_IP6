@@ -21,11 +21,10 @@ module.exports = {
         })();
 
         function openBrowser() {
-            var sys = require('sys')
             var exec = require('child_process').exec;
 
             exec("open /Users/mjair/Documents/GitHub/OpenBCI_NodeJS_IP6/src/plot/index.html", function (err, stdout, stderr) {
-                console.log(stdout);
+                console.log(stderr);
             });
         }
     }
