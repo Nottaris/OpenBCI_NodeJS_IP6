@@ -17,6 +17,7 @@
   "author": "Michael Job, Ina Widmer",
   "license": "MIT",
   "dependencies": {
+    "d3": "^5.0.0",
     "openbci": "^2.0.0",
     "openbci-cyton": "^1.1.2"
   }
