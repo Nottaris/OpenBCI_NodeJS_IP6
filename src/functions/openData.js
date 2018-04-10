@@ -4,28 +4,24 @@
  */
 // mymodule.js
 module.exports = {
-    getTest,
     getFiledata
 }
 
 const fs = require('fs');
 const filename = "data/data.txt"
 var cells;
-//var stream = fs.createReadStream(filename);
+
+
+var str = fs.readFile(filename, 'utf8', function (err, data) {
+    if (err) throw err;
+    console.log('OK: ' + filename);
+})
+
 
 function getFiledata() {
-    console.log("getFiledata");
-    var result = () => fs.readFile(filename, 'utf8', function (err, data) {
-        if (err) throw err;
-        console.log('OK: ' + filename);
-        var filedata = data;
-        var rows = data.split('\n');
-        cells = rows.map(row => row.split(','));
-        console.log(cells[1]);
-    })
+
+    var str = fs.readFileSync(filename, 'utf8');
+    var rows = str.split('\n');
+    cells = rows.map(row => row.split(','));
     return cells;
-}
-getFiledata();
-function getTest() {
-    return "test";
 }
