@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js blink",
     "blink": "node app.js blink",
+    "blinkfile": "node app.js blinkfile",
     "save": "node app.js save",
     "plot": "node app.js plot",
     "test": "echo \"Error: no test specified\" && exit 1"

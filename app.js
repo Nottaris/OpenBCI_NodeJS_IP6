@@ -12,6 +12,7 @@
  */
 
 const blink = require('./src/blink/blink');
+const blinkFile = require('./src/blink/blinkFile');
 const saveData = require('./src/functions/saveData');
 const plot = require('./src/plot/plot');
 
@@ -19,19 +20,17 @@ const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
 
 let worker;
-const Cyton = require('openbci-cyton');
-let ourBoard = new Cyton({
-	simulate: true,
-  debug: debug,
-  verbose: verbose
-});
-
+let useBoard = true;
 
 
 switch(process.argv[2]) 
 {
-  case "blink" : 
+  case "blink" :
     worker = blink.getBlinks;
+    break;
+  case "blinkfile" :
+    useBoard = false;
+      blinkFile.start();
     break;
   case "save" : 
     worker = saveData.saveData;
@@ -43,82 +42,90 @@ switch(process.argv[2])
     console.log("no arguments");
 }
 
-//for blink.js only channel 2:
-//ourBoard.channelSet(2,false,24,'normal',true,true,false);
 
-ourBoard.autoFindOpenBCIBoard().then(portName => {
-  if (portName) {
-    /**
-     * Connect to the board with portName
-     * Only works if one board is plugged in
-     * i.e. ourBoard.connect(portName).....
-     */
-    ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
-      .then(() => {
-        ourBoard.syncRegisterSettings()
-          .then((cs) => {
-            return ourBoard.streamStart();
-          })
-          .catch((err) => {
-            console.log('err', err);
-            return ourBoard.streamStart();
-          })
-          .catch((err) => {
-            console.log('fatal err', err);
-            process.exit(0);
+if(useBoard){
+
+    const Cyton = require('openbci-cyton');
+    let ourBoard = new Cyton({
+        simulate: true,
+        debug: debug,
+        verbose: verbose
+    });
+
+  ourBoard.autoFindOpenBCIBoard().then(portName => {
+    if (portName) {
+      /**
+       * Connect to the board with portName
+       * Only works if one board is plugged in
+       * i.e. ourBoard.connect(portName).....
+       */
+      ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
+        .then(() => {
+          ourBoard.syncRegisterSettings()
+            .then((cs) => {
+              return ourBoard.streamStart();
+            })
+            .catch((err) => {
+              console.log('err', err);
+              return ourBoard.streamStart();
+            })
+            .catch((err) => {
+              console.log('fatal err', err);
+              process.exit(0);
+            });
+
+          //log firmware version
+          console.log("Firmware:");
+          console.log("== v2: "+ourBoard.usingVersionTwoFirmware());
+          console.log("== v3: "+ourBoard.usingVersionThreeFirmware());
+          console.log(">= v2: "+ourBoard.usingAtLeastVersionTwoFirmware());
+
+          ourBoard.on('sample', (sample) => {
+            worker(sample);
           });
-
-        //log firmware version
-        console.log("Firmware:");
-        console.log("== v2: "+ourBoard.usingVersionTwoFirmware());
-        console.log("== v3: "+ourBoard.usingVersionThreeFirmware());
-        console.log(">= v2: "+ourBoard.usingAtLeastVersionTwoFirmware());
-       
-        ourBoard.on('sample', (sample) => {
-          worker(sample);
         });
-      });
-  } else {
-    /** Unable to auto find OpenBCI board */
-    console.log('Unable to auto find OpenBCI board');
-  }
-});
-
-function exitHandler (options, err) {
-  if (options.cleanup) {
-    if (verbose) console.log('clean');
-    ourBoard.removeAllListeners();
-    /** Do additional clean up here */
-  }
-  if (err) console.log(err.stack);
-  if (options.exit) {
-    if (verbose) console.log('exit');
-    ourBoard.disconnect().catch(console.log);
-  }
-}
-
-if (process.platform === 'win32') {
-  const rl = require('readline').createInterface({
-    input: process.stdin,
-    output: process.stdout
+    } else {
+      /** Unable to auto find OpenBCI board */
+      console.log('Unable to auto find OpenBCI board');
+    }
   });
 
-  rl.on('SIGINT', function () {
-    process.emit('SIGINT');
-  });
+  function exitHandler (options, err) {
+    if (options.cleanup) {
+      if (verbose) console.log('clean');
+      ourBoard.removeAllListeners();
+      /** Do additional clean up here */
+    }
+    if (err) console.log(err.stack);
+    if (options.exit) {
+      if (verbose) console.log('exit');
+      ourBoard.disconnect().catch(console.log);
+    }
+  }
+
+  if (process.platform === 'win32') {
+    const rl = require('readline').createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    rl.on('SIGINT', function () {
+      process.emit('SIGINT');
+    });
+  }
+
+  // do something when app is closing
+  process.on('exit', exitHandler.bind(null, {
+    cleanup: true
+  }));
+
+  // catches ctrl+c event
+  process.on('SIGINT', exitHandler.bind(null, {
+    exit: true
+  }));
+
+  // catches uncaught exceptions
+  process.on('uncaughtException', exitHandler.bind(null, {
+    exit: true
+  }));
 }
-
-// do something when app is closing
-process.on('exit', exitHandler.bind(null, {
-  cleanup: true
-}));
-
-// catches ctrl+c event
-process.on('SIGINT', exitHandler.bind(null, {
-  exit: true
-}));
-
-// catches uncaught exceptions
-process.on('uncaughtException', exitHandler.bind(null, {
-  exit: true
-}));
