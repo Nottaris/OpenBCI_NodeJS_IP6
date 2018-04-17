@@ -1,59 +1,45 @@
 const openData = require('./../functions/openData');
+const detectBlink = require('./detectBlink');
 
 module.exports = {
     start
 };
 
-const avgSize = 10;
-const varianzSize = 3000;
-const channel=1;
+const slots = 10;
+const channel = 1;
 
 let data;
 let averages = [];
-
+let baseline  = [];
 
 function start() {
 
     /* OpenBCI-RAW-EyeBlink-V1-2018-04-09_20-08-00.txt
-    12s Blink
-    17s Blink
-    22s Doppelblink
-    28s rechts Zwnkern
-    32s mund bewegen */
+    12s Blink ~Row 2960
+    17s Blink ~Row 4150
+    22s Doppelblink ~Row 5450
+    */
 
+    data = openData.getFiledata('data/EyeBlink-V1.txt');
 
-    data = openData.getFiledata();
-
-    //calculate avg of 10 rows from channel
-    for(var j = 0; j<data.length-avgSize; j=j+avgSize){
+    //calculate avg of 10 rows from channel (25 slots per second)
+    for(var j = 0; j<data.length-slots; j=j+slots){
         avgInterval = 0;
-        for(var i = 0; i < avgSize; i++){
+        for(var i = 0; i < slots; i++){
             if(data[i+j]){
                 avgInterval = avgInterval+Number(data[i+j][channel]);
             } else {
                 console.error("No data??");
             }
         }
-        averages.push(avgInterval/avgSize);
+        averages.push(avgInterval/slots);
     }
-    compareAverages();
-}
 
-function getVarianz(averages){
-    if(averages.length>varianzSize){
-        averages = averages.slice(0, varianzSize);
+    //Save first 250 slots(10 seconds) as baseline
+    if(averages.length>250){
+        baseline = averages.slice(0,250); //first 10s
+    } else {
+        baseline = averages;
     }
-    return averages.reduce(function(sum, a) { return sum + Math.abs(a) }, 0) / (averages.length||1);
-}
-
-function compareAverages(){
-    var varianz = getVarianz(averages);
-
-    // calculate difference between varianz and averages
-    for (var i=0; i<averages.length; i++) {
-        difference = Math.abs(Number(averages[i]) - varianz);
-        if(difference > varianz){
-            console.log("Row: "+i*avgSize+"-"+(i*avgSize+avgSize)+"\t diff: "+difference.toFixed(2)+"\t value: "+Number(averages[i]).toFixed(2)+"\t varianz: "+varianz.toFixed(2));
-        }
-     }
+    detectBlink.compareAverages(baseline,averages,slots);
 }

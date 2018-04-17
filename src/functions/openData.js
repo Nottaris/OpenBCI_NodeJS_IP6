@@ -8,9 +8,13 @@ module.exports = {
 }
 
 const fs = require('fs');
-const filename = "data/data.txt"
+const defaultFilename = "data/data.txt"
 
-function getFiledata() {
+
+function getFiledata(filename) {
+    if(filename==null){
+        filename = defaultFilename;
+    }
     var str = fs.readFileSync(filename, 'utf8');
     var rows = str.split('\n');
     var cells = rows.map(row => row.split(','));
