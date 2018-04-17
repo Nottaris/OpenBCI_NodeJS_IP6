@@ -52,7 +52,8 @@ function fixJsonFile() {
     var newestfile = getNewestFile(files, path);
     var pathToFile = path+newestfile;
     var content = fs.readFileSync(pathToFile, 'utf8');
-    var fixed = '['+content+']';
+    var contentCut = content.substring(0, content.length - 2); //remove last ,\n
+    var fixed = '['+contentCut+']';
     fs.writeFileSync(pathToFile,fixed,'utf8');
 }
 
