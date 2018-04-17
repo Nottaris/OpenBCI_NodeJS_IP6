@@ -1,12 +1,14 @@
 /**
  * plot data with d3js
  */
+var path = 'src/plot/data.json';
+//var path = 'data/data-2018-4-17-21-30-56.json';
 var data = null;
 
 function loadJSON(callback) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
-    xobj.open('GET', 'src/plot/data.json', false);
+    xobj.open('GET', path, false);
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == "200") {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
