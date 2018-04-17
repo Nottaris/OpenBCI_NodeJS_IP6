@@ -29,7 +29,7 @@ function getSampleAverages(sample) {
     baseline = getBaseline();
 
     if (count < slots) {
-        avgInterval = avgInterval+Number(sample.channelData[channel].toFixed(20) * 100000);
+        avgInterval = avgInterval+Number(sample.channelData[channel].toFixed(20) * 1000000); //microVolts
         count++;
     } else if (count === slots) {
         averages.push(avgInterval/slots);

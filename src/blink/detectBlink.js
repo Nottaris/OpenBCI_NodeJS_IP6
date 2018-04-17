@@ -28,8 +28,8 @@ function detectBlink(baseline, averages, slots){
         if((averages[i]+standardDeviation) < mean){
 
             //if difference between value and mean is bigger then deviation factor a it is a blink
-            if(a > mathFunctions.procentageChange(averages[i],mean)){
-                console.log("BLINK: Row: "+i*slots+"-"+(i*slots+slots)+"\t diff: "+mathFunctions.procentageChange(averages[i],mean).toFixed(2)+"%\t value: "+Number(averages[i]).toFixed(2));
+            if(a > mathFunctions.percentageChange(averages[i],mean)){
+                console.log("BLINK: Row: "+i*slots+"-"+(i*slots+slots)+"\t diff: "+mathFunctions.percentageChange(averages[i],mean).toFixed(2)+"%\t value: "+Number(averages[i]).toFixed(2));
 
                 //skip next 25 slots (1 second)
                 if(i+25<averages.length){

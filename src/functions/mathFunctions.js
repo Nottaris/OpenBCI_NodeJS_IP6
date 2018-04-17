@@ -1,5 +1,5 @@
 module.exports = {
-    procentageChange,
+    percentageChange,
     getAverage,
     getVariance,
     getStandardDeviation,
@@ -8,7 +8,7 @@ module.exports = {
 }
 
 // Percentage Change (newValue - oldValue) / |oldValue| *100
-function procentageChange(newValue,oldValue){
+function percentageChange(newValue,oldValue){
     return (newValue-oldValue)/Math.abs(oldValue)*100;
 }
 
