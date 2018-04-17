@@ -24,6 +24,8 @@ loadJSON(function (response) {
 //tweak data
 data.forEach(function (d) {
     d.datetime = parseDateTime(d.timestamp);
+    // channelData is Volts V, for microvolts µV
+    d.channel1 = d.channelData[0] * 1000000;
     d.channel2 = d.channelData[1] * 1000000;
 });
 
@@ -54,9 +56,9 @@ data.forEach(function (d) {
     }
 });
 
-// y Axis Scale by Channel 2 values min - max
+// y Axis Scale by Channel 2 values 2*min until 2*max
 var y = d3.scaleLinear()
-         .domain([minCh2,maxCh2])
+         .domain([2*minCh2,2*maxCh2])
          .range([height, 0]);
 
 // define the axis
@@ -82,7 +84,7 @@ svg.append("text")
     .attr("x",0 - (height / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
-    .text("EEG Volts");
+    .text("microvolts µV");
     
 // x-axis
 svg.append("g")
@@ -96,15 +98,100 @@ svg.append("text")
     .text("Samples 250Hz");
 
 // define the line
-var valueline = d3.line()
+var valueline1 = d3.line()
     .x(function(d) { return x(d._count); })
-    .y(function(d) { return y(d.channel2); });
+    .y(function(d) { return y(d.channel1); });
+
+// define the 2nd line
+var valueline2 = d3.line()
+.x(function(d) { return x(d._count); })
+.y(function(d) { return y(d.channel2); });
 
 // Add the valueline path.
 svg.append("path")
   .data([data])
   .attr("class", "line")
-  .attr("d", valueline);
+  .style("stroke", "grey")
+  .attr("id", "Channel1")
+  .attr("d", valueline1);
+
+svg.append("path")
+  .data([data])
+  .attr("class", "line")
+  .style("stroke", "purple")
+  .attr("id", "Channel2")
+  .attr("d", valueline2);
+
+// add a title
+svg.append("text")
+.attr("x", (width / 2))				
+.attr("y", 0 - (margin.top / 2))
+.attr("text-anchor", "middle")	
+.style("font-size", "20px") 
+.text("EEG plot");
+
+// gridlines in x axis function
+function make_x_gridlines() {		
+    return d3.axisBottom(x)
+        .ticks(10)
+}
+
+// gridlines in y axis function
+function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(10)
+}
+
+// add the X gridlines
+svg.append("g")			
+.attr("class", "grid")
+.attr("transform", "translate(0," + height + ")")
+.call(make_x_gridlines()
+    .tickSize(-height)
+    .tickFormat("")
+)
+
+// add the Y gridlines
+svg.append("g")			
+.attr("class", "grid")
+.call(make_y_gridlines()
+    .tickSize(-width)
+    .tickFormat("")
+)
+
+// add the Channel 1 legend
+svg.append("text")
+.attr("x", 20)             
+.attr("y", height + margin.top - 20)    
+.attr("class", "legend")
+.style("fill", "grey")         
+.on("click", function(){
+  // determine if current line is visible
+  var active = Channel1.active ? false : true,
+  newOpacity = active ? 0 : 1;
+  // hide or show the elements
+  d3.select("#Channel1").style("opacity", newOpacity);
+  // update whether or not the elements are active
+  Channel1.active = active;
+})
+.text("Channel 1");
+
+// add the Channel 2 legend
+svg.append("text")
+.attr("x", 20)             
+.attr("y", height + margin.top)    
+.attr("class", "legend")
+.style("fill", "purple")  
+.on("click", function(){
+  // determine if current line is visible
+  var active = Channel2.active ? false : true,
+  newOpacity = active ? 0 : 1;
+  // hide or show the elements
+  d3.select("#Channel2").style("opacity", newOpacity);
+  // update whether or not the elements are active
+  Channel2.active = active;
+})
+.text("Channel 2");
 
 // get human readable time
 function parseDateTime(UNIX_timestamp) {
