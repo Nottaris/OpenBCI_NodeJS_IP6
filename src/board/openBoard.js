@@ -10,6 +10,7 @@
  *   then `npm start`
  */
 
+const saveData = require('./../functions/saveData'); //to fix JsonFiles in cleanup
 
 const debug = false; // Pretty print any bytes in and out... it's amazing...
 const verbose = true; // Adds verbosity to functions
@@ -69,6 +70,10 @@ function start(sampleFunction){
             if (verbose) console.log('clean');
             ourBoard.removeAllListeners();
             /** Do additional clean up here */
+            if(process.argv[2]==='save'){
+                console.log("fix is called");
+                saveData.fixJsonFile();
+            }
         }
         if (err) console.log(err.stack);
         if (options.exit) {

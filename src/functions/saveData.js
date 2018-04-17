@@ -2,7 +2,6 @@
  * export data from eeg signal
  * 
  * sample ===
- * 
  *       { accelData: [ 0, 0, 0 ],
  *       channelData:
  *       [ -9.834767560335107e-7,
@@ -21,8 +20,12 @@
  *       timestamp: 1522762092162,
  *       boardTime: 0,
  *       _count: 283 }
- * 
  */
+
+module.exports = {
+    saveData,
+    fixJsonFile
+}
 
 //get date in format for file name like "data-2018-4-6-21-13-08.json" 
 options = {
@@ -33,17 +36,39 @@ options = {
 datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
 formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
 
-module.exports = {
-
-    saveData: function (sample) {
-        var record = JSON.stringify(sample);
-        var fs = require('fs');
-        var stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
-        stream.write(record + ",\n");
-    }
+//save incoming sample's to json file with current date time in filename
+function saveData(sample) {
+    var record = JSON.stringify(sample);
+    const fs = require('fs');
+    var stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
+    stream.write(record + ",\n")
 }
 
-//TODO: valid json format see plot folder
+//add [] brackets around file from saveData()
+function fixJsonFile() {
+    const fs = require('fs');
+    var path = "./data/";
+    var files = fs.readdirSync(path);
+    var newestfile = getNewestFile(files, path);
+    var pathToFile = path+newestfile;
+    var content = fs.readFileSync(pathToFile, 'utf8');
+    var fixed = '['+content+']';
+    fs.writeFileSync(pathToFile,fixed,'utf8');
+}
 
-
-
+//get latest file from ./data/
+//Source: https://stackoverflow.com/a/37014317
+function getNewestFile(files, path) {
+    const fs = require('fs');
+    var out = [];
+    files.forEach(function(file) {
+        var stats = fs.statSync(path + "/" +file);
+        if(stats.isFile()) {
+            out.push({"file":file, "mtime": stats.mtime.getTime()});
+        }
+    });
+    out.sort(function(a,b) {
+        return b.mtime - a.mtime;
+    })
+    return (out.length>0) ? out[0].file : "";
+}
