@@ -24,23 +24,42 @@ loadJSON(function (response) {
 //tweak data
 data.forEach(function (d) {
     d.datetime = parseDateTime(d.timestamp);
+    // channelData is Volts V, for microvolts µV
+    d.channel1 = d.channelData[0] * 1000000;
     d.channel2 = d.channelData[1] * 1000000;
 });
 
 // set the dimensions of the canvas
-var margin = { top: 20, right: 60, bottom: 20, left: 60 },
-    width = 1280 - margin.left - margin.right,
-    height = 900 - margin.top - margin.bottom;
+var margin = { top: 60, right: 60, bottom: 60, left: 60 },
+    width = 900 - margin.left - margin.right,
+    height = 550 - margin.top - margin.bottom;
 
-// set the ranges
-var x = d3.scaleBand()      //TODO: d3.scaleLinear().range([0, width]);
-    .rangeRound([0, width])
-    .padding(0.05);
+// set the ranges/scales
+var minDate = data[0].datetime;     
+var size = Object.keys(data).length;   
+var maxDate = data[size-1].datetime; 
+//console.log(minDate);
+
+//x Axis Scale by data[]_count
+var x = d3.scaleLinear()
+        .domain([0,size-1])
+        .range([0, width]);
+
+var minCh2 = 10000;        
+var maxCh2 = 0; 
+data.forEach(function (d) {
+    if(maxCh2<d.channel2){
+        maxCh2=d.channel2;
+    }
+    if(minCh2>d.channel2){
+        minCh2=d.channel2;
+    }
+});
+
+// y Axis Scale by Channel 2 values 2*min until 2*max
 var y = d3.scaleLinear()
-       //TODO .domain([d3.min(data.channel2),d3.max(data.channel2)])
-        .range([height, 0]);
-          
-       
+         .domain([2*minCh2,2*maxCh2])
+         .range([height, 0]);
 
 // define the axis
 var xAxis = d3.axisBottom(x).ticks(10);
@@ -54,62 +73,133 @@ var svg = d3.select("body").append("svg")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-
+// y-axis
 svg.append("g")
     .call(yAxis);
 
-var xAxisTranslate = height;
-
+// y-axis Label
+svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x",0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("microvolts µV");
+    
+// x-axis
 svg.append("g")
-    .attr("transform", "translate(0, " + xAxisTranslate + ")")
+    .attr("transform", "translate(0, " + height + ")")
     .call(xAxis)
 
+// x-axis Label
+svg.append("text")
+    .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom -5) + ")")
+    .style("text-anchor", "middle")
+    .text("Samples 250Hz");
 
-var g = svg.selectAll("g")
-    .data(data)
-    .enter()
-    .append("g")
-    .attr("transform", function (d, i) {
-        return "translate(0,0)";
-    })
+// define the line
+var valueline1 = d3.line()
+    .x(function(d) { return x(d._count); })
+    .y(function(d) { return y(d.channel1); });
 
-g.append("circle")
-    .attr("cx", function (d, i) {
-        return i * 10;
-    })
-    .attr("cy", function (d, i) {
-        return d.channel2;
-    })
-    .attr("r", function (d) {
-        return 3;
-    })
-    .attr("fill", function (d, i) {
-        return "#c2e699";
-    })
+// define the 2nd line
+var valueline2 = d3.line()
+.x(function(d) { return x(d._count); })
+.y(function(d) { return y(d.channel2); });
 
-g.append("text")
-    .attr("x", function (d, i) {
-        return i * 10;
-    })
-    .attr("y", 105)
-    .attr("stroke", "teal")
-    .attr("font-size", "12px")
-    .attr("font-family", "sans-serif")
-    .text(function (d) {
-        return d._count;
-    });
+// Add the valueline path.
+svg.append("path")
+  .data([data])
+  .attr("class", "line")
+  .style("stroke", "grey")
+  .attr("id", "Channel1")
+  .attr("d", valueline1);
+
+svg.append("path")
+  .data([data])
+  .attr("class", "line")
+  .style("stroke", "purple")
+  .attr("id", "Channel2")
+  .attr("d", valueline2);
+
+// add a title
+svg.append("text")
+.attr("x", (width / 2))				
+.attr("y", 0 - (margin.top / 2))
+.attr("text-anchor", "middle")	
+.style("font-size", "20px") 
+.text("EEG plot");
+
+// gridlines in x axis function
+function make_x_gridlines() {		
+    return d3.axisBottom(x)
+        .ticks(10)
+}
+
+// gridlines in y axis function
+function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(10)
+}
+
+// add the X gridlines
+svg.append("g")			
+.attr("class", "grid")
+.attr("transform", "translate(0," + height + ")")
+.call(make_x_gridlines()
+    .tickSize(-height)
+    .tickFormat("")
+)
+
+// add the Y gridlines
+svg.append("g")			
+.attr("class", "grid")
+.call(make_y_gridlines()
+    .tickSize(-width)
+    .tickFormat("")
+)
+
+// add the Channel 1 legend
+svg.append("text")
+.attr("x", 20)             
+.attr("y", height + margin.top - 20)    
+.attr("class", "legend")
+.style("fill", "grey")         
+.on("click", function(){
+  // determine if current line is visible
+  var active = Channel1.active ? false : true,
+  newOpacity = active ? 0 : 1;
+  // hide or show the elements
+  d3.select("#Channel1").style("opacity", newOpacity);
+  // update whether or not the elements are active
+  Channel1.active = active;
+})
+.text("Channel 1");
+
+// add the Channel 2 legend
+svg.append("text")
+.attr("x", 20)             
+.attr("y", height + margin.top)    
+.attr("class", "legend")
+.style("fill", "purple")  
+.on("click", function(){
+  // determine if current line is visible
+  var active = Channel2.active ? false : true,
+  newOpacity = active ? 0 : 1;
+  // hide or show the elements
+  d3.select("#Channel2").style("opacity", newOpacity);
+  // update whether or not the elements are active
+  Channel2.active = active;
+})
+.text("Channel 2");
 
 // get human readable time
 function parseDateTime(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp);
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var year = a.getFullYear();
-    var month = months[a.getMonth()];
-    var date = a.getDate();
     var hour = a.getHours();
     var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
     var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
     var millisec = a.getMilliseconds() < 10 ? '00' + a.getMilliseconds() : a.getMilliseconds() < 100 ? '0' + a.getMilliseconds() : a.getMilliseconds();;
-    var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec + ':' + millisec;
-    return time; // + " @ " + UNIX_timestamp;
+    var time = hour + ':' + min + ':' + sec + ':' + millisec;
+    return time;
 }
