@@ -28,13 +28,19 @@ data.forEach(function (d) {
 });
 
 // set the dimensions of the canvas
-var margin = { top: 20, right: 60, bottom: 20, left: 60 },
+var margin = { top: 60, right: 60, bottom: 60, left: 60 },
     width = 900 - margin.left - margin.right,
     height = 550 - margin.top - margin.bottom;
 
-// set the ranges
+// set the ranges/scales
+var minDate = data[0].datetime;     
+var size = Object.keys(data).length;   
+var maxDate = data[size-1].datetime; 
+//console.log(minDate);
+
+//x Axis Scale by data[]_count
 var x = d3.scaleLinear()
-        .domain([0,1000])
+        .domain([0,size-1])
         .range([0, width]);
 
 var minCh2 = 10000;        
@@ -48,6 +54,7 @@ data.forEach(function (d) {
     }
 });
 
+// y Axis Scale by Channel 2 values min - max
 var y = d3.scaleLinear()
          .domain([minCh2,maxCh2])
          .range([height, 0]);
@@ -64,30 +71,40 @@ var svg = d3.select("body").append("svg")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
+// y-axis
 svg.append("g")
     .call(yAxis);
 
+// y-axis Label
+svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x",0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("EEG Volts");
+    
+// x-axis
 svg.append("g")
     .attr("transform", "translate(0, " + height + ")")
     .call(xAxis)
 
-var g = svg.selectAll("g")
-    .data(data)
-    .enter()
+// x-axis Label
+svg.append("text")
+    .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom -5) + ")")
+    .style("text-anchor", "middle")
+    .text("Samples 250Hz");
 
-g.append("circle")
-    .attr("cx", function (d) {
-        return x(d._count);
-    })
-    .attr("cy", function (d) {
-        return y(d.channel2);
-    })
-    .attr("r", function () {
-        return 2;
-    })
-    .attr("fill", function () {
-        return "#c2e6e9";
-    })
+// define the line
+var valueline = d3.line()
+    .x(function(d) { return x(d._count); })
+    .y(function(d) { return y(d.channel2); });
+
+// Add the valueline path.
+svg.append("path")
+  .data([data])
+  .attr("class", "line")
+  .attr("d", valueline);
 
 // get human readable time
 function parseDateTime(UNIX_timestamp) {

@@ -1,18 +1,14 @@
-.bar {
-    fill: steelblue;
-  }
+h1,
+text{
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-  .bar:hover {
-    fill: brown;
-  }
+.axis {
+    font-size: 10px;
+}
 
-  .axis {
-    font: 10px sans-serif;
-  }
-
-  .axis path,
-  .axis line {
+.line{
     fill: none;
-    stroke: #000;
+    stroke: blue;
     shape-rendering: crispEdges;
-  }
+}
