@@ -24,7 +24,7 @@ switch (process.argv[2]) {
         sampleFunction = saveData.saveData;
         break;
     case "plot" :
-        sampleFunction = plot.plot;
+        sampleFunction = plot.start();
         break;
     default:
         console.log("no arguments");
