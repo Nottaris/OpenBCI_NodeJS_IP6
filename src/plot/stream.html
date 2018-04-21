@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Plot EEG Stream</title>
+  <!--link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" media="all"-->
+  <link rel="stylesheet" type="text/css" href="src/plot/bootstrap.min232.css" media="all">
+  <link rel="stylesheet" type="text/css" href="src/plot/styleStream.css">
+  <script src="src/plot/d3v356min.js"></script>
+  <script src="src/plot/realTimeChartMulti.js"></script>
+</head>
+
+  <body>
+
+      <div style="max-width: 900px; max-height: 400px; padding: 10px">
+
+          <div class="well">
+            <h4>Plot EEG Stream
+          </div>
+          
+          <div id="channels">
+              <div class="numberCircle" onclick="toggleChannel(1)">1</div>
+              <div class="numberCircle" onclick="toggleChannel(2)">2</div>
+              <div class="numberCircle" onclick="toggleChannel(3)">3</div>
+              <div class="numberCircle" onclick="toggleChannel(4)">4</div>
+              <div class="numberCircle" onclick="toggleChannel(5)">5</div>
+              <div class="numberCircle" onclick="toggleChannel(6)">6</div>
+              <div class="numberCircle" onclick="toggleChannel(7)">7</div>
+              <div class="numberCircle" onclick="toggleChannel(8)">8</div>
+          </div>
+          
+          <div id="viewDiv"></div>
+          
+          <div>
+              <input id="debug" type="checkbox" name="debug" value="debug" style="margin-bottom: 10px" /> Debug
+              <input id="halt" type="checkbox" name="halt" value="halt" style="margin-bottom: 10px" /> Halt
+          </div>
+          
+        </div>
+
+    <script src="src/plot/plotD3stream.js"></script>
+  </body>
+</html>
