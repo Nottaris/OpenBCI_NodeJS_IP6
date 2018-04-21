@@ -27,7 +27,7 @@ function start(){
                 return;
             }
 
-            if (fs.statSync(filename).isDirectory()) filename += 'src/plot/index.html';
+            if (fs.statSync(filename).isDirectory()) filename += 'src/plot/stream.html';
 
             fs.readFile(filename, "binary", function(err, file) {
                 if(err) {

@@ -1,7 +1,7 @@
 /**
  * plot data with d3js
  */
-var path = 'src/plot/data.json';
+var path = 'data/jsondata.json';
 //var path = 'data/data-2018-4-17-21-30-56.json';
 var data = null;
 
