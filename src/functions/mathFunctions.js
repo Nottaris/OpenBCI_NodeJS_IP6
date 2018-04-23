@@ -36,10 +36,10 @@ function getMaxValue(array) {
         return Math.max(a, b);
     });
 }
+
 // Get min value form array
 function getMinValue(array) {
     return array.reduce(function (a, b) {
         return Math.min(a, b);
     });
 }
-
