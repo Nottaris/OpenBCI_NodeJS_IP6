@@ -1,7 +1,8 @@
 const mathFunctions = require('../functions/mathFunctions');
 
 module.exports = {
-    subtractBaseline
+    subtractBaseline,
+    subtractBaselineAllChannels
 }
 
 // returns average minus baseline averages for one Channel Data
@@ -26,9 +27,9 @@ function subtractBaselineAllChannels(baseline, average){
     let result = [];
     for (let index = 0; index < absBaseline.length; index++) {
         if(average[index]>0){
-            result = average[index] - absBaseline[index];
+            result.push(average[index] - absBaseline[index]);
         }else{
-            result = average[index] + absBaseline[index];
+            result.push(average[index] + absBaseline[index]);
         }
     }
     return result;
