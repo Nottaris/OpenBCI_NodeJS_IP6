@@ -26,6 +26,13 @@ let avgInterval = 0;
 
 function getSampleAverages(sample) {
 
+   // console.log("Channel 1: " + sample.channelData[0].toFixed(8) * 1000000 + " microVolts.");
+    // prints to the console
+    //  "Channel 1: 0.00001987 Volts."
+    //  "Channel 2: 0.00002255 Volts."
+    //  ...
+    //  "Channel 8: -0.00001875 Volts."
+
     baseline = getBaseline();
 
     if (count < slots) {

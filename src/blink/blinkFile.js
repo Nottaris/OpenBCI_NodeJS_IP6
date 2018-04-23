@@ -5,7 +5,7 @@ module.exports = {
     start
 };
 
-const slots = 10;
+const slots = 20;
 const channel = 1;
 
 let data;

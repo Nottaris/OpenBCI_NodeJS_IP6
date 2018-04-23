@@ -28,12 +28,16 @@ module.exports = {
 
 function start(sampleFunction){
     ourBoard.autoFindOpenBCIBoard().then(portName => {
+   // var portName = "COM13";
         if (portName) {
             /**
              * Connect to the board with portName
              * Only works if one board is plugged in
              * i.e. ourBoard.connect(portName).....
              */
+
+
+
             ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
                 .then(() => {
                     ourBoard.syncRegisterSettings()
@@ -50,10 +54,23 @@ function start(sampleFunction){
                         });
 
                     //log firmware version
-                    console.log("Firmware:");
-                    console.log("== v2: " + ourBoard.usingVersionTwoFirmware());
-                    console.log("== v3: " + ourBoard.usingVersionThreeFirmware());
-                    console.log(">= v2: " + ourBoard.usingAtLeastVersionTwoFirmware());
+                    if(debug){
+                        console.log("Firmware:");
+                        console.log("== v2: " + ourBoard.usingVersionTwoFirmware());
+                        console.log("== v3: " + ourBoard.usingVersionThreeFirmware());
+                        console.log(">= v2: " + ourBoard.usingAtLeastVersionTwoFirmware());
+                    }
+
+
+                    //.channelSet(channelNumber,powerDown,gain,inputType,bias,srb2,srb1)
+                    ourBoard.channelSet(1,false,24,'normal',true,true,false);
+                    ourBoard.channelSet(2,true,24,'normal',true,true,false);
+                    ourBoard.channelSet(3,true,24,'normal',true,true,false);
+                    ourBoard.channelSet(4,true,24,'normal',true,true,false);
+                    ourBoard.channelSet(5,true,24,'normal',true,true,false);
+                    ourBoard.channelSet(6,true,24,'normal',true,true,false);
+                    ourBoard.channelSet(7,true,24,'normal',true,true,false);
+                    ourBoard.channelSet(8,true,24,'normal',true,true,false);
 
                     ourBoard.on('sample', (sample) => {
                         sampleFunction(sample);

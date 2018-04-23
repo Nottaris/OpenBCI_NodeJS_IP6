@@ -6,29 +6,27 @@ module.exports = {
 
 
 function detectBlink(baseline, averages, slots){
-    console.log("==============================================");
-    console.log("  Average size:\t\t"+averages.length);
-    console.log("  Baseline size:\t"+baseline.length);
-    console.log("  Average(mean):\t"+mathFunctions.getAverage(baseline).toFixed(2));
-    console.log("  Variance:\t\t"+mathFunctions.getVariance(baseline).toFixed(2));
-    console.log("  Standard deviation:\t"+mathFunctions.getStandardDeviation(baseline).toFixed(2));
-    console.log("  Max Value:\t\t"+mathFunctions.getMaxValue(averages).toFixed(2));
-    console.log("  Min Value:\t\t"+mathFunctions.getMinValue(averages).toFixed(2));
-    console.log("==============================================");
-
+    //deviation factor
+    var a=1.5;
     var mean = mathFunctions.getAverage(baseline);
     var standardDeviation = mathFunctions.getStandardDeviation(baseline);
 
-    //deviation factor
-    var a=-50;
+    if(baseline.length==250){
+        console.log("==============================================");
+        console.log("  Average size:\t\t"+averages.length);
+        console.log("  Baseline size:\t"+baseline.length);
+        console.log("  Average(mean):\t"+mathFunctions.getAverage(baseline).toFixed(2));
+        console.log("  Variance:\t\t"+mathFunctions.getVariance(baseline).toFixed(2));
+        console.log("  Standard deviation:\t"+mathFunctions.getStandardDeviation(baseline).toFixed(2));
+        console.log("  mean-standardDev*a:\t "+Number(mean-standardDeviation*a).toFixed(2));
+        console.log("  Max Value:\t\t"+mathFunctions.getMaxValue(baseline).toFixed(2));
+        console.log("  Min Value:\t\t"+mathFunctions.getMinValue(baseline).toFixed(2));
+        console.log("==============================================");
+    }
 
     for (var i=0; i<averages.length; i++) {
-
-        //compare only values that are significant smaller then mean
-        if((averages[i]+standardDeviation) < mean){
-
-            //if difference between value and mean is bigger then deviation factor a it is a blink
-            if(a > mathFunctions.percentageChange(averages[i],mean)){
+            //if current value is bigger then  mean - standardDeviation * a  it is a blink
+            if(Number(mean-standardDeviation*a) > averages[i]){
                 console.log("BLINK: Row: "+i*slots+"-"+(i*slots+slots)+"\t diff: "+mathFunctions.percentageChange(averages[i],mean).toFixed(2)+"%\t value: "+Number(averages[i]).toFixed(2));
 
                 //skip next 25 slots (1 second)
@@ -38,8 +36,6 @@ function detectBlink(baseline, averages, slots){
                     i = averages.length;
                 }
             }
-
-        }
     }
 }
 
