@@ -41,5 +41,9 @@ function start() {
     } else {
         baseline = averages;
     }
-    detectBlink.compareAverages(baseline,averages,slots);
+
+    averages.forEach(function(average) {
+        detectBlink.compareAverages(baseline,average,slots);
+    });
+
 }

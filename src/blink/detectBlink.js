@@ -7,7 +7,7 @@ module.exports = {
 
 const subtractBaseline = true;  //subtract baseline from slots
 var showBaseline = true;
-
+let skip = 0;
 function detectBlink(baseline, average, slots) {
     //deviation factor
     var a = 1.5;
@@ -15,7 +15,7 @@ function detectBlink(baseline, average, slots) {
     var standardDeviation = mathFunctions.getStandardDeviation(baseline);
 
     if (subtractBaseline) {
-        averages = eegFunctions.subtractBaseline(baseline, average, slots);
+        averages = eegFunctions.subtractBaseline(baseline, average);
     }  
 
     if (showBaseline) {
@@ -31,9 +31,14 @@ function detectBlink(baseline, average, slots) {
         showBaseline = false;
     }
 
+
         //if current value is bigger then  mean - standardDeviation * a  it is a blink
-        if (Number(mean - standardDeviation * a) > average) {
-            console.log("BLINK: \t average: "+average+"\t at "+new Date());
+        if (Number(mean - standardDeviation * a) > average && skip == 0) {
+               console.log("BLINK: \t average: "+average.toFixed(2)+"\t at "+new Date());
+               skip = 20;
+        }
+        if(skip > 0) {
+            skip--;
         }
    
 }
