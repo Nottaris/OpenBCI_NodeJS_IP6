@@ -252,9 +252,10 @@ function realTimeChartMulti() {
     function refresh() {
 
       // process data to remove too late data items 
-      data = data.filter(function(d) {
-        if (d.time.getTime() > startTime.getTime()) return true;
-      })
+      // data = data.filter(function(d) {
+      //   return true;
+      //   if (d.time.getTime() > startTime.getTime()) return true;
+      // })
 
       // determine number of categories
       var categoryCount = yDomain.length;

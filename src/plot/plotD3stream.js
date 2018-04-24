@@ -100,7 +100,7 @@ function toggleChannel(channel){
 // define data generator
 function dataGenerator(sample) {
 
-    setTimeout(function () {
+  //  setTimeout(function () {
 
         // add categories dynamically
         chart.yDomain(channelSelection);
@@ -110,7 +110,7 @@ function dataGenerator(sample) {
             // create new data item
             var obj = {
                 // complex data item; four attributes (type, color, opacity and size) are changing dynamically with each iteration (as an example)
-                time: new Date(),   // new Date(sample.timestamp),   for playback of file, but as this is in the past, you will see nothing!
+                time: sample.timestamp,   // new Date(sample.timestamp),   for playback of file, but as this is in the past, you will see nothing!
                 color: channelColors[i] || "#000033",
                 opacity: Math.max(Math.random(), 0.3),
                 category: cat,
@@ -123,30 +123,15 @@ function dataGenerator(sample) {
             chart.datum(obj);
         });
 
-        // drive data into the chart at average interval of 0.004 seconds
-        // here, set the timeout to roughly 0.004 seconds
-        timeout = 0.004;// Math.round(timeScale(normal()));
-
-        // do forever
-        dataGenerator(data[counter++]);
-
-    }, timeout);
 }
 
-// start the data generator
-// var counter = 0;
-// dataGenerator(data[counter++]);
-
+// Connect to socket server
 var socket = io.connect('http://localhost:3000');
 
 socket.on('sample', function(data) {
-    console.log(data.sample);
-    // console.log('Channel 1:'+data.channel1);
-    // console.log('Channel 2:'+data.channel2);
+    //plot sample
+   dataGenerator(data.sample);
 });
+
 socket.on('error', console.error.bind(console));
 socket.on('message', console.log.bind(console));
-
-function addSocket(socket) {
-
-}
