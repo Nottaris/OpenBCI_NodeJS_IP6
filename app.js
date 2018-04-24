@@ -6,6 +6,7 @@
 const blink = require('./src/blink/blink');
 const blinkFile = require('./src/blink/blinkFile');
 const saveData = require('./src/functions/saveData');
+const streamData = require('./src/functions/streamData');
 const plot = require('./src/plot/plot');
 const openBoard = require('./src/board/openBoard');
 
@@ -22,6 +23,10 @@ switch (process.argv[2]) {
         break;
     case "save" :
         sampleFunction = saveData.saveData;
+        break;
+    case "stream" :
+        streamData.start();
+        sampleFunction = streamData.streamData;
         break;
     case "plot" :
         sampleFunction = plot.start();

@@ -134,5 +134,19 @@ function dataGenerator(sample) {
 }
 
 // start the data generator
-var counter = 0;
-dataGenerator(data[counter++]);
+// var counter = 0;
+// dataGenerator(data[counter++]);
+
+var socket = io.connect('http://localhost:3000');
+
+socket.on('sample', function(data) {
+    console.log(data.sample);
+    // console.log('Channel 1:'+data.channel1);
+    // console.log('Channel 2:'+data.channel2);
+});
+socket.on('error', console.error.bind(console));
+socket.on('message', console.log.bind(console));
+
+function addSocket(socket) {
+
+}
