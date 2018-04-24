@@ -1,5 +1,5 @@
 /**
- * export data from eeg signal
+ * export (save) data from eeg signal to a json file
  * 
  * sample ===
  *       { accelData: [ 0, 0, 0 ],
@@ -24,7 +24,8 @@
 
 module.exports = {
     saveData,
-    fixJsonFile
+    fixJsonFile,
+    getNewestFile
 }
 
 //get date in format for file name like "data-2018-4-6-21-13-08.json" 
@@ -49,7 +50,7 @@ function fixJsonFile() {
     const fs = require('fs');
     var path = "./data/";
     var files = fs.readdirSync(path);
-    var newestfile = getNewestFile(files, path);
+    var newestfile = getNewestFile();
     var pathToFile = path+newestfile;
     var content = fs.readFileSync(pathToFile, 'utf8');
     var contentCut = content.substring(0, content.length - 2); //remove last ,\n
@@ -59,8 +60,10 @@ function fixJsonFile() {
 
 //get latest file from ./data/
 //Source: https://stackoverflow.com/a/37014317
-function getNewestFile(files, path) {
+function getNewestFile() {
     const fs = require('fs');
+    var path = "./data/";
+    var files = fs.readdirSync(path);
     var out = [];
     files.forEach(function(file) {
         var stats = fs.statSync(path + "/" +file);
