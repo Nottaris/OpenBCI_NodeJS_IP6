@@ -252,11 +252,12 @@ function realTimeChartMulti() {
     function refresh() {
 
       // process data to remove too late data items 
-      // data = data.filter(function(d) {
-      //   return true;
-      //   if (d.time.getTime() > startTime.getTime()) return true;
-      // })
-
+      data = data.filter(function(d) {
+        if (d.time > startTimeViewport.getTime()){
+          return true;
+        } 
+      })
+          
       // determine number of categories
       var categoryCount = yDomain.length;
       if (debug) console.log("yDomain", yDomain)
@@ -332,7 +333,7 @@ function realTimeChartMulti() {
             var retVal = null;
             switch (getTagName(this)) {
               case "circle":
-                retVal = (y(d.category))+d.channel/3; // 3 for scaling //TODO: ajust dynamically
+                retVal = (y(d.category))+d.channel; // 3 for scaling //TODO: ajust dynamically
                 break;
               default:
             }
@@ -369,8 +370,7 @@ function realTimeChartMulti() {
             return retVal; 
           })
           .style("fill", function(d) { return d.color || "black"; })
-          .style("fill-opacity", function(d) { return d.opacity || 1; });
-
+          
       // create update selection for the nav chart, by applying data
       var updateSelNav = navG.selectAll("circle")
           .data(data);
@@ -431,7 +431,7 @@ function realTimeChartMulti() {
       // refresh svg
       refresh();
 
-    }, 200)
+    }, 1000)
 
     // end setInterval function
 

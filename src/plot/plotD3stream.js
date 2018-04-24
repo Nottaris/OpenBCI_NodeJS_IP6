@@ -3,31 +3,6 @@
  */
 'use strict';
 
-//----- fetch data from file only for testing, after this use real time sample data! -----//
-var path = 'data/jsondata.json';
-//var path = 'data/data-2018-4-17-21-30-56.json';
-var data = null;
-
-function loadJSON(callback) {
-    var xobj = new XMLHttpRequest();
-    xobj.overrideMimeType("application/json");
-    xobj.open('GET', path, false);
-    xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == "200") {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            callback(xobj.responseText);
-        }
-    };
-    xobj.send(null);
-}
-
-loadJSON(function (response) {
-    // Parse JSON string into object
-    data = JSON.parse(response);
-});
-
-//-----------------------------------end of filedata fetcher--------------------------------------//
-
 // create the real time chart
 var chart = realTimeChartMulti()
     .title("")
@@ -68,12 +43,11 @@ var timeScale = d3.scale.linear()
 
 // define colors
 var channelColors = ["#999999", "#663399", "#6600ff", "#336633", "#ffcc66", "#ff9933", "#ff0000", "#663300"];
-   
-// in a normal use case, real time data would arrive through the network or some other mechanism
 
 var shapes = ["rect", "circle"];
 var timeout = 0;
-var channelSelection = ["Channel1", "Channel2", "Channel3", "Channel4", "Channel5", "Channel6", "Channel7", "Channel8"];
+//var channelSelection = ["Channel1", "Channel2", "Channel3", "Channel4", "Channel5", "Channel6", "Channel7", "Channel8"];
+var channelSelection = ["Channel1"];
 channelSelection.reverse();
 
 function addChannel(channel) {
@@ -100,8 +74,6 @@ function toggleChannel(channel){
 // define data generator
 function dataGenerator(sample) {
 
-  //  setTimeout(function () {
-
         // add categories dynamically
         chart.yDomain(channelSelection);
       
@@ -112,17 +84,14 @@ function dataGenerator(sample) {
                 // complex data item; four attributes (type, color, opacity and size) are changing dynamically with each iteration (as an example)
                 time: sample.timestamp,   // new Date(sample.timestamp),   for playback of file, but as this is in the past, you will see nothing!
                 color: channelColors[i] || "#000033",
-                opacity: Math.max(Math.random(), 0.3),
                 category: cat,
                 type: "circle",
-                size: 2,
-                channel: sample.channelData[i]*1000000 // channelData is Volts V, for microvolts µV
+                size: 1,
+                channel: sample.channelData[i] * 1000000 // channelData is Volts V, for microvolts µV
             }
-            
             // send the datum to the chart
             chart.datum(obj);
         });
-
 }
 
 // Connect to socket server
