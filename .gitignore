@@ -34,3 +34,4 @@ $RECYCLE.BIN/
 Thumbs.db
 UserInterfaceState.xcuserstate
 data/data*.json
+package-lock.json
