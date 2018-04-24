@@ -1,5 +1,5 @@
 /**
- * plot data with d3js streaming
+ * plot live data with d3js streaming
  */
 'use strict';
 
