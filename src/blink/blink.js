@@ -45,14 +45,16 @@ function getSampleAverages(sample) {
         //if baseline is at least 1250 samples (5 sec.) -> detect Blinks
         if(baseline.length*slots>=baselineLengthSec*sampleRate) {
             detectBlink.compareAverages(baseline,average,slots);
+        } else {
+            process.stdout.write("waiting for baseline...\r");
         }
     }
 
 }
 
 function getBaseline() {
-    if(averages.length>baselineSlots){
-        return averages.slice(10,10+baselineSlots); //skip first 10 data points to minimize error data at start
+    if(averages.length>baselineSlots+30){ //slip first 30 data points
+        return averages.slice(-baselineSlots); // extract baseline form averages
     } else {
         return averages;
     }

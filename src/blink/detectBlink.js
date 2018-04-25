@@ -31,11 +31,11 @@ function detectBlink(baseline, average, slots) {
         showBaseline = false;
     }
 
-
+    //  process.stdout.write(average.toFixed(2)+"\r");
         //if current value is bigger then  mean - standardDeviation * a  it is a blink
         if (Number(mean - standardDeviation * a) > average && skip == 0) {
-               console.log("BLINK: \t average: "+average.toFixed(2)+"\t at "+new Date());
-               skip = 20;
+               console.log("BLINK: \t value: "+average.toFixed(2)+"\t at "+new Date());
+               skip = slots*5;
         }
         if(skip > 0) {
             skip--;
