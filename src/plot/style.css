@@ -22,3 +22,59 @@ text{
   .grid path {
     stroke-width: 0;
   }
+
+  .numberCircle {
+    float: left;
+    border-radius: 50%;
+    behavior: url(PIE.htc);
+    width: 30px;
+    height: 30px;
+    margin: 12px;
+    padding: 7px;
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+    text-align: center;
+    font: 24px Arial, sans-serif;
+  }
+
+  .numberCircle:first-child {
+    margin-left: 30px;
+  }
+
+  .labelCircles {
+    float: left;
+    width: 110px;
+    height: 30px;
+    margin: 12px;
+    padding: 7px;
+    background: #fff;
+    color: #666;
+    text-align: center;
+    font: 24px Arial, sans-serif;
+  }
+
+  .c1{
+    color: grey;
+  }
+  .c2{
+    color: purple;
+  }
+  .c3{
+    color: blue;
+  }
+  .c4{
+    color: green;
+  }
+  .c5{
+    color: rgb(250, 196, 61);
+  }
+  .c6{
+    color: orange;
+  }
+  .c7{
+    color: red;
+  }
+  .c8{
+    color: rgb(148, 47, 47);
+  }
