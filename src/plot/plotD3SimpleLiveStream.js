@@ -2,12 +2,13 @@
  * plot file data with d3js
  */
 //data to plot - default start values before samples are coming in
-var plotdata = [{"accelData":[0,0,0],"channelData":[4,3,2,1,-1,-2,-3,-4],"auxData":{"type":"Buffer","data":[0,0,0,0,0,0]},"sampleNumber":0,"startByte":160,"stopByte":192,"valid":true,"timestamp":1523041989391,"boardTime":0,"_count":0}];
-var itemNull = plotdata[0];
+var plotdata = [{"accelData":[0,0,0],"channelData":[0.000004,0.000003,0.000002,0.000001,-0.000001,-0.000002,-0.000003,-0.000004],"auxData":{"type":"Buffer","data":[0,0,0,0,0,0]},"sampleNumber":0,"startByte":160,"stopByte":192,"valid":true,"timestamp":1523041989391,"boardTime":0,"_count":0}];
+var itemnull = tweakData(plotdata[0]);
 //create start array
 for (let index = 1; index < 1000; index++) {
-     plotdata.push(itemNull);
+     plotdata.push(itemnull);
 }
+
 
 //tweak data - ajust Volts
 function tweakData(sample){
@@ -20,15 +21,26 @@ function tweakData(sample){
         sample.channel6 = sample.channelData[5] * 1000000;
         sample.channel7 = sample.channelData[6] * 1000000;
         sample.channel8 = sample.channelData[7] * 1000000;
+        return sample;
 }
 
 //tweak data - reset _count from 1-1000
 function ajustCount(){
-    plotdata.forEach(function (d, i) {
-        d._count = i;
-    });
+    var count = 0;
+    for (let index = 0; index < plotdata.length; index++) {
+        plotdata[index]._count = 3;
+        count++;
+    }
+    // plotdata.forEach(function (d, i) {
+    //      d._count = i;
+    // });
 }
+console.log("before");
+console.log(plotdata);
 ajustCount();
+console.log("after");
+console.log(plotdata);
+//WAT!?
 
 //---------setup plot-----------------------//
 // set the dimensions of the canvas
@@ -180,6 +192,7 @@ var path1 = svg.append("path")
 
 //------update paths with new data-------//
 function update(newdata) {
+    console.log("update");
     path1.data([newdata])
          .attr("d", valueline1);
     path2.data([newdata])
@@ -251,12 +264,13 @@ function toggleChannel(channel){
 var socket = io.connect('http://localhost:3000');
 
 socket.on('sample', function(data) {
+    console.log("socket sample");
     //tweak data (ajust volts)
-    tweakData(data.sample);
+    var tweakedData = tweakData(data.sample);
     //delete first item of data
     plotdata.shift();
     //add new sample to data
-    plotdata.push(data.sample);
+    plotdata.push(tweakedData);
     //ajust _count of whole array
     ajustCount();
     //update plot
