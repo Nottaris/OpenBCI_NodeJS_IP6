@@ -1,9 +1,9 @@
 /**
  * extract blinks from eeg signal
- * 
+ *
  * first approach: direct volt from channel 2
- * second approach: channel 1 - 
- * 
+ * second approach: channel 1 -
+ *
  * blinks last from 100 to 400ms in real
  * (EEG data: 20-40Hz)
  */
@@ -13,16 +13,23 @@ module.exports = {
         getSampleAverages(sample);
     },
     setBlinkcount,
-    getBlinkcount
+    getBlinkcount,
+    getSettings,
+    setSettings,
+    reset
 }
 
 const detectBlink = require('./detectBlink');
 
-const baselineLengthSec = 5;      // time in seconds for baseline
-const slots = 10;                 // data points per slot
-const channel = 1;                // number of channel ( from 1 to 8 )
-const sampleRate = 250;           // 250Hz
-const baselineSlots = baselineLengthSec*sampleRate/slots; // number of slots in baseline (at 250Hz)
+const defaultSettings  = {
+    baselineLengthSec: 5,       // time in seconds for baseline
+    channel: 1,                 // number of channel ( from 1 to 8 )
+    sampleRate: 250,            // 250Hz
+    slots: 10,                  // data points per slot
+    threshold: 1.5,              // deviation factor
+    debug: true                  // show console.log
+}
+
 
 
 let averages = [];
@@ -31,23 +38,24 @@ let baseline  = [];
 let count = 0;
 let avgInterval = 0;
 let blinkCount = 0;
-
+let settings = defaultSettings;
+let baselineSlots = settings.baselineLengthSec*settings.sampleRate/settings.slots; // number of slots in baseline (at 250Hz)
 function getSampleAverages(sample) {
 
     baseline = getBaseline();
 
-    if (count < slots) {
-        avgInterval = avgInterval+Number((sample.channelData[channel-1] * 1000000).toFixed(20)); //microVolts
+    if (count < settings.slots) {
+        avgInterval = avgInterval+Number((sample.channelData[settings.channel-1] * 1000000).toFixed(20)); //microVolts
         count++;
-    } else if (count === slots) {
-        averages.push(avgInterval/slots);
-        average = Number(avgInterval/slots);
+    } else if (count === settings.slots) {
+        averages.push(avgInterval/settings.slots);
+        average = Number(avgInterval/settings.slots);
         count = 0;
         avgInterval = 0;
 
         //if baseline is at least 1250 samples (5 sec.) -> detect Blinks
-        if(baseline.length*slots>=baselineLengthSec*sampleRate) {
-            detectBlink.compareAverages(baseline,average,slots);
+        if(baseline.length*settings.slots>=settings.baselineLengthSec*settings.sampleRate) {
+            detectBlink.compareAverages(baseline,average);
         } else {
             process.stdout.write("waiting for baseline...\r");
         }
@@ -69,4 +77,22 @@ function setBlinkcount(){
 
 function getBlinkcount(){
     return blinkCount;
+}
+
+function getSettings(){
+    return settings;
+}
+
+function setSettings(newSettings) {
+    settings =  newSettings ;
+}
+
+function reset(){
+     settings = defaultSettings;
+     averages = [];
+     average;
+     baseline  = [];
+     count = 0;
+     avgInterval = 0;
+     blinkCount = 0;
 }
