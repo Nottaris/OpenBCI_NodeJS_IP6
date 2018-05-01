@@ -101,7 +101,7 @@ eeg.append("path")
 
 //------update paths with new data-------//
 function update() {
-
+//TODO: fix update (dev no priority as working example exists)
     eeg.data(channels);
     //    .enter().append("g")
     //    .attr("class", "eeg");
@@ -177,7 +177,7 @@ socket.on('error', console.error.bind(console));
 socket.on('message', console.log.bind(console));
 
 //update plot every second
-setInterval(update, 1000);
+setInterval(update, 250);
 //log data every 5 sec.
 function logChannels(){
     console.log(channels);
