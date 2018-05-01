@@ -172,23 +172,22 @@ var path1 = svg.append("path")
   .attr("d", valueline8);
 
 //------update paths with new data-------//
-function update(newdata) {
-    console.log("update");
-    path1.data([newdata])
+function update() {
+    path1.data([plotdata])
          .attr("d", valueline1);
-    path2.data([newdata])
+    path2.data([plotdata])
          .attr("d", valueline2);
-    path3.data([newdata])
+    path3.data([plotdata])
          .attr("d", valueline3);
-    path4.data([newdata])
+    path4.data([plotdata])
          .attr("d", valueline4);
-    path5.data([newdata])
+    path5.data([plotdata])
          .attr("d", valueline5);
-    path6.data([newdata])
+    path6.data([plotdata])
          .attr("d", valueline6);
-    path7.data([newdata])
+    path7.data([plotdata])
          .attr("d", valueline7);
-    path8.data([newdata])
+    path8.data([plotdata])
          .attr("d", valueline8);
   }
 //-------------end of data----------//
@@ -245,16 +244,16 @@ function toggleChannel(channel){
 var socket = io.connect('http://localhost:3000');
 
 socket.on('sample', function(data) {
-    console.log("socket sample");
     //tweak data (ajust volts)
     var tweakedData = tweakData(data.sample);
     //delete first item of data
     plotdata.shift();
     //add new sample to data
     plotdata.push(tweakedData);
-    //update plot
-    update(plotdata);
 });
 
 socket.on('error', console.error.bind(console));
 socket.on('message', console.log.bind(console));
+
+//update plot every second
+setInterval(update, 250);
