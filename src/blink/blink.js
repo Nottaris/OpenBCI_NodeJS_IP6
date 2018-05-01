@@ -11,7 +11,9 @@
 module.exports = {
     getBlinks: function (sample) {
         getSampleAverages(sample);
-    }
+    },
+    setBlinkcount,
+    getBlinkcount
 }
 
 const detectBlink = require('./detectBlink');
@@ -28,6 +30,7 @@ let average;
 let baseline  = [];
 let count = 0;
 let avgInterval = 0;
+let blinkCount = 0;
 
 function getSampleAverages(sample) {
 
@@ -58,4 +61,12 @@ function getBaseline() {
     } else {
         return averages;
     }
+}
+
+function setBlinkcount(){
+    blinkCount++;
+}
+
+function getBlinkcount(){
+    return blinkCount;
 }
