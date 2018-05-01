@@ -21,4 +21,5 @@ function start(){
 function streamData(sample) {
     //emmit sample event for each event
     io.emit('sample', { sample: sample });
+    process.stdout.write("Streaming sample...\r");
 }
