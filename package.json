@@ -20,7 +20,7 @@
   "dependencies": {
     "d3": "^5.0.0",
     "express": "^4.16.3",
-    "mocha": "^2.5.3",
+    "mocha": "^5.3.0",
     "openbci": "^2.0.0",
     "openbci-cyton": "^1.1.2",
     "socket.io": "^2.1.0"
