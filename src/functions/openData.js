@@ -12,7 +12,7 @@ module.exports = {
 const fs = require('fs');
 const defaultFilename = "data/data.txt"
 //json
-const path = 'data/jsondata.json';
+const defaultJson = 'data/jsondata.json';
 
 //read csv
 function getFiledata(filename) {
@@ -26,7 +26,9 @@ function getFiledata(filename) {
 }
 
 //read json
-function loadJSON() {
-    const jsondata = require(path);
-    return jsondata;
+function loadJSON(filename) {
+    if(filename==null){
+        filename = defaultJson;
+    }
+    return require(filename);
 }

@@ -28,7 +28,9 @@ module.exports = {
     getNewestFile
 }
 
-//get date in format for file name like "data-2018-4-6-21-13-08.json" 
+const fs = require('fs');
+
+//get date in format for file name like "data-2018-4-6-21-13-08.json"
 options = {
     year: 'numeric', month: 'numeric', day: 'numeric',
     hour: 'numeric', minute: 'numeric', second: 'numeric',
@@ -37,11 +39,13 @@ options = {
 datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
 formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
 
+//create json file
+var stream  = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
+
 //save incoming sample's to json file with current date time in filename
 function saveData(sample) {
     var record = JSON.stringify(sample);
-    const fs = require('fs');
-    var stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
+
     stream.write(record + ",\n")
     process.stdout.write("save data...\r");
 }
