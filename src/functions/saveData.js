@@ -43,6 +43,7 @@ function saveData(sample) {
     const fs = require('fs');
     var stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
     stream.write(record + ",\n")
+    process.stdout.write("save data...\r");
 }
 
 //add [] brackets around file from saveData()
