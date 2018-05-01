@@ -2,7 +2,7 @@
 const openData = require('./../src/functions/openData');
 var assert = require('assert');
 const fs = require('fs');
-const testfilepath = "data/testdata";
+const testfilepath = "test/data/OpenDataTest";
 
 describe('openData', function () {
   before(function () {
