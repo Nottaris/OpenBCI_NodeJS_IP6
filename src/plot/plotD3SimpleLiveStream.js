@@ -9,7 +9,6 @@ for (let index = 1; index < 1000; index++) {
      plotdata.push(itemnull);
 }
 
-
 //tweak data - ajust Volts
 function tweakData(sample){
         // channelData is Volts V, for microvolts µV
@@ -23,24 +22,6 @@ function tweakData(sample){
         sample.channel8 = sample.channelData[7] * 1000000;
         return sample;
 }
-
-//tweak data - reset _count from 1-1000
-function ajustCount(){
-    var count = 0;
-    for (let index = 0; index < plotdata.length; index++) {
-        plotdata[index]._count = 3;
-        count++;
-    }
-    // plotdata.forEach(function (d, i) {
-    //      d._count = i;
-    // });
-}
-console.log("before");
-console.log(plotdata);
-ajustCount();
-console.log("after");
-console.log(plotdata);
-//WAT!?
 
 //---------setup plot-----------------------//
 // set the dimensions of the canvas
@@ -91,36 +72,36 @@ svg.append("text")
 var height16 = height/16; //ajust lines from 0 middleline in y axis
 // define the 1 line
 var valueline1 = d3.line()
-                    .x(function(d) { return x(d._count); })
+                    .x(function(d, index) { return x(index); })
                     .y(function(d) { return y(d.channel1)-7*height16; });
 // define the 2nd line
 var valueline2 = d3.line()
-                    .x(function(d) { return x(d._count); })
+                    .x(function(d, index) { return x(index); })
                     .y(function(d) { return y(d.channel2)-5*height16; });
 // define the 3nd line
 var valueline3 = d3.line()
-                    .x(function(d) { return x(d._count); })
+                    .x(function(d, index) { return x(index); })
                     .y(function(d) { return y(d.channel3)-3*height16; });
 // define the 4nd line
 var valueline4 = d3.line()
-                    .x(function(d) { return x(d._count); })
+                    .x(function(d, index) { return x(index); })
                     .y(function(d) { return y(d.channel4)-height16; });                    
 // define the 5nd line
 var valueline5 = d3.line()
-                    .x(function(d) { return x(d._count); })
+                    .x(function(d, index) { return x(index); })
                     .y(function(d) { return y(d.channel5)+height16; });
 
 // define the 6nd line
 var valueline6 = d3.line()
-                    .x(function(d) { return x(d._count); })
+                    .x(function(d, index) { return x(index); })
                     .y(function(d) { return y(d.channel6)+3*height16; });
 // define the 7nd line
 var valueline7 = d3.line()
-                    .x(function(d) { return x(d._count); })
+                    .x(function(d, index) { return x(index); })
                     .y(function(d) { return y(d.channel7)+5*height16; });
 // define the 8nd line
 var valueline8 = d3.line()
-                    .x(function(d) { return x(d._count); })
+                    .x(function(d, index) { return x(index); })
                     .y(function(d) { return y(d.channel8)+7*height16; });
 
 
@@ -271,8 +252,6 @@ socket.on('sample', function(data) {
     plotdata.shift();
     //add new sample to data
     plotdata.push(tweakedData);
-    //ajust _count of whole array
-    ajustCount();
     //update plot
     update(plotdata);
 });
