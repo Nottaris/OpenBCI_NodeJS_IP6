@@ -1,5 +1,5 @@
 /**
- * plot file data with d3js
+ * plot live data with d3js
  */
 //data to plot - default start values before samples are coming in
 var plotdata = [{"accelData":[0,0,0],"channelData":[0.000004,0.000003,0.000002,0.000001,-0.000001,-0.000002,-0.000003,-0.000004],"auxData":{"type":"Buffer","data":[0,0,0,0,0,0]},"sampleNumber":0,"startByte":160,"stopByte":192,"valid":true,"timestamp":1523041989391,"boardTime":0,"_count":0}];
@@ -90,7 +90,6 @@ var valueline4 = d3.line()
 var valueline5 = d3.line()
                     .x(function(d, index) { return x(index); })
                     .y(function(d) { return y(d.channel5)+height16; });
-
 // define the 6nd line
 var valueline6 = d3.line()
                     .x(function(d, index) { return x(index); })

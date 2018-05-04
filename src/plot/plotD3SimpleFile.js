@@ -3,7 +3,7 @@
  */
 var path = 'data/jsondata.json';
 //var path = 'data/data-2018-4-17-21-30-56.json';
-var data = null;
+var plotdata = null;
 
 function loadJSON(callback) {
     var xobj = new XMLHttpRequest();
@@ -20,27 +20,32 @@ function loadJSON(callback) {
 
 loadJSON(function (response) {
     // Parse JSON string into object
-    data = JSON.parse(response);
+    plotdata = JSON.parse(response);
 });
 
 //tweak data
-data.forEach(function (d) {
-    d.datetime = parseDateTime(d.timestamp);
+plotdata.forEach(function (d) {
     // channelData is Volts V, for microvolts µV
     d.channel1 = d.channelData[0] * 1000000;
     d.channel2 = d.channelData[1] * 1000000;
+    d.channel3 = d.channelData[2] * 1000000;
+    d.channel4 = d.channelData[3] * 1000000;
+    d.channel5 = d.channelData[4] * 1000000;
+    d.channel6 = d.channelData[5] * 1000000;
+    d.channel7 = d.channelData[6] * 1000000;
+    d.channel8 = d.channelData[7] * 1000000;
 });
 
+//---------setup plot-----------------------//
 // set the dimensions of the canvas
 var margin = { top: 60, right: 60, bottom: 60, left: 60 },
-    width = 900 - margin.left - margin.right,
-    height = 550 - margin.top - margin.bottom;
+    width = 1020 - margin.left - margin.right,
+    height = 720 - margin.top - margin.bottom;
 
 // set the ranges/scales
-var minDate = data[0].datetime;     
-var size = Object.keys(data).length;   
-var maxDate = data[size-1].datetime; 
-//console.log(minDate);
+var minDate = plotdata[0].datetime;
+var size = Object.keys(plotdata).length;
+var maxDate = plotdata[size-1].datetime;
 
 //x Axis Scale by data[]_count
 var x = d3.scaleLinear()
@@ -48,8 +53,8 @@ var x = d3.scaleLinear()
         .range([0, width]);
 
 var minCh2 = 10000;        
-var maxCh2 = 0; 
-data.forEach(function (d) {
+var maxCh2 = 0;
+plotdata.forEach(function (d) {
     if(maxCh2<d.channel2){
         maxCh2=d.channel2;
     }
@@ -60,12 +65,12 @@ data.forEach(function (d) {
 
 // y Axis Scale by Channel 2 values 2*min until 2*max
 var y = d3.scaleLinear()
-         .domain([2*minCh2,2*maxCh2])
+         .domain([8*minCh2,8*maxCh2])
          .range([height, 0]);
 
 // define the axis
 var xAxis = d3.axisBottom(x).ticks(10);
-var yAxis = d3.axisLeft(y).ticks(10);
+var yAxis = d3.axisLeft(y).ticks(0);
 
 // add the SVG element
 var svg = d3.select("body").append("svg")
@@ -86,7 +91,7 @@ svg.append("text")
     .attr("x",0 - (height / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
-    .text("microvolts µV");
+    .text("Channels");
     
 // x-axis
 svg.append("g")
@@ -99,30 +104,107 @@ svg.append("text")
     .style("text-anchor", "middle")
     .text("Samples 250Hz");
 
-// define the line
+//-------------data----------//
+var height16 = height/16; //ajust lines from 0 middleline in y axis
+// define the 1 line
 var valueline1 = d3.line()
-    .x(function(d) { return x(d._count); })
-    .y(function(d) { return y(d.channel1); });
-
+    .x(function(d, index) { return x(index); })
+    .y(function(d) { return y(d.channel1)-7*height16; });
 // define the 2nd line
 var valueline2 = d3.line()
-.x(function(d) { return x(d._count); })
-.y(function(d) { return y(d.channel2); });
+    .x(function(d, index) { return x(index); })
+    .y(function(d) { return y(d.channel2)-5*height16; });
+// define the 3nd line
+var valueline3 = d3.line()
+    .x(function(d, index) { return x(index); })
+    .y(function(d) { return y(d.channel3)-3*height16; });
+// define the 4nd line
+var valueline4 = d3.line()
+    .x(function(d, index) { return x(index); })
+    .y(function(d) { return y(d.channel4)-height16; });
+// define the 5nd line
+var valueline5 = d3.line()
+    .x(function(d, index) { return x(index); })
+    .y(function(d) { return y(d.channel5)+height16; });
+// define the 6nd line
+var valueline6 = d3.line()
+    .x(function(d, index) { return x(index); })
+    .y(function(d) { return y(d.channel6)+3*height16; });
+// define the 7nd line
+var valueline7 = d3.line()
+    .x(function(d, index) { return x(index); })
+    .y(function(d) { return y(d.channel7)+5*height16; });
+// define the 8nd line
+var valueline8 = d3.line()
+    .x(function(d, index) { return x(index); })
+    .y(function(d) { return y(d.channel8)+7*height16; });
+
+
 
 // Add the valueline path.
-svg.append("path")
-  .data([data])
-  .attr("class", "line")
-  .style("stroke", "grey")
-  .attr("id", "Channel1")
-  .attr("d", valueline1);
+var path1 = svg.append("path")
+    .data([plotdata])
+    .attr("class", "line")
+    .style("stroke", "grey")
+    .attr("id", "Channel1")
+    .attr("active", true)
+    .attr("d", valueline1);
 
-svg.append("path")
-  .data([data])
-  .attr("class", "line")
-  .style("stroke", "purple")
-  .attr("id", "Channel2")
-  .attr("d", valueline2);
+var path2 = svg.append("path")
+    .data([plotdata])
+    .attr("class", "line")
+    .style("stroke", "purple")
+    .attr("id", "Channel2")
+    .attr("active", true)
+    .attr("d", valueline2);
+
+var path3 = svg.append("path")
+    .data([plotdata])
+    .attr("class", "line")
+    .style("stroke", "blue")
+    .attr("id", "Channel3")
+    .attr("active", true)
+    .attr("d", valueline3);
+
+var path4 = svg.append("path")
+    .data([plotdata])
+    .attr("class", "line")
+    .style("stroke", "green")
+    .attr("id", "Channel4")
+    .attr("active", true)
+    .attr("d", valueline4);
+
+var path5 = svg.append("path")
+    .data([plotdata])
+    .attr("class", "line")
+    .style("stroke", "rgb(250, 196, 61)")
+    .attr("id", "Channel5")
+    .attr("active", true)
+    .attr("d", valueline5);
+
+var path6 = svg.append("path")
+    .data([plotdata])
+    .attr("class", "line")
+    .style("stroke", "orange")
+    .attr("id", "Channel6")
+    .attr("active", true)
+    .attr("d", valueline6);
+
+var path7 = svg.append("path")
+    .data([plotdata])
+    .attr("class", "line")
+    .style("stroke", "red")
+    .attr("id", "Channel7")
+    .attr("active", true)
+    .attr("d", valueline7);
+
+var path8 = svg.append("path")
+    .data([plotdata])
+    .attr("class", "line")
+    .style("stroke", "rgb(148, 47, 47)")
+    .attr("id", "Channel8")
+    .attr("active", true)
+    .attr("d", valueline8);
 
 // add a title
 svg.append("text")
@@ -161,47 +243,13 @@ svg.append("g")
     .tickFormat("")
 )
 
-// add the Channel 1 legend
-svg.append("text")
-.attr("x", 20)             
-.attr("y", height + margin.top - 20)    
-.attr("class", "legend")
-.style("fill", "grey")         
-.on("click", function(){
-  // determine if current line is visible
-  var active = Channel1.active ? false : true,
-  newOpacity = active ? 0 : 1;
-  // hide or show the elements
-  d3.select("#Channel1").style("opacity", newOpacity);
-  // update whether or not the elements are active
-  Channel1.active = active;
-})
-.text("Channel 1");
-
-// add the Channel 2 legend
-svg.append("text")
-.attr("x", 20)             
-.attr("y", height + margin.top)    
-.attr("class", "legend")
-.style("fill", "purple")  
-.on("click", function(){
-  // determine if current line is visible
-  var active = Channel2.active ? false : true,
-  newOpacity = active ? 0 : 1;
-  // hide or show the elements
-  d3.select("#Channel2").style("opacity", newOpacity);
-  // update whether or not the elements are active
-  Channel2.active = active;
-})
-.text("Channel 2");
-
-// get human readable time
-function parseDateTime(UNIX_timestamp) {
-    var a = new Date(UNIX_timestamp);
-    var hour = a.getHours();
-    var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
-    var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
-    var millisec = a.getMilliseconds() < 10 ? '00' + a.getMilliseconds() : a.getMilliseconds() < 100 ? '0' + a.getMilliseconds() : a.getMilliseconds();;
-    var time = hour + ':' + min + ':' + sec + ':' + millisec;
-    return time;
+//show or hide channels
+function toggleChannel(channel){
+    // determine if current line is visible
+    let active = d3.select("path#"+channel).attr("active")==='true';
+    let newOpacity = (active) ? 0 : 1;
+    // hide or show the elements
+    d3.select("path#"+channel).style("opacity", newOpacity);
+    // update whether or not the elements are active
+    d3.select("path#"+channel).attr("active", !active);
 }
