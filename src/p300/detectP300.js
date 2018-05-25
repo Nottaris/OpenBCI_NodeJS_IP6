@@ -1,9 +1,11 @@
 const mathFunctions = require('../functions/mathFunctions');
 const eegFunctions = require('./../functions/eegFunctions');
 const p300 = require('./p300');
+
 module.exports = {
-    compareAverages: detectBlink
+    compareAverages: detectP300
 };
+
 let settings;
 var init = true;
 let skip = 0;

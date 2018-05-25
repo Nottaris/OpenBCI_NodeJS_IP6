@@ -7,6 +7,8 @@
     "start": "node app.js blink",
     "blink": "node app.js blink",
     "blinkfile": "node app.js blinkfile",
+    "p300": "node app.js p300",
+    "p300file": "node app.js p300file",
     "save": "node app.js save",
     "plot": "node app.js plot",
     "stream": "node app.js stream",
