@@ -5,10 +5,10 @@ module.exports = {
     getVEP: detectP300
 };
 
-let settings;
+var settings;
 var third = 50;
+var counter = 0;
 var init = true;
-let skip = 0;
 var vppx = {
     play: 0,
     pause: 0,
@@ -24,7 +24,8 @@ function detectP300(volts, command) {
         //get Settings
         settings = p300.getSettings();
         third = Math.floor(Number(volts.length / 3));
-        init = false;
+        counter++;
+        if(counter===7){init = false;}
     }
 
     //600ms is volts; for min use 200-600ms L2; for max use 400-600ms L1
@@ -38,32 +39,31 @@ function detectP300(volts, command) {
 
     vppx[command] = vpp;
 
-    if (skip <= 0) {
-        getCommand();
-    } else {
-        skip--;
+    if (!init) {
+       getCommand();
     }
-
 }
 
 function getCommand() {
     var command = "?";
     var maxVppx = mathFunctions.getMaxValue(Object.values(vppx));
-    var average = mathFunctions.getAverage(Object.values(vppx));
+    var median = mathFunctions.getMedian(Object.values(vppx));
+    console.log("Object.values(vppx): " + Object.values(vppx));
 
-    if (Number(maxVppx * settings.threshold) > average) {
+    if (Number(maxVppx) > (median * settings.threshold)) {
 
         command = Object.keys(vppx).find(key => vppx[key] === maxVppx);
 
         if (settings.debug) {
+
+            console.log("settings.threshold: " + settings.threshold);
             console.log("command: " + command);
-            console.log("average: " + average);
+            console.log("median: " + median);
             console.log("maxVppx: " + maxVppx);
             console.log("vppx[maxVppx]: " + Object.keys(vppx).find(key => vppx[key] === maxVppx));
         }
         console.log("p300: \t value: " + maxVppx.toFixed(2) + " on command: " + command + "\t at " + new Date());
-        skip = settings.slots * 2;
-        resetVppx();
+     //   resetVppx();
     }
 }
 
