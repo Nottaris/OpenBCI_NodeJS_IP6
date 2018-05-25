@@ -11,7 +11,7 @@
     "plot": "node app.js plot",
     "stream": "node app.js stream",
     "test": "mocha",
-    "player": "react-scripts start"
+    "player": "cd src/gui/playerP300 && react-scripts start"
   },
   "keywords": [
     "get"
