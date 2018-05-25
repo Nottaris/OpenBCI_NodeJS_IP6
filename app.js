@@ -5,6 +5,8 @@
 
 const blink = require('./src/blink/blink');
 const blinkFile = require('./src/blink/blinkFile');
+const p300 = require('./src/p300/p300');
+const p300File = require('./src/p300/p300File');
 const saveData = require('./src/functions/saveData');
 const streamData = require('./src/functions/streamData');
 const plot = require('./src/plot/plot');
@@ -21,6 +23,12 @@ switch (process.argv[2]) {
     case "blinkfile" :
         blinkFile.start();
         break;
+    case "p300" :
+        sampleFunction = p300.getP300;
+        break;
+    case "p300file" :
+        p300File.start();
+        break;
     case "save" :
         sampleFunction = saveData.saveData;
         break;
@@ -35,7 +43,7 @@ switch (process.argv[2]) {
         console.log("no arguments");
 }
 
-// connect to the board ond process samples with sampleFunction
+// connect to the board and process samples with sampleFunction
 if(sampleFunction != null) {
     openBoard.start(sampleFunction);
 }
