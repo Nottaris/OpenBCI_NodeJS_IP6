@@ -7,13 +7,16 @@ class Player extends React.Component {
         super(props);
         this.state = {
             playStatus: 'play',
-            currentTime: 0
+            currentTime: 0,
+            trackNr: 0
         };
         this.play = this.play.bind(this);
         this.pause = this.pause.bind(this);
+        this.next = this.next.bind(this);
+        this.previous = this.previous.bind(this);
         this.newCommand = this.newCommand.bind(this);
+        console.log(this.state);
     };
-
 
     newCommand = (state) => {
         let audio = document.getElementById('audio');
@@ -23,6 +26,12 @@ class Player extends React.Component {
                 break;
             case "pause":
                 this.pause(audio);
+                break;
+            case "next":
+                this.next(audio);
+                break;
+            case "previous":
+                this.previous(audio);
                 break;
         }
 
@@ -42,9 +51,11 @@ class Player extends React.Component {
         console.log("play");
         audio.play();
         let that = this;
+        let duration = that.props.tracks[this.state.trackNr].duration;
         setInterval(function() {
             let currentTime = audio.currentTime;
-            let duration = that.props.track.duration;
+
+
 
             // Calculate percent of song
             let percent = (currentTime / duration) * 100 + '%';
@@ -60,12 +71,20 @@ class Player extends React.Component {
         this.setState({ playStatus: 'play' });
     }
     next(audio) {
-        console.log("next");
-        audio.next();
+        this.setState({ trackNr: (this.state.trackNr + 1)%this.props.tracks.length });
+        audio = document.getElementById('audio');
+        audio.load();
+        this.play(audio);
     }
     previous(audio) {
-        console.log("next previous");
-        audio.next();
+        if(this.state.trackNr === 0) {
+            this.setState({ trackNr: this.props.tracks.length-1 });
+        } else {
+            this.setState({ trackNr: (this.state.trackNr - 1)%this.props.tracks.length });
+        }
+        audio = document.getElementById('audio');
+        audio.load();
+        this.play(audio);
     }
 
 
@@ -74,18 +93,16 @@ class Player extends React.Component {
             <div className="Player">
                 <div>
                     <div className="PlayerCover">
-                        <div className="Artwork" style={{'backgroundImage': 'url(' + this.props.track.artwork + ')'}}></div>
+                        <div className="Artwork" style={{'backgroundImage': 'url(' + this.props.tracks[this.state.trackNr].artwork + ')'}}></div>
                     </div>
                     <div className="PlayerInformation">
-                        <TrackInformation track={this.props.track} />
+                        <TrackInformation tracks={this.props.tracks} state={this.state}/>
                         <Scrubber />
                     </div>
                     <div className="PlayerScrubber">
-                        <Timestamps duration={this.props.track.duration} currentTime={this.state.currentTime} />
+                        <Timestamps duration={this.props.tracks[this.state.trackNr].duration} currentTime={this.state.currentTime} />
                         <audio id="audio">
-                            <source src={this.props.track.source} />
-                            <source src={this.props.track.source} />
-                            <source src={this.props.track.source} />
+                            <source src={this.props.tracks[this.state.trackNr].source} />
                         </audio>
                     </div>
                 </div>
@@ -97,7 +114,7 @@ class Player extends React.Component {
 };
 
 Player.defaultProps = {
-    track: {
+    tracks:[{
         name: "We Were Young",
         artist: "Odesza",
         album: "Summer's Gone",
@@ -105,7 +122,35 @@ Player.defaultProps = {
         artwork: "https://funkadelphia.files.wordpress.com/2012/09/odesza-summers-gone-lp.jpg",
         duration: 192,
         source: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/wwy.mp3"
+    },
+    {
+        name: "Summer",
+        artist: "Bensound",
+        album: "Summer's Gone",
+        year: 2013,
+        artwork: "https://www.bensound.com/bensound-img/summer.jpg",
+        duration: 192,
+        source: "https://www.bensound.com/royalty-free-music?download=summer"
+    },
+    {
+        name: "A New Beginning",
+        artist: "Bensound",
+        album: "Summer's Gone",
+        year: 2014,
+        artwork: "https://www.bensound.com/bensound-img/anewbeginning.jpg",
+        duration: 192,
+        source: "https://www.bensound.com/royalty-free-music?download=anewbeginning"
+    },
+    {
+        name: "Happy Rock",
+        artist: "Bensound",
+        album: "Summer's Gone",
+        year: 2015,
+        artwork: "https://www.bensound.com/bensound-img/happyrock.jpg",
+        duration: 192,
+        source: "https://www.bensound.com/royalty-free-music?download=happyrock"
     }
+    ]
 };
 
 
@@ -113,9 +158,9 @@ class TrackInformation extends React.Component {
     render() {
         return (
             <div className="TrackInformation">
-                <div className="Name">{this.props.track.name}</div>
-                <div className="Artist">{this.props.track.artist}</div>
-                <div className="Album">{this.props.track.album} ({this.props.track.year})</div>
+                <div className="Name">{this.props.tracks[this.props.state.trackNr].name}</div>
+                <div className="Artist">{this.props.tracks[this.props.state.trackNr].artist}</div>
+                <div className="Album">{this.props.tracks[this.props.state.trackNr].album} ({this.props.tracks[this.props.state.trackNr].year})</div>
             </div>
         )
     }
@@ -157,7 +202,10 @@ class Controls extends React.Component {
         super(props);
         this.play = this.play.bind(this);
         this.pause = this.pause.bind(this);
-        console.log(props);
+        this.next = this.next.bind(this);
+        this.previous = this.previous.bind(this);
+        this.down = this.down.bind(this);
+        this.up = this.up.bind(this);
     }
     play(){
         this.props.newCommand('play');
@@ -174,10 +222,10 @@ class Controls extends React.Component {
         this.props.newCommand('previous');
     }
     down(){
-        this.props.newCommand('previous');
+        this.props.newCommand('down');
     }
     up(){
-        this.props.newCommand('previous');
+        this.props.newCommand('up');
     }
     render() {
 
@@ -186,40 +234,42 @@ class Controls extends React.Component {
         return (
             <div className="Controls">
                 <table>
-                    <tr>
-                        <td>
-                            <div onClick={this.play} className="Button">
-                                <i className='fa fa-fw fa-play'></i>
-                            </div>
-                        </td>
-                        <td>
-                            <div onClick={this.previous} className="Button">
-                                <i className='fa fa-fw fa-backward'></i>
-                            </div>
-                        </td>
-                        <td>
-                            <div onClick={this.next} className="Button">
-                                <i className='fa fa-fw fa-forward'></i>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div onClick={this.pause} className="Button">
-                                <i className='fa fa-fw fa-pause'></i>
-                            </div>
-                        </td>
-                        <td>
-                            <div onClick={this.up} className="Button">
-                                <i className='fa fa-fw fa-volume-up'></i>
-                            </div>
-                        </td>
-                        <td>
-                            <div onClick={this.down} className="Button">
-                                <i className='fa fa-fw fa-volume-down'></i>
-                            </div>
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div onClick={this.play} className="Button">
+                                    <i className='fa fa-fw fa-play'></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div onClick={this.previous} className="Button">
+                                    <i className='fa fa-fw fa-backward'></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div onClick={this.next} className="Button">
+                                    <i className='fa fa-fw fa-forward'></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div onClick={this.pause} className="Button">
+                                    <i className='fa fa-fw fa-pause'></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div onClick={this.up} className="Button">
+                                    <i className='fa fa-fw fa-volume-up'></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div onClick={this.down} className="Button">
+                                    <i className='fa fa-fw fa-volume-down'></i>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
 
             </div>
