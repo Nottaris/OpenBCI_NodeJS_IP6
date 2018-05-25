@@ -13,7 +13,8 @@
     "plot": "node app.js plot",
     "stream": "node app.js stream",
     "test": "mocha",
-    "player": "cd src/gui/playerP300 && react-scripts start"
+    "player": "cd src/gui/playerP300 && react-scripts start",
+    "playerBuild": "cd src/gui/playerP300 && react-scripts build"
   },
   "keywords": [
     "get"
