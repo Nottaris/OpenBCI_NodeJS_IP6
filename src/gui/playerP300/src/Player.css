@@ -17,6 +17,19 @@ body {
     height: 667px;
     position: relative;
     width: 675px;
+    margin-top:40px;
+}
+.Player .PlayerCover {
+    float:left;
+    width: 20%;
+}
+.Player .PlayerInformation {
+    float: left;
+    width: 60%;
+}
+.Player .PlayerScrubber {
+    float: left;
+    width: 20%;
 }
 .Player .Background {
     width: 150%;
@@ -38,18 +51,17 @@ body {
     position: relative;
 }
 .Player .Artwork {
-    width: 300px;
-    height: 300px;
+    width: 100px;
+    height: 100px;
     background-size: cover;
     background-position: center center;
     border-radius: 4px;
     margin: auto;
     box-shadow: 0 5px 10px -5px rgba(18, 18, 18, 0.25);
-    position: relative;
+    float: left;
 }
 .Player .TrackInformation {
-    width: 300px;
-    margin: 30px auto;
+    padding: 5px 30px;
     text-align: center;
     position: relative;
 }
@@ -69,10 +81,10 @@ body {
 }
 .Player .Scrubber {
     position: absolute;
-    bottom: 0;
-    left: 0;
+    top: 0;
+    left: 100px;
     width: 100%;
-    height: 20%;
+    height: 100px;
     opacity: 0.2;
     transition: opacity 0.25s ease;
     border-bottom-left-radius: 5px;
@@ -94,53 +106,51 @@ body {
     border-bottom-right-radius: 5px;
 }
 .Player .Timestamps {
+    padding: 5px 30px;
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
-    padding: 20px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
     pointer-events: none;
     z-index: 2;
-    width: 100%;
-}
-.Player .Timestamps .Time {
     font-size: 12px;
+    opacity: 0.5;
 }
+
 .Player .Controls {
-    position: absolute;
-    bottom: 8%;
-    pointer-events: none;
-    margin: auto;
-    left: 0;
-    right: 0;
+    margin-top: 100px;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    height: 100%;
+}
+
+.Player .Controls table {
+    margin-top: 100px;
+    display: inline-block;
 }
 .Player .Controls .Button {
-    height: 75px;
-    width: 75px;
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    height: 150px;
+    width: 150px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 75px;
-    box-shadow: 0 5px 10px 0px rgba(18, 18, 18, 0.125);
     margin: auto;
     pointer-events: all;
 }
-.Player .Controls .Button :active {
+.Player .Controls .Button:hover  .fa{
     transform: scale(0.98);
-    background: #FFFFFF;
+    color: #FFFFFF;
 }
+
 .Player .Controls .Button :active .fa {
-    color: #FF4700;
+    color: #FFF;
+    background: #000;
     opacity: 1;
 }
 .Player .Controls .Button .fa {
-    color: #FFFFFF;
-    opacity: 0.5;
-    font-size: 24px;
+    color: #292dff;
+    font-size: 60px;
 }
 .Player .Controls .Button .fa .fa-play {
     margin-left: 5px;
