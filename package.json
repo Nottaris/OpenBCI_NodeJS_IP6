@@ -10,7 +10,8 @@
     "save": "node app.js save",
     "plot": "node app.js plot",
     "stream": "node app.js stream",
-    "test": "mocha"
+    "test": "mocha",
+    "player": "react-scripts start"
   },
   "keywords": [
     "get"
@@ -23,6 +24,11 @@
     "mocha": "^5.1.0",
     "openbci": "^2.0.0",
     "openbci-cyton": "^1.1.2",
-    "socket.io": "^2.1.0"
+    "socket.io": "^2.1.0",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-fontawesome": "^1.6.1",
+    "react-scripts": "1.1.4",
+    "webpack": "^3.11.0"
   }
 }
