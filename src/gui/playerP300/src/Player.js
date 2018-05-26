@@ -3,6 +3,7 @@ import './Player.css';
 import mp3File_summer from './music/bensound-summer.mp3';
 import mp3File_anewbeginning from './music/bensound-anewbeginning.mp3';
 import mp3File_happyrock from './music/bensound-happyrock.mp3';
+import { subscribeToCmds } from './api';
 
 // Player
 class Player extends React.Component {
@@ -13,12 +14,19 @@ class Player extends React.Component {
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
+            currentCmd: 'no'
         };
         this.clickCommand = this.clickCommand.bind(this);
 
-        this.generateCommands();
+        subscribeToCmds( (data) => {
+            this.setState({ currentCmd: data.command });
+            this.blinkCommandButton(data.command);
+        });
+
+       // this.generateCommands();
     };
 
+    /*
     //TODO: This function can be removed, as soon as we get the command events from NodeJS
     generateCommands() {
         var index = 0;
@@ -32,6 +40,7 @@ class Player extends React.Component {
         }, 1000);
     }
 
+
     //Set the color of the command to white for X seconds
     blinkCommandButton(command) {
         let elem = document.getElementById(command).getElementsByClassName('fa')[0];
@@ -39,6 +48,18 @@ class Player extends React.Component {
         setTimeout(function () {
             elem.style.color = "#292dff";
         }, 1000);
+    }
+    */
+
+    //Set the color of the command to white for X seconds
+    blinkCommandButton(command) {
+        if(null!==command){
+            let elem = document.getElementById(command).getElementsByClassName('fa')[0];
+            elem.style.color = "#ffffff";
+            setTimeout(function () {
+                elem.style.color = "#292dff";
+            }, 150);
+        }
     }
 
     clickCommand = (state) => {
@@ -280,6 +301,7 @@ class Controls extends React.Component {
         )
     }
 }
+
 
 Player.defaultProps = {
     tracks: [{

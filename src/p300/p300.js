@@ -13,13 +13,13 @@ module.exports = {
 }
 
 const commands = [
-    "play",
-    "pause",
-    "next",
     "prev",
-    "volup",
+    "play",
+    "next",
     "voldown",
-    "play"
+    "pause",
+    "volup",
+    "prev"
 ];
 
 var currentCommand = "play";
@@ -48,6 +48,7 @@ function digestSamples(sample) {
         //send to evaluate
         detectP300.getVEP(volts, currentCommand);
         setNextCommand();
+        sendCmd(currentCommand);
         volts = [];
         count = 0;
     }
@@ -73,3 +74,25 @@ function reset(){
      count = 0;
      volts = [];
 }
+
+//******** send command to player via socket.io ************
+
+const http = require('http');
+let io;
+let app;
+
+(function start(){
+    // create socket server on port 3001
+    app = http.createServer(function(req, res) {});
+    io = require('socket.io').listen(app);
+    app.listen(3001, function(){
+        console.log('listening on *:3001');
+    });
+})();
+
+function sendCmd(command) {
+    //emmit command event for each
+    io.emit('command', { command: command });
+    process.stdout.write("sending commands...\r");
+}
+//**********************************************************
