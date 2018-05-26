@@ -27,7 +27,7 @@ var currentCommand = "play";
 const detectP300 = require('./detectP300');
 
 const defaultSettings  = {
-    channel: 5,                 // number of channel ( from 1 to 8 ) 5 === yellow Cz (middle top head)
+    channel: 5,                 // number of channel ( from 1 to 8 ) 5 === yellow Cz (middle top head) for p300
     sampleRate: 250,            // 250Hz
     slots: 150,                  // data points per slot ( 600ms === 150 )
     threshold: 1.2,              // deviation factor
@@ -40,12 +40,12 @@ let settings = defaultSettings;
 
 function digestSamples(sample) {
 
-
+    // fetch 600ms of samples from channel 5
     if (count < settings.slots) {
         volts.push(Number((sample.channelData[settings.channel-1] * 1000000).toFixed(20))); //microVolts
         count++;
     } else if (count >= settings.slots) {
-
+        //send to evaluate
         detectP300.getVEP(volts, currentCommand);
         setNextCommand();
         volts = [];
