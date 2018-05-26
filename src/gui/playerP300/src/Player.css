@@ -126,6 +126,29 @@ body {
     font-size: 16px;
     font-weight: 500;
 }
+.Player .AudioProgress {
+    margin-top: 10px;
+    display: table;
+}
+.Player .AudioProgress .Icon {
+    display: table-cell;
+}
+
+.Player .AudioProgressBar {
+    display: table-cell;
+    width: 100%;
+}
+.Player .AudioProgressBar .ProgressBackground{
+    margin: 0 11px;
+    background-color: #999999;
+    vertical-align: middle;
+}
+
+.Player .AudioProgressBar #ProgressVolume{
+    width: 50%;
+    height: 10px;
+    background-color: #292dff;
+}
 
 .Player .Controls {
     display: table;

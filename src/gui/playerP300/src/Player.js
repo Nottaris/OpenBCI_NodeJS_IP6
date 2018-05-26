@@ -11,6 +11,7 @@ class Player extends React.Component {
         this.state = {
             playStatus: 'play',
             currentTime: 0,
+            audioVolume: 0.5,
             trackNr: 0
         };
         this.newCommand = this.newCommand.bind(this);
@@ -31,6 +32,12 @@ class Player extends React.Component {
             case "previous":
                 this.previous(audio);
                 break;
+            case "up":
+                this.up(audio);
+                break;
+            case "down":
+                this.down(audio);
+                break;
         }
 
     }
@@ -46,8 +53,14 @@ class Player extends React.Component {
         innerScrubber.style['width'] = percent;
     }
 
+    updateVolumeProgressBar() {
+        var elem = document.getElementById("ProgressVolume");
+        elem.style.width = 100/1*this.state.audioVolume+"%";
+    }
+
     play(audio){
         audio.play();
+        audio.volume = this.state.audioVolume;
         let that = this;
         let duration = that.props.tracks[this.state.trackNr].duration;
         setInterval(function() {
@@ -79,6 +92,21 @@ class Player extends React.Component {
         this.play(audio);
     }
 
+    up(audio) {
+        if(this.state.audioVolume<0.9){
+            this.setState({  audioVolume: this.state.audioVolume+=0.1 });
+            audio.volume = this.state.audioVolume;
+            this.updateVolumeProgressBar();
+        }
+    }
+
+    down(audio) {
+        if(this.state.audioVolume>0.1){
+            this.setState({  audioVolume: this.state.audioVolume-=0.1 });
+            audio.volume = this.state.audioVolume;
+            this.updateVolumeProgressBar();
+        }
+    }
     // Help function: Modulo operation with negative numbers
     mod(a, n) {
         return a - (n * Math.floor(a/n));
@@ -97,6 +125,7 @@ class Player extends React.Component {
                     </div>
                     <div className="PlayerScrubber">
                         <Timestamps duration={this.props.tracks[this.state.trackNr].duration} currentTime={this.state.currentTime} />
+                        <AudioVolume volume={this.state.audioVolume} />
                         <audio id="audio">
                             <source src={this.props.tracks[this.state.trackNr].source}  type="audio/mpeg"/>
 
@@ -153,6 +182,26 @@ class Timestamps extends React.Component {
         )
     }
 };
+class AudioVolume extends React.Component {
+
+    render() {
+        return (
+            <div className="AudioProgress">
+                <div className="Icon">
+                    <i className='fa fa-fw fa-volume-up'></i>
+                </div>
+                <div className="AudioProgressBar">
+                    <div className="ProgressBackground">
+                        <div id="ProgressVolume"></div>
+                    </div>
+                </div>
+
+            </div>
+        )
+    }
+
+}
+
 
 class Controls extends React.Component {
     constructor(props) {
