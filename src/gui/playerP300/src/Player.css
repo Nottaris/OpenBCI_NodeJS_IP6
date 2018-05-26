@@ -10,26 +10,47 @@ body {
 }
 
 .Player {
-    background: #182530;
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 0 5px 10px -5px #121212;
     height: 667px;
-    position: relative;
     width: 675px;
+    max-width: 100%;
     margin-top:40px;
+    background: #000;
+    position: relative;
+}
+
+.Player .row {
+    display: table-row;
+}
+
+.Player .Info {
+    display: table;
+    width: 100%;
+}
+.Player .cell {
+    display: table-cell;
+    width: 33%;
 }
 .Player .PlayerCover {
-    float:left;
+    display: table-cell;
     width: 20%;
+    vertical-align: top;
+    background: #182530;
 }
 .Player .PlayerInformation {
-    float: left;
+    display: table-cell;
     width: 60%;
+    padding: 10px;
+    background: #182530;
 }
 .Player .PlayerScrubber {
-    float: left;
+    display: table-cell;
     width: 20%;
+    vertical-align: middle;
+    padding: 10px 0;
+    background: #182530;
 }
 .Player .Background {
     width: 150%;
@@ -60,11 +81,7 @@ body {
     box-shadow: 0 5px 10px -5px rgba(18, 18, 18, 0.25);
     float: left;
 }
-.Player .TrackInformation {
-    padding: 5px 30px;
-    text-align: center;
-    position: relative;
-}
+
 .Player .TrackInformation .Name {
     font-size: 24px;
     margin-bottom: 10px;
@@ -83,7 +100,7 @@ body {
     position: absolute;
     top: 0;
     left: 100px;
-    width: 100%;
+    width: 85%;
     height: 100px;
     opacity: 0.2;
     transition: opacity 0.25s ease;
@@ -106,37 +123,60 @@ body {
     border-bottom-right-radius: 5px;
 }
 .Player .Timestamps {
-    padding: 5px 30px;
-    display: flex;
-    justify-content: space-between;
-    box-sizing: border-box;
-    pointer-events: none;
-    z-index: 2;
-    font-size: 12px;
-    opacity: 0.5;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+.Player .AudioProgress {
+    padding: 10px 0;
+    display: table;
+}
+.Player .AudioProgress .Icon {
+    display: table-cell;
+}
+
+.Player .AudioProgressBar {
+    display: table-cell;
+    width: 100%;
+}
+.Player .AudioProgressBar .ProgressBackground{
+    margin: 0 11px;
+    background-color: #999999;
+    vertical-align: middle;
+}
+
+.Player .AudioProgressBar #ProgressVolume{
+    width: 50%;
+    height: 10px;
+    background-color: #292dff;
 }
 
 .Player .Controls {
-    margin-top: 100px;
+    display: table;
+    width: 100%;
     align-items: center;
     justify-content: center;
     background: #000;
-    height: 100%;
+    height: 300px;
+    margin-top: 160px;
 }
 
 .Player .Controls table {
-    margin-top: 100px;
-    display: inline-block;
+    padding-top: 150px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.Player .Controls tbody     {
+    min-width:33%;
 }
 .Player .Controls .Button {
-    height: 150px;
-    width: 150px;
-    box-sizing: border-box;
-    display: flex;
+    display: table-cell;
     align-items: center;
     justify-content: center;
     margin: auto;
     pointer-events: all;
+    cursor: pointer;
 }
 .Player .Controls .Button:hover  .fa{
     transform: scale(0.98);
@@ -146,12 +186,8 @@ body {
 .Player .Controls .Button :active .fa {
     color: #FFF;
     background: #000;
-    opacity: 1;
 }
 .Player .Controls .Button .fa {
     color: #292dff;
-    font-size: 60px;
-}
-.Player .Controls .Button .fa .fa-play {
-    margin-left: 5px;
+    font-size: 80px;
 }
