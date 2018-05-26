@@ -20,30 +20,30 @@ class Player extends React.Component {
     };
 
     //TODO: This function can be removed, as soon as we get the command events from NodeJS
-    generateCommands(){
+    generateCommands() {
         var index = 0;
         let commands = this.props.commands;
         let mod = this.mod;
         let blinkCommandButton = this.blinkCommandButton;
-        setInterval(function() {
-            let idx =  mod((index + 1),commands.length);
+        setInterval(function () {
+            let idx = mod((index + 1), commands.length);
             blinkCommandButton(commands[idx]);
             index++;
         }, 1000);
     }
 
     //Set the color of the command to white for X seconds
-    blinkCommandButton(command){
-        let elem = document.getElementById(command).getElementsByClassName( 'fa' )[0];
+    blinkCommandButton(command) {
+        let elem = document.getElementById(command).getElementsByClassName('fa')[0];
         elem.style.color = "#ffffff";
-        setTimeout(function(){
+        setTimeout(function () {
             elem.style.color = "#292dff";
-        },1000);
+        }, 1000);
     }
 
     clickCommand = (state) => {
         let audio = document.getElementById('audio');
-        switch(state) {
+        switch (state) {
             case "play":
                 this.play(audio);
                 break;
@@ -64,7 +64,7 @@ class Player extends React.Component {
                 break;
             default:
                 //this should never happen
-                console.log("Error: clickCommand had not known state")
+                console.log("Error: clickCommand had unknown state")
                 break;
         }
 
@@ -72,7 +72,7 @@ class Player extends React.Component {
 
     updateTime(timestamp) {
         timestamp = Math.floor(timestamp);
-        this.setState({ currentTime: timestamp });
+        this.setState({currentTime: timestamp});
     }
 
     updateScrubber(percent) {
@@ -83,37 +83,39 @@ class Player extends React.Component {
 
     updateVolumeProgressBar() {
         var elem = document.getElementById("ProgressVolume");
-        elem.style.width = 100/1*this.state.audioVolume+"%";
+        elem.style.width = 100 / 1 * this.state.audioVolume + "%";
     }
 
-    play(audio){
+    play(audio) {
         audio.play();
         audio.volume = this.state.audioVolume;
         let that = this;
         let duration = that.props.tracks[this.state.trackNr].duration;
-        setInterval(function() {
+        setInterval(function () {
             let currentTime = audio.currentTime;
             // Calculate percent of song
             let percent = (currentTime / duration) * 100 + '%';
             that.updateScrubber(percent);
             that.updateTime(currentTime);
         }, 100);
-        this.setState({ playStatus: 'pause' });
+        this.setState({playStatus: 'pause'});
     }
 
     pause(audio) {
         audio.pause();
-        this.setState({ playStatus: 'play' });
+        this.setState({playStatus: 'play'});
     }
+
     next(audio) {
-        this.setState({ trackNr: this.mod((this.state.trackNr + 1), this.props.tracks.length)});
+        this.setState({trackNr: this.mod((this.state.trackNr + 1), this.props.tracks.length)});
         audio = document.getElementById('audio');
         //load new audio file
         audio.load();
         this.play(audio);
     }
+
     prev(audio) {
-        this.setState({ trackNr: this.mod((this.state.trackNr - 1), this.props.tracks.length)});
+        this.setState({trackNr: this.mod((this.state.trackNr - 1), this.props.tracks.length)});
         audio = document.getElementById('audio');
         //load new audio file
         audio.load();
@@ -121,25 +123,26 @@ class Player extends React.Component {
     }
 
     volup(audio) {
-        if(this.state.audioVolume<0.9){
-            let newVol = this.state.audioVolume+0.1;
-            this.setState({  audioVolume: newVol });
+        if (this.state.audioVolume < 0.9) {
+            let newVol = this.state.audioVolume + 0.1;
+            this.setState({audioVolume: newVol});
             audio.volume = this.state.audioVolume;
             this.updateVolumeProgressBar();
         }
     }
 
     voldown(audio) {
-        if(this.state.audioVolume>0.1){
-            let newVol = this.state.audioVolume-0.1;
-            this.setState({  audioVolume: newVol });
+        if (this.state.audioVolume > 0.1) {
+            let newVol = this.state.audioVolume - 0.1;
+            this.setState({audioVolume: newVol});
             audio.volume = this.state.audioVolume;
             this.updateVolumeProgressBar();
         }
     }
+
     // Help function: Modulo operation with negative numbers
     mod(a, n) {
-        return a - (n * Math.floor(a/n));
+        return a - (n * Math.floor(a / n));
     }
 
     render() {
@@ -147,17 +150,19 @@ class Player extends React.Component {
             <div className="Player">
                 <div className="Info">
                     <div className="PlayerCover">
-                        <div className="Artwork" style={{'backgroundImage': 'url(' + this.props.tracks[this.state.trackNr].artwork + ')'}}></div>
+                        <div className="Artwork"
+                             style={{'backgroundImage': 'url(' + this.props.tracks[this.state.trackNr].artwork + ')'}}></div>
                     </div>
                     <div className="PlayerInformation">
                         <TrackInformation tracks={this.props.tracks} state={this.state}/>
-                        <Scrubber />
+                        <Scrubber/>
                     </div>
                     <div className="PlayerScrubber">
-                        <Timestamps duration={this.props.tracks[this.state.trackNr].duration} currentTime={this.state.currentTime} />
-                        <AudioVolume volume={this.state.audioVolume} />
+                        <Timestamps duration={this.props.tracks[this.state.trackNr].duration}
+                                    currentTime={this.state.currentTime}/>
+                        <AudioVolume volume={this.state.audioVolume}/>
                         <audio id="audio">
-                            <source src={this.props.tracks[this.state.trackNr].source}  type="audio/mpeg"/>
+                            <source src={this.props.tracks[this.state.trackNr].source} type="audio/mpeg"/>
 
                         </audio>
                     </div>
@@ -176,7 +181,9 @@ class TrackInformation extends React.Component {
             <div className="TrackInformation">
                 <div className="Name">{this.props.tracks[this.props.state.trackNr].name}</div>
                 <div className="Artist">{this.props.tracks[this.props.state.trackNr].artist}</div>
-                <div className="Album">{this.props.tracks[this.props.state.trackNr].album} ({this.props.tracks[this.props.state.trackNr].year})</div>
+                <div
+                    className="Album">{this.props.tracks[this.props.state.trackNr].album} ({this.props.tracks[this.props.state.trackNr].year})
+                </div>
             </div>
         )
     }
@@ -197,7 +204,7 @@ class Timestamps extends React.Component {
     convertTime(timestamp) {
         let minutes = Math.floor(timestamp / 60);
         let seconds = timestamp - (minutes * 60);
-        if(seconds < 10) {
+        if (seconds < 10) {
             seconds = '0' + seconds;
         }
         timestamp = minutes + ':' + seconds;
@@ -207,11 +214,12 @@ class Timestamps extends React.Component {
     render() {
         return (
             <div className="Timestamps">
-               {this.convertTime(this.props.currentTime)} - {this.convertTime(this.props.duration)}
+                {this.convertTime(this.props.currentTime)} - {this.convertTime(this.props.duration)}
             </div>
         )
     }
 };
+
 class AudioVolume extends React.Component {
 
     render() {
@@ -238,7 +246,8 @@ class Controls extends React.Component {
         super(props);
         this.setCommand = this.setCommand.bind(this);
     }
-    setCommand(status){
+
+    setCommand(status) {
         this.props.clickCommand(status);
     }
 
@@ -249,10 +258,10 @@ class Controls extends React.Component {
                     <div onClick={() => this.setCommand('prev')} id="prev" className="Button">
                         <i className='fa fa-fw fa-backward'></i>
                     </div>
-                    <div onClick={() => this.setCommand('play')} id="play"  className="Button">
+                    <div onClick={() => this.setCommand('play')} id="play" className="Button">
                         <i className='fa fa-fw fa-play'></i>
                     </div>
-                    <div onClick={() => this.setCommand('next')} id="next"  className="Button">
+                    <div onClick={() => this.setCommand('next')} id="next" className="Button">
                         <i className='fa fa-fw fa-forward'></i>
                     </div>
                 </div>
@@ -260,10 +269,10 @@ class Controls extends React.Component {
                     <div onClick={() => this.setCommand('voldown')} id="voldown" className="Button">
                         <i className='fa fa-fw fa-volume-down'></i>
                     </div>
-                    <div onClick={() => this.setCommand('pause')} id="pause"  className="Button">
+                    <div onClick={() => this.setCommand('pause')} id="pause" className="Button">
                         <i className='fa fa-fw fa-pause'></i>
                     </div>
-                    <div onClick={() => this.setCommand('volup')} id="volup"  className="Button">
+                    <div onClick={() => this.setCommand('volup')} id="volup" className="Button">
                         <i className='fa fa-fw fa-volume-up'></i>
                     </div>
                 </div>
@@ -273,7 +282,7 @@ class Controls extends React.Component {
 }
 
 Player.defaultProps = {
-    tracks:[{
+    tracks: [{
         name: "We Were Young",
         artist: "Odesza",
         album: "Summer's Gone",
@@ -310,7 +319,7 @@ Player.defaultProps = {
             source: mp3File_happyrock
         }
     ],
-    commands: ["prev","play","next","voldown","pause","volup"]
+    commands: ["prev", "play", "next", "voldown", "pause", "volup"]
 };
 
 export default Player;
