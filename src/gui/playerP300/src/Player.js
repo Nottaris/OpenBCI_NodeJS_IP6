@@ -12,12 +12,36 @@ class Player extends React.Component {
             playStatus: 'play',
             currentTime: 0,
             audioVolume: 0.5,
-            trackNr: 0
+            trackNr: 0,
         };
-        this.newCommand = this.newCommand.bind(this);
+        this.clickCommand = this.clickCommand.bind(this);
+
+        this.generateCommands();
     };
 
-    newCommand = (state) => {
+    //TODO: This function can be removed, as soon as we get the command events from NodeJS
+    generateCommands(){
+        var index = 0;
+        let commands = this.props.commands;
+        let mod = this.mod;
+        let blinkCommandButton = this.blinkCommandButton;
+        setInterval(function() {
+            let idx =  mod((index + 1),commands.length);
+            blinkCommandButton(commands[idx]);
+            index++;
+        }, 1000);
+    }
+
+    //Set the color of the command to white for X seconds
+    blinkCommandButton(command){
+        let elem = document.getElementById(command).getElementsByClassName( 'fa' )[0];
+        elem.style.color = "#ffffff";
+        setTimeout(function(){
+            elem.style.color = "#292dff";
+        },1000);
+    }
+
+    clickCommand = (state) => {
         let audio = document.getElementById('audio');
         switch(state) {
             case "play":
@@ -29,14 +53,14 @@ class Player extends React.Component {
             case "next":
                 this.next(audio);
                 break;
-            case "previous":
-                this.previous(audio);
+            case "prev":
+                this.prev(audio);
                 break;
-            case "up":
-                this.up(audio);
+            case "volup":
+                this.volup(audio);
                 break;
-            case "down":
-                this.down(audio);
+            case "voldown":
+                this.voldown(audio);
                 break;
         }
 
@@ -84,7 +108,7 @@ class Player extends React.Component {
         audio.load();
         this.play(audio);
     }
-    previous(audio) {
+    prev(audio) {
         this.setState({ trackNr: this.mod((this.state.trackNr - 1), this.props.tracks.length)});
         audio = document.getElementById('audio');
         //load new audio file
@@ -92,7 +116,7 @@ class Player extends React.Component {
         this.play(audio);
     }
 
-    up(audio) {
+    volup(audio) {
         if(this.state.audioVolume<0.9){
             this.setState({  audioVolume: this.state.audioVolume+=0.1 });
             audio.volume = this.state.audioVolume;
@@ -100,7 +124,7 @@ class Player extends React.Component {
         }
     }
 
-    down(audio) {
+    voldown(audio) {
         if(this.state.audioVolume>0.1){
             this.setState({  audioVolume: this.state.audioVolume-=0.1 });
             audio.volume = this.state.audioVolume;
@@ -133,7 +157,7 @@ class Player extends React.Component {
                     </div>
 
                 </div>
-                <Controls newCommand={this.newCommand}/>
+                <Controls clickCommand={this.clickCommand}/>
             </div>
 
         )
@@ -209,31 +233,31 @@ class Controls extends React.Component {
         this.setCommand = this.setCommand.bind(this);
     }
     setCommand(status){
-        this.props.newCommand(status);
+        this.props.clickCommand(status);
     }
 
     render() {
         return (
             <div className="Controls">
                 <div className="row">
-                    <div onClick={() => this.setCommand('previous')} className="Button">
+                    <div onClick={() => this.setCommand('prev')} id="prev" className="Button">
                         <i className='fa fa-fw fa-backward'></i>
                     </div>
-                    <div onClick={() => this.setCommand('play')} className="Button">
+                    <div onClick={() => this.setCommand('play')} id="play"  className="Button">
                         <i className='fa fa-fw fa-play'></i>
                     </div>
-                    <div onClick={() => this.setCommand('next')} className="Button">
+                    <div onClick={() => this.setCommand('next')} id="next"  className="Button">
                         <i className='fa fa-fw fa-forward'></i>
                     </div>
                 </div>
                 <div className="row">
-                    <div onClick={() => this.setCommand('down')} className="Button">
+                    <div onClick={() => this.setCommand('voldown')} id="voldown" className="Button">
                         <i className='fa fa-fw fa-volume-down'></i>
                     </div>
-                    <div onClick={() => this.setCommand('pause')} className="Button">
+                    <div onClick={() => this.setCommand('pause')} id="pause"  className="Button">
                         <i className='fa fa-fw fa-pause'></i>
                     </div>
-                    <div onClick={() => this.setCommand('up')} className="Button">
+                    <div onClick={() => this.setCommand('volup')} id="volup"  className="Button">
                         <i className='fa fa-fw fa-volume-up'></i>
                     </div>
                 </div>
@@ -279,7 +303,8 @@ Player.defaultProps = {
             duration: 192,
             source: mp3File_happyrock
         }
-    ]
+    ],
+    commands: ["prev","play","next","voldown","pause","volup"]
 };
 
 export default Player;

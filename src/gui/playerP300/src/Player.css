@@ -100,7 +100,7 @@ body {
     position: absolute;
     top: 0;
     left: 100px;
-    width: 100%;
+    width: 85%;
     height: 100px;
     opacity: 0.2;
     transition: opacity 0.25s ease;
@@ -123,11 +123,12 @@ body {
     border-bottom-right-radius: 5px;
 }
 .Player .Timestamps {
+    padding: 10px 0;
     font-size: 16px;
     font-weight: 500;
 }
 .Player .AudioProgress {
-    margin-top: 10px;
+    padding: 10px 0;
     display: table;
 }
 .Player .AudioProgress .Icon {
@@ -175,6 +176,7 @@ body {
     justify-content: center;
     margin: auto;
     pointer-events: all;
+    cursor: pointer;
 }
 .Player .Controls .Button:hover  .fa{
     transform: scale(0.98);
