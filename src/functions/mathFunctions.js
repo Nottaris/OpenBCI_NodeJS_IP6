@@ -4,26 +4,40 @@ module.exports = {
     getVariance,
     getStandardDeviation,
     getMaxValue,
-    getMinValue
+    getMinValue,
+    getMedian
 }
 
 // Percentage Change (newValue - oldValue) / |oldValue| *100
-function percentageChange(newValue,oldValue){
-    return (newValue-oldValue)/Math.abs(oldValue)*100;
+function percentageChange(newValue, oldValue) {
+    return (newValue - oldValue) / Math.abs(oldValue) * 100;
 }
 
 // average value from array
-function getAverage(array){
-    return array.reduce((total, num) => total+num, 0)/array.length;
+function getAverage(array) {
+    return array.reduce((total, num) => total + num, 0) / array.length;
+}
+
+// median value from array
+function getMedian(array) {
+    array.sort(function (a, b) {
+        return a - b;
+    });
+
+    if (array.length === 0) return 0;
+
+    var half = Math.floor(array.length / 2);
+
+    return array[half];
 }
 
 //  deviation of average value from array
 function getVariance(array) {
-    var mean =  getAverage(array);
-    return array.reduce(function(pre, cur) {
+    var mean = getAverage(array);
+    return array.reduce(function (pre, cur) {
         pre = pre + Math.pow((cur - mean), 2);
         return pre;
-    }, 0)/array.length;
+    }, 0) / array.length;
 }
 
 function getStandardDeviation(array) {

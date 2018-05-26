@@ -49,4 +49,10 @@ describe('mathFunctions', function() {
       assert.deepEqual(mathFunctions.getMinValue([-10,20,33,44.55]), -10);
     });
   });
+  describe('#getMedian()', function() {
+    it('[10,20,21,22] should be 20', function() {
+      assert.deepEqual(mathFunctions.getMedian([10,20,21,22]), 21);
+      assert.deepEqual(mathFunctions.getMedian([-20,20,21,22]), 21);
+    });
+  });
 });

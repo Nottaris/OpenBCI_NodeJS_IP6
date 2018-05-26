@@ -30,7 +30,7 @@ const defaultSettings  = {
     channel: 5,                 // number of channel ( from 1 to 8 ) 5 === yellow Cz (middle top head)
     sampleRate: 250,            // 250Hz
     slots: 150,                  // data points per slot ( 600ms === 150 )
-    threshold: 1.5,              // deviation factor
+    threshold: 1.2,              // deviation factor
     debug: true                  // show console.log
 }
 
@@ -39,6 +39,7 @@ let count = 0;
 let settings = defaultSettings;
 
 function digestSamples(sample) {
+
 
     if (count < settings.slots) {
         volts.push(Number((sample.channelData[settings.channel-1] * 1000000).toFixed(20))); //microVolts
