@@ -62,6 +62,10 @@ class Player extends React.Component {
             case "voldown":
                 this.voldown(audio);
                 break;
+            default:
+                //this should never happen
+                console.log("Error: clickCommand had not known state")
+                break;
         }
 
     }
@@ -118,7 +122,8 @@ class Player extends React.Component {
 
     volup(audio) {
         if(this.state.audioVolume<0.9){
-            this.setState({  audioVolume: this.state.audioVolume+=0.1 });
+            let newVol = this.state.audioVolume+0.1;
+            this.setState({  audioVolume: newVol });
             audio.volume = this.state.audioVolume;
             this.updateVolumeProgressBar();
         }
@@ -126,7 +131,8 @@ class Player extends React.Component {
 
     voldown(audio) {
         if(this.state.audioVolume>0.1){
-            this.setState({  audioVolume: this.state.audioVolume-=0.1 });
+            let newVol = this.state.audioVolume-0.1;
+            this.setState({  audioVolume: newVol });
             audio.volume = this.state.audioVolume;
             this.updateVolumeProgressBar();
         }
