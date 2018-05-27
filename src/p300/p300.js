@@ -31,7 +31,7 @@ const defaultSettings  = {
     channel: 5,                 // number of channel ( from 1 to 8 ) 5 === yellow Cz (middle top head) for p300
     sampleRate: 250,            // 250Hz
     slots: 150,                  // data points per slot ( 600ms === 150 )
-    threshold: 1.2,              // deviation factor
+    threshold: 2,              // deviation factor
     debug: true                  // show console.log
 }
 
