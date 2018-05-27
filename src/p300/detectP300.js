@@ -37,7 +37,7 @@ function detectP300(volts, command) {
 
     if(filter) {
         const spawn = require('child_process').spawn;
-        const ls = spawn('python', ['src/mnepy/bandpassfilter.py', volts]);
+        const ls = spawn('python', ['src/pyscripts/bandpassfilter.py', volts]);
 
         ls.stdout.on('data', (data) => {
           console.log(`py stdout: ${data}`);
