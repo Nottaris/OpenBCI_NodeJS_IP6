@@ -1,5 +1,6 @@
 const mathFunctions = require('../functions/mathFunctions');
 const p300 = require('./p300');
+const server = require('./server');
 
 module.exports = {
     getVEP: detectP300
@@ -89,5 +90,9 @@ function getCommand() {
                         "\t vppx[maxVppx]: " + Object.keys(vppx).find(key => vppx[key] === maxVppx));
         }
         console.log("p300: \t value: " + maxVppx.toFixed(2) + " on command: " + command + "\t at " + new Date());
+
+        //send doCommand to execute
+        server.doCmd(command);
+
     }
 }

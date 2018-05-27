@@ -16,15 +16,31 @@ class Player extends React.Component {
             trackNr: 0,
             currentCmd: 'no'
         };
-        this.clickCommand = this.clickCommand.bind(this);
 
-        subscribeToCmds( (data) => {
-            this.setState({ currentCmd: data.command });
-            this.blinkCommandButton(data.command);
-        });
+        this.clickCommand = this.clickCommand.bind(this);
+        this.flashCommand = this.flashCommand.bind(this);
+        this.execCommand = this.execCommand.bind(this);
+
+
+        subscribeToCmds(
+            this.flashCommand,
+            this.execCommand
+        );
 
        // this.generateCommands();
     };
+
+
+    flashCommand = (data) => {
+         this.setState({ currentCmd: data.command });
+         this.blinkCommandButton(data.command);
+    }
+
+     execCommand = (data) => {
+         this.clickCommand(data.docommand);
+    }
+
+
 
     /*
     //TODO: This function can be removed, as soon as we get the command events from NodeJS
