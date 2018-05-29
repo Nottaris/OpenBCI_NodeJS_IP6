@@ -10,7 +10,7 @@ var settings;
 var third = 50;
 var counter = 0;
 var init = true;
-var filter = false;
+var filter = true;
 var vppx = {
     play: 0,
     pause: 0,
@@ -37,19 +37,25 @@ function detectP300(volts, command) {
 
     if(filter) {
         const spawn = require('child_process').spawn;
-        const ls = spawn('python', ['src/mnepy/bandpassfilter.py', volts]);
+        const pyFile = ['src/pyscripts/bandpassfilter.py'];
+        const py = spawn('python3', pyFile);
 
-        ls.stdout.on('data', (data) => {
+        py.stdout.on('data', (data) => {
           console.log(`py stdout: ${data}`);
         });
 
-        ls.stderr.on('data', (data) => {
+        py.stderr.on('data', (data) => {
           console.log(`py stderr: ${data}`);
         });
 
-        ls.on('close', (code) => {
+        py.on('close', (code) => {
           //console.log(`child process exited with code ${code}`);
         });
+
+        const voltsString = volts.toString();
+
+        py.stdin.write(voltsString);
+        py.stdin.end();
     }
 
 
