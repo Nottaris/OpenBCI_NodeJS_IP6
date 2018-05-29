@@ -28,6 +28,7 @@ export default class P300 extends React.Component {
 
         subscribeToCmds(
             this.flashCommand,
+            this.execCommand,
             this.execCommand
         );
 
@@ -38,10 +39,6 @@ export default class P300 extends React.Component {
     flashCommand = (data) => {
         this.setState({ currentCmd: data.command });
         this.blinkCommandButton(data.command);
-    }
-
-    execCommand = (data) => {
-        this.clickCommand(data.docommand);
     }
 
     execCommand = (data) => {

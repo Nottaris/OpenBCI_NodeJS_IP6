@@ -1,12 +1,23 @@
 const mathFunctions = require('../functions/mathFunctions');
 const eegFunctions = require('./../functions/eegFunctions');
 const blink = require('./blink');
+const server = require('./server');
 module.exports = {
     compareAverages: detectBlink
 };
 let settings;
 var init = true;
 let skip = 0;
+const commands = [
+    "prev",
+    "play",
+    "next",
+    "voldown",
+    "pause",
+    "volup",
+    "prev"
+];
+var currentCommand = "play";
 
 function detectBlink(baseline, average) {
 
@@ -29,7 +40,7 @@ function detectBlink(baseline, average) {
             console.log("  Min Value:\t\t" + mathFunctions.getMinValue(baseline).toFixed(2));
             console.log("==============================================");
         }
-
+        startFlushCmd();
         init = false;
     }
 
@@ -39,6 +50,10 @@ function detectBlink(baseline, average) {
             console.log("BLINK: \t value: "+average.toFixed(2)+"\t at "+new Date());
         }
        blink.setBlinkcount();
+
+       //send doCommand to execute
+       server.doBlinkCmd();
+
        skip = settings.slots*5;
     }
 
@@ -48,4 +63,16 @@ function detectBlink(baseline, average) {
    
 }
 
+function startFlushCmd(){
+    setInterval(function(){
+        //send next command to flash on player
+        setNextCommand();
+        server.sendCmd(currentCommand);
+    }, 1000);
+}
+
+function setNextCommand() {
+    let idx = commands.indexOf(currentCommand);
+    currentCommand = commands[idx + 1];
+}
 

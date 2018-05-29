@@ -20,6 +20,7 @@ module.exports = {
 }
 
 const detectBlink = require('./detectBlink');
+const server = require('./server');
 
 const defaultSettings  = {
     baselineLengthSec: 5,       // time in seconds for baseline
@@ -86,6 +87,13 @@ function getSettings(){
 function setSettings(newSettings) {
     settings =  newSettings ;
 }
+
+
+function setNextCommand() {
+    let idx = commands.indexOf(currentCommand);
+    currentCommand = commands[idx + 1];
+}
+
 
 function reset(){
      settings = defaultSettings;

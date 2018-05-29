@@ -10,7 +10,7 @@ var settings;
 var third = 50;
 var counter = 0;
 var init = true;
-var filter = true;
+var filter = false;
 var vppx = {
     play: 0,
     pause: 0,

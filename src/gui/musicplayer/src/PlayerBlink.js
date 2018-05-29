@@ -28,6 +28,7 @@ export default class PlayerBlink extends React.Component {
 
         subscribeToCmds(
             this.flashCommand,
+            this.execCommand,
             this.execCommand
         );
 
@@ -40,12 +41,9 @@ export default class PlayerBlink extends React.Component {
          this.blinkCommandButton(data.command);
     }
 
-     execCommand = (data) => {
-         this.clickCommand(data.docommand);
-    }
-
-    execCommand = (data) => {
-         this.clickCommand(data.docommand);
+    execCommand = () => {
+        console.log("execCommand "+this.state.currentCmd);
+         this.clickCommand(this.state.currentCmd);
     }
 
     //Set the color of the command to white for X seconds
@@ -55,7 +53,7 @@ export default class PlayerBlink extends React.Component {
             elem.style.color = "#ffffff";
             setTimeout(function () {
                 elem.style.color = "#292dff";
-            }, 150);
+            }, 1000);
         }
     }
 
