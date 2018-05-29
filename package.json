@@ -10,7 +10,7 @@
     "p300": "node app.js p300",
     "p300file": "node app.js p300file",
     "save": "node app.js save",
-    "plot": "node app.js plot",
+    "plot": "node src/plot/plot.js",
     "stream": "node app.js stream",
     "test": "mocha",
     "player": "cd src/gui/musicplayer && react-scripts start",

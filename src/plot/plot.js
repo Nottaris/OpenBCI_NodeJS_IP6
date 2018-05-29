@@ -2,10 +2,6 @@
  * plot data
  */
 
-module.exports = {
-    start
-}
-
 function start(){
 
     var http = require("http"),
@@ -47,3 +43,5 @@ function start(){
     console.log("Static file server running at\n  => http://localhost:" + port + "/\nCTRL + C to shutdown");
 
 }
+
+start();
