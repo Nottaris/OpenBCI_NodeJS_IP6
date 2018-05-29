@@ -1,35 +1,42 @@
 from scipy import signal
 import numpy as np
+import sys
 
 
-class Filters:
+## filter code by https://github.com/OpenBCI/OpenBCI_LSL/blob/master/lib/filters.py
 
-    def __init__(self, volts):
-        fs_Hz = 250;
-        fn = fs_Hz / 2
-        self.filtered_data = np.array((150, 1))
-        self.data_buffer = volts
+#Read data from stdin
+def read_in():
+    lines = sys.stdin.readlines()
+    #Since our input would only be having one line, parse our JSON data from that
+    return lines[0]
 
-        #######################################
-        # Filter Creation
-        # -------------------------------------
-        #
-        # Create a filter using the scipy module,
-        # based on specifications suggested by
-        # Pan-Tompkins (bandpass from 5-15Hz)
-        #
-        #
-        # 1) Establish constants:
-        #		a) filter_order = 2
-        #		b) high pass cutoff = 4Hz
-        #		c) low pass cutoff = 0.5Hz
-        # 2) Calculate the coefficients, store in variables
+def dobandpass(data):
+    fs_Hz = 250;
+    fn = fs_Hz / 2
+    filtered_data = np.array((150, 1))
+    data_buffer = data
 
-        filter_order = 2
-        f_high = 4
-        f_low = 0.5
-        self.high_pass_coefficients = signal.butter(filter_order, f_low / fn, 'high')
-        self.low_pass_coefficients = signal.butter(filter_order, f_high / fn, 'low')
+    #######################################
+    # Filter Creation
+    # -------------------------------------
+    #
+    # Create a filter using the scipy module,
+    # based on specifications suggested by
+    # Pan-Tompkins (bandpass from 5-15Hz)
+    #
+    #
+    # 1) Establish constants:
+    #		a) filter_order = 2
+    #		b) high pass cutoff = 4Hz
+    #		c) low pass cutoff = 0.5Hz
+    # 2) Calculate the coefficients, store in variables
+
+    filter_order = 2
+    f_high = 4
+    f_low = 0.5
+    high_pass_coefficients = signal.butter(filter_order, f_low / fn, 'high')
+    low_pass_coefficients = signal.butter(filter_order, f_high / fn, 'low')
 
 
 
@@ -44,20 +51,43 @@ class Filters:
     # Output:
     #			filtered data as a numpy array
 
-    def bandpass(self, data_buffer):
-        high_passed = self.high_pass(data_buffer)
-        low_passed = self.low_pass(high_passed)
+    def bandpass(data_buffer):
+        high_passed = high_pass(data_buffer)
+        low_passed = low_pass(high_passed)
         filtered_data = np.array(low_passed)
         return filtered_data
 
-    def high_pass(self, data_buffer):
-        [b1, a1] = [self.high_pass_coefficients[0], self.high_pass_coefficients[1]]
+    def high_pass(data_buffer):
+        [b1, a1] = [high_pass_coefficients[0], high_pass_coefficients[1]]
         high_passed = signal.filtfilt(b1, a1, data_buffer)
         return high_passed
 
-    def low_pass(self, data_buffer):
-        [b, a] = [self.low_pass_coefficients[0], self.low_pass_coefficients[1]]
+    def low_pass(data_buffer):
+        [b, a] = [low_pass_coefficients[0], low_pass_coefficients[1]]
         low_passed = signal.filtfilt(b, a, data_buffer)
         return low_passed
 
-    print("test")
+    bandpass(data_buffer)
+
+
+
+
+
+def main():
+    #get our data as an array from read_in()
+    line = read_in()
+    datastrings = line.split(",")
+    data = map(float, datastrings)
+
+    newdata = dobandpass(data)
+
+    #print
+    #print("data: "+data.tostring()[0,10])
+    #print("newdata: "+newdata.tostring()[0,10])
+
+    sys.stdout(newdata.tostring())
+
+
+#start process
+if __name__ == '__main__':
+    main()
