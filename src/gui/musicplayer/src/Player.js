@@ -4,6 +4,12 @@ import mp3File_summer from './music/bensound-summer.mp3';
 import mp3File_anewbeginning from './music/bensound-anewbeginning.mp3';
 import mp3File_happyrock from './music/bensound-happyrock.mp3';
 import { subscribeToCmds } from './api';
+import TrackInformation from './components/TrackInformation';
+import Scrubber from './components/Scrubber';
+import Timestamps from './components/Timestamps';
+import AudioVolume from './components/AudioVolume';
+import Controls from './components/Controls';
+
 
 // Player
 class Player extends React.Component {
@@ -40,32 +46,9 @@ class Player extends React.Component {
          this.clickCommand(data.docommand);
     }
 
-
-
-    /*
-    //TODO: This function can be removed, as soon as we get the command events from NodeJS
-    generateCommands() {
-        var index = 0;
-        let commands = this.props.commands;
-        let mod = this.mod;
-        let blinkCommandButton = this.blinkCommandButton;
-        setInterval(function () {
-            let idx = mod((index + 1), commands.length);
-            blinkCommandButton(commands[idx]);
-            index++;
-        }, 1000);
+    execCommand = (data) => {
+         this.clickCommand(data.docommand);
     }
-
-
-    //Set the color of the command to white for X seconds
-    blinkCommandButton(command) {
-        let elem = document.getElementById(command).getElementsByClassName('fa')[0];
-        elem.style.color = "#ffffff";
-        setTimeout(function () {
-            elem.style.color = "#292dff";
-        }, 1000);
-    }
-    */
 
     //Set the color of the command to white for X seconds
     blinkCommandButton(command) {
@@ -200,7 +183,6 @@ class Player extends React.Component {
                         <AudioVolume volume={this.state.audioVolume}/>
                         <audio id="audio">
                             <source src={this.props.tracks[this.state.trackNr].source} type="audio/mpeg"/>
-
                         </audio>
                     </div>
 
@@ -212,111 +194,8 @@ class Player extends React.Component {
     }
 };
 
-class TrackInformation extends React.Component {
-    render() {
-        return (
-            <div className="TrackInformation">
-                <div className="Name">{this.props.tracks[this.props.state.trackNr].name}</div>
-                <div className="Artist">{this.props.tracks[this.props.state.trackNr].artist}</div>
-                <div
-                    className="Album">{this.props.tracks[this.props.state.trackNr].album} ({this.props.tracks[this.props.state.trackNr].year})
-                </div>
-            </div>
-        )
-    }
-};
-
-class Scrubber extends React.Component {
-    render() {
-        return (
-            <div className="Scrubber">
-                <div className="Scrubber-Progress"></div>
-            </div>
-        )
-    }
-};
 
 
-class Timestamps extends React.Component {
-    convertTime(timestamp) {
-        let minutes = Math.floor(timestamp / 60);
-        let seconds = timestamp - (minutes * 60);
-        if (seconds < 10) {
-            seconds = '0' + seconds;
-        }
-        timestamp = minutes + ':' + seconds;
-        return timestamp;
-    }
-
-    render() {
-        return (
-            <div className="Timestamps">
-                {this.convertTime(this.props.currentTime)} - {this.convertTime(this.props.duration)}
-            </div>
-        )
-    }
-};
-
-class AudioVolume extends React.Component {
-
-    render() {
-        return (
-            <div className="AudioProgress">
-                <div className="Icon">
-                    <i className='fa fa-fw fa-volume-up'></i>
-                </div>
-                <div className="AudioProgressBar">
-                    <div className="ProgressBackground">
-                        <div id="ProgressVolume"></div>
-                    </div>
-                </div>
-
-            </div>
-        )
-    }
-
-}
-
-
-class Controls extends React.Component {
-    constructor(props) {
-        super(props);
-        this.setCommand = this.setCommand.bind(this);
-    }
-
-    setCommand(status) {
-        this.props.clickCommand(status);
-    }
-
-    render() {
-        return (
-            <div className="Controls">
-                <div className="row">
-                    <div onClick={() => this.setCommand('prev')} id="prev" className="Button">
-                        <i className='fa fa-fw fa-backward'></i>
-                    </div>
-                    <div onClick={() => this.setCommand('play')} id="play" className="Button">
-                        <i className='fa fa-fw fa-play'></i>
-                    </div>
-                    <div onClick={() => this.setCommand('next')} id="next" className="Button">
-                        <i className='fa fa-fw fa-forward'></i>
-                    </div>
-                </div>
-                <div className="row">
-                    <div onClick={() => this.setCommand('voldown')} id="voldown" className="Button">
-                        <i className='fa fa-fw fa-volume-down'></i>
-                    </div>
-                    <div onClick={() => this.setCommand('pause')} id="pause" className="Button">
-                        <i className='fa fa-fw fa-pause'></i>
-                    </div>
-                    <div onClick={() => this.setCommand('volup')} id="volup" className="Button">
-                        <i className='fa fa-fw fa-volume-up'></i>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-}
 
 
 Player.defaultProps = {
