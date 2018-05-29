@@ -39,11 +39,21 @@ options = {
 datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
 formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
 
+let stream;
+let init = true;
+
 //create json file
-var stream  = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
+function getStream(){
+    stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
+}
+
 
 //save incoming sample's to json file with current date time in filename
 function saveData(sample) {
+    if(init){
+        getStream();
+        init = false;
+    }
     var record = JSON.stringify(sample);
 
     stream.write(record + ",\n")
