@@ -1,8 +1,5 @@
 import React from 'react';
 import './Player.css';
-import mp3File_summer from './music/bensound-summer.mp3';
-import mp3File_anewbeginning from './music/bensound-anewbeginning.mp3';
-import mp3File_happyrock from './music/bensound-happyrock.mp3';
 import { subscribeToCmds } from './api';
 import TrackInformation from './components/TrackInformation';
 import Scrubber from './components/Scrubber';
@@ -12,9 +9,10 @@ import Controls from './components/Controls';
 
 
 // Player
-class Player extends React.Component {
+export default class PlayerBlink extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props);
         this.state = {
             playStatus: 'play',
             currentTime: 0,
@@ -193,50 +191,3 @@ class Player extends React.Component {
         )
     }
 };
-
-
-
-
-
-Player.defaultProps = {
-    tracks: [{
-        name: "We Were Young",
-        artist: "Odesza",
-        album: "Summer's Gone",
-        year: 2012,
-        artwork: "https://funkadelphia.files.wordpress.com/2012/09/odesza-summers-gone-lp.jpg",
-        duration: 192,
-        source: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/wwy.mp3"
-    },
-        {
-            name: "Summer",
-            artist: "Bensound",
-            album: "Summer's Gone",
-            year: 2013,
-            artwork: "https://www.bensound.com/bensound-img/summer.jpg",
-            duration: 192,
-            source: mp3File_summer
-        },
-        {
-            name: "A New Beginning",
-            artist: "Bensound",
-            album: "Summer's Gone",
-            year: 2014,
-            artwork: "https://www.bensound.com/bensound-img/anewbeginning.jpg",
-            duration: 192,
-            source: mp3File_anewbeginning
-        },
-        {
-            name: "Happy Rock",
-            artist: "Bensound",
-            album: "Summer's Gone",
-            year: 2015,
-            artwork: "https://www.bensound.com/bensound-img/happyrock.jpg",
-            duration: 192,
-            source: mp3File_happyrock
-        }
-    ],
-    commands: ["prev", "play", "next", "voldown", "pause", "volup"]
-};
-
-export default Player;
