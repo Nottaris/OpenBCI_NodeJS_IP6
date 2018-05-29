@@ -45,7 +45,7 @@ function start(sampleFunction){
                             return ourBoard.streamStart();
                         })
                         .catch((err) => {
-                            console.log('err', err);
+                            //console.log('err', err);
                             return ourBoard.streamStart();
                         })
                         .catch((err) => {
@@ -63,11 +63,11 @@ function start(sampleFunction){
 
 
                     //.channelSet(channelNumber,powerDown,gain,inputType,bias,srb2,srb1)
-                    ourBoard.channelSet(1,true,24,'normal',true,true,false);
+                    ourBoard.channelSet(1,false,24,'normal',true,true,false);
                     ourBoard.channelSet(2,true,24,'normal',true,true,false);
                     ourBoard.channelSet(3,true,24,'normal',true,true,false);
                     ourBoard.channelSet(4,true,24,'normal',true,true,false);
-                    ourBoard.channelSet(5,false,24,'normal',true,true,false);
+                    ourBoard.channelSet(5,true,24,'normal',true,true,false);
                     ourBoard.channelSet(6,true,24,'normal',true,true,false);
                     ourBoard.channelSet(7,true,24,'normal',true,true,false);
                     ourBoard.channelSet(8,true,24,'normal',true,true,false);

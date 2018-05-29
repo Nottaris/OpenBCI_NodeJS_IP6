@@ -42,8 +42,9 @@ export default class PlayerBlink extends React.Component {
     }
 
     execCommand = () => {
-        console.log("execCommand "+this.state.currentCmd);
-         this.clickCommand(this.state.currentCmd);
+        this.clickCommand(this.state.currentCmd);
+        let elem = document.getElementById(this.state.currentCmd).getElementsByClassName('fa')[0];
+        elem.style.color = "green";
     }
 
     //Set the color of the command to white for X seconds
