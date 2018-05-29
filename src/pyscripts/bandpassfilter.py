@@ -8,14 +8,14 @@ import sys
 #Read data from stdin
 def read_in():
     lines = sys.stdin.readlines()
-    #Since our input would only be having one line, parse our JSON data from that
+    #Since our input would only be having one line
     return lines[0]
 
 def dobandpass(data):
     fs_Hz = 250;
     fn = fs_Hz / 2
     filtered_data = np.array((150, 1))
-    data_buffer = data
+    data_buffer = np.array(data)
 
     #######################################
     # Filter Creation
@@ -33,8 +33,8 @@ def dobandpass(data):
     # 2) Calculate the coefficients, store in variables
 
     filter_order = 2
-    f_high = 4
-    f_low = 0.5
+    f_high = 15
+    f_low = 5
     high_pass_coefficients = signal.butter(filter_order, f_low / fn, 'high')
     low_pass_coefficients = signal.butter(filter_order, f_high / fn, 'low')
 
