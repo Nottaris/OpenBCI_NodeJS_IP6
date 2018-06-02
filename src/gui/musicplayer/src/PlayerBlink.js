@@ -7,7 +7,6 @@ import Timestamps from './components/Timestamps';
 import AudioVolume from './components/AudioVolume';
 import Controls from './components/Controls';
 
-
 // Player
 export default class PlayerBlink extends React.Component {
     constructor(props) {
@@ -98,9 +97,9 @@ export default class PlayerBlink extends React.Component {
         innerScrubber.style['width'] = percent;
     }
 
-    updateVolumeProgressBar() {
+    updateVolumeProgressBar(volume) {
         var elem = document.getElementById("ProgressVolume");
-        elem.style.width = 100 / 1 * this.state.audioVolume + "%";
+        elem.style.width = 100 * volume + "%";
     }
 
     play(audio) {
@@ -144,7 +143,7 @@ export default class PlayerBlink extends React.Component {
             let newVol = this.state.audioVolume + 0.1;
             this.setState({audioVolume: newVol});
             audio.volume = this.state.audioVolume;
-            this.updateVolumeProgressBar();
+            this.updateVolumeProgressBar(newVol);
         }
     }
 
@@ -153,7 +152,7 @@ export default class PlayerBlink extends React.Component {
             let newVol = this.state.audioVolume - 0.1;
             this.setState({audioVolume: newVol});
             audio.volume = this.state.audioVolume;
-            this.updateVolumeProgressBar();
+            this.updateVolumeProgressBar(newVol);
         }
     }
 
