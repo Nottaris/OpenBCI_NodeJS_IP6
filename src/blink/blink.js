@@ -20,7 +20,6 @@ module.exports = {
 }
 
 const detectBlink = require('./detectBlink');
-const server = require('./server');
 
 const defaultSettings  = {
     baselineLengthSec: 5,       // time in seconds for baseline

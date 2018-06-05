@@ -240,7 +240,7 @@ function toggleChannel(channel){
 }
 
 // Connect to socket server
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect('http://localhost:3001');
 
 socket.on('sample', function(data) {
     //tweak data (ajust volts)

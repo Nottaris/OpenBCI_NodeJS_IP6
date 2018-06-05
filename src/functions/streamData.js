@@ -3,7 +3,7 @@ module.exports = {
     streamData
 }
 const openBoard = require('./../board/openBoard');
-const http = require('http');
+const server = require('../socket/server');
 let io;
 let app;
 
@@ -15,23 +15,12 @@ const boardSettings  = {
     control: "stream"                                               // Control type
 }
 
-start();
-
 let sampleFunction = streamData;
 openBoard.start(sampleFunction,boardSettings);
-
-
-function start(){
-    // create socket server on port 3000
-    app = http.createServer(function(req, res) {});
-    io = require('socket.io').listen(app);
-    app.listen(3000, function(){
-        console.log('listening on *:3000');
-    });
-}
+console.log(server.listening);
 
 function streamData(sample) {
     //emmit sample event for each event
-    io.emit('sample', { sample: sample });
+    server.streamData(sample);
     process.stdout.write("Streaming sample...\r");
 }
