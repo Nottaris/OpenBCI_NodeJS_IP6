@@ -8,7 +8,8 @@ const blink = require('./blink');
 */
 console.log("blinkfile");
 
-data = openData.loadJSON("../../data/data-2018-5-1-11-23-10.json");
+//data = openData.loadJSON("../../data/data-2018-5-1-11-23-10.json");
+ data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
 // data = openData.loadJSON();
 
 data.forEach(function(sample) {

@@ -3,7 +3,7 @@ const blink = require('./blink');
 const server = require('../socket/server');
 
 module.exports = {
-    compareAverages: detectBlink
+    checkBaseline: detectBlink
 };
 var settings;
 let init = true;
@@ -24,19 +24,21 @@ let currentCommand = "play";
  * @params: baseline: Array of last window medians (slidingWindow), currentMedian: current median to compare with baseline
  */
 
-function detectBlink(baseline, currentMedian) {
+function detectBlink(baseline) {
 
-    //let baselineMedian = mathFunctions.getMedian(baseline);
-    //let standardDeviation = mathFunctions.getStandardDeviation(baseline);
-    let baselineMin = mathFunctions.getMinValue(baseline);
-    let baselineMax = mathFunctions.getMaxValue(baseline);
+    //get first 4500ms window from baseline (which is 5 sec.)
+    let start = mathFunctions.clone(baseline);
+    start = start.splice(0, baseline.length*0.9);
+    let startMin = mathFunctions.getMinValue(start);
+    let startMax = mathFunctions.getMaxValue(start);
+    console.log("start size"+start.length);
 
     //get last 500ms window from baseline (which is 5 sec.)
-    let window = mathFunctions.clone(baseline);
-    window = window.splice(window.length*0.9);
-    let windowMin = mathFunctions.getMinValue(window);
-    let windowMax = mathFunctions.getMaxValue(window);
-
+    let end = mathFunctions.clone(baseline);
+    end = end.splice(baseline.length*0.9, baseline.length*0.1);
+    let endMin = mathFunctions.getMinValue(end);
+    let endMax = mathFunctions.getMaxValue(end);
+     console.log("end size"+end.length);
 
     if (init) {
         //get Settings
@@ -46,16 +48,8 @@ function detectBlink(baseline, currentMedian) {
         if (settings.debug) {
             console.log("=================Baseline=================");
             console.log("  Baseline size:\t" + baseline.length);
-            console.log("  Baseline median:\t" + mathFunctions.getMedian(baseline).toFixed(2));
-            console.log("  Variance:\t\t" + mathFunctions.getVariance(baseline).toFixed(2));
-            console.log("  Standard deviation:\t" + mathFunctions.getStandardDeviation(baseline).toFixed(2));
-           // console.log("  median-standardDev*a:\t " + Number(baselineMedian - standardDeviation * settings.threshold).toFixed(2));
             console.log("  Max Value:\t\t" + mathFunctions.getMaxValue(baseline).toFixed(2));
             console.log("  Min Value:\t\t" + mathFunctions.getMinValue(baseline).toFixed(2));
-            console.log("  -------");
-            console.log("  First value to evaluate as current Median: \t\t");// + currentMedian.toFixed(2));
-            console.log("  Min of last 500ms: \t\t" + windowMin.toFixed(2));
-            console.log("  Max of last 500ms: \t\t" + windowMax.toFixed(2));
             console.log("==============================================");
         }else{
             startFlushCmd();
@@ -63,18 +57,21 @@ function detectBlink(baseline, currentMedian) {
         init = false;
     }
 
-           // console.log("  Value to evaluate as current Median: \t\t" + currentMedian.toFixed(2));
-           // console.log("  Min of last 500ms: \t\t" + baselineMin.toFixed(2));
-
 
     if (skip == 0){
 
-        let diffinWindow = windowMax-windowMin;
-        let diffBaseline = baselineMax-baselineMin;
+        let diffend = endMax-endMin;
+        let diffStart = startMax-startMin;
 
-        if(diffinWindow>diffBaseline){
-            blinkFound();
+        console.log("  diffend \t\t" + diffend.toFixed(2));
+        console.log("  diffStart \t\t" + diffStart.toFixed(2));
+
+        if(diffend>diffStart){
+
+
         }
+        console.log("  Blink MIN MAX Diff \t\t" + (diffend-diffStart).toFixed(2));
+        blinkFound();
 
     }
 
