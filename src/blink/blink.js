@@ -15,15 +15,14 @@ module.exports = {
 }
 
 const mathFunctions = require('../functions/mathFunctions');
-//const saveData = require('../functions/saveData');
+const saveData = require('../functions/saveData');
 const detectBlink = require('./detectBlink');
 
-
-const defaultSettings  = {
+const defaultSettings = {
     baselineLengthSec: 5,       // time in seconds for baseline
     channel:           1,       // number of channel ( from 1 to 8 )
     sampleRate:      250,       // 250Hz
-    slots:            5,       // data points per slot
+    slots:            10,        // data points per slot
     threshold:       1.5,       // deviation factor
     debug:          true        // show console.log
 }
@@ -36,7 +35,7 @@ let blinkCount = 0;
 let settings = defaultSettings;
 let baselineSlots = settings.baselineLengthSec * settings.sampleRate / settings.slots; // number of slots in baseline (at 250Hz)
 
-//saveData.getChannelDatafromJSON();
+saveData.getChannelDatafromJSON();
 
 function getSampleAverages(sample) {
 
@@ -63,12 +62,9 @@ function getSampleAverages(sample) {
 
 // sliding window
 function getBaseline() {
-   // if(settings.debug) console.log("medianValues.length: "+medianValues.length);
-
     if (medianValues.length > baselineSlots + 30) {   // skip first 30 data slots
         let slidingWindow = mathFunctions.clone(medianValues);
         slidingWindow = slidingWindow.slice(-baselineSlots);    // extract baseline form medianValues
-       // if(settings.debug) console.log("slidingWindow.length: "+slidingWindow.length);
         return slidingWindow;
     } else {
         return medianValues;
