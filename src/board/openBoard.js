@@ -12,31 +12,43 @@
 
 const saveData = require('./../functions/saveData'); //to fix JsonFiles in cleanup
 
-const debug = false; // Pretty print any bytes in and out... it's amazing...
-const verbose = true; // Adds verbosity to functions
-
-const Cyton = require('openbci-cyton');
-let ourBoard = new Cyton({
-    simulate: true,
-    debug: debug,
-    verbose: verbose
-});
-
 module.exports = {
     start
 };
 
-function start(sampleFunction){
-    ourBoard.autoFindOpenBCIBoard().then(portName => {
-   // var portName = "COM13";
-        if (portName) {
+function start(sampleFunction,boardSettings){
+    const debug = boardSettings.debug; // Pretty print any bytes in and out... it's amazing...
+    const verbose = boardSettings.verbose; // Adds verbosity to functions
+
+    const Cyton = require('openbci-cyton');
+    let ourBoard = new Cyton({
+        simulate: boardSettings.simulate,
+        debug: debug,
+        verbose:  verbose
+    });
+
+
+    ourBoard.autoFindOpenBCIBoard()
+        .then(portName => {
+                if (portName) {
+                    connectToBoard(portName);
+                } else {
+                    /** Unable to auto find OpenBCI board */
+                    console.log('Unable to auto find OpenBCI board');
+                }
+            })
+        .catch((err) => {
+            //Workaraound: If autofind board doesn't work(windows 10) try it with COM13
+            var portName = "COM13";
+            connectToBoard(portName);
+        });
+
+        function connectToBoard(portName){
             /**
              * Connect to the board with portName
              * Only works if one board is plugged in
              * i.e. ourBoard.connect(portName).....
              */
-
-
 
             ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
                 .then(() => {
@@ -45,7 +57,6 @@ function start(sampleFunction){
                             return ourBoard.streamStart();
                         })
                         .catch((err) => {
-                            //console.log('err', err);
                             return ourBoard.streamStart();
                         })
                         .catch((err) => {
@@ -61,33 +72,24 @@ function start(sampleFunction){
                         console.log(">= v2: " + ourBoard.usingAtLeastVersionTwoFirmware());
                     }
 
-
                     //.channelSet(channelNumber,powerDown,gain,inputType,bias,srb2,srb1)
-                    ourBoard.channelSet(1,false,24,'normal',true,true,false);
-                    ourBoard.channelSet(2,true,24,'normal',true,true,false);
-                    ourBoard.channelSet(3,true,24,'normal',true,true,false);
-                    ourBoard.channelSet(4,true,24,'normal',true,true,false);
-                    ourBoard.channelSet(5,true,24,'normal',true,true,false);
-                    ourBoard.channelSet(6,true,24,'normal',true,true,false);
-                    ourBoard.channelSet(7,true,24,'normal',true,true,false);
-                    ourBoard.channelSet(8,true,24,'normal',true,true,false);
+                    // deactivate unused channels and activate bias and srb2
+                    boardSettings.channelsOff.forEach(function(channelState,index){
+                        ourBoard.channelSet(index+1,channelState,24,'normal',true,true,false);
+                    });
 
                     ourBoard.on('sample', (sample) => {
                         sampleFunction(sample);
                     });
                 });
-        } else {
-            /** Unable to auto find OpenBCI board */
-            console.log('Unable to auto find OpenBCI board');
         }
-    });
 
     function exitHandler(options, err) {
         if (options.cleanup) {
             if (verbose) console.log('clean');
             ourBoard.removeAllListeners();
             /** Do additional clean up here */
-            if(process.argv[2]==='save'){
+            if(boardSettings.control === 'save'){
                 console.log("fix is called");
                 saveData.fixJsonFile();
             }
@@ -97,6 +99,7 @@ function start(sampleFunction){
             if (verbose) console.log('exit');
             ourBoard.disconnect().catch(console.log);
         }
+
     }
 
     if (process.platform === 'win32') {

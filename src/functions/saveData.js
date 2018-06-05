@@ -25,37 +25,49 @@
 module.exports = {
     saveData,
     fixJsonFile,
-    getNewestFile
+    getNewestFile,
+    start
 }
 
+const openBoard = require('./../board/openBoard');
 const fs = require('fs');
-
-//get date in format for file name like "data-2018-4-6-21-13-08.json"
-options = {
-    year: 'numeric', month: 'numeric', day: 'numeric',
-    hour: 'numeric', minute: 'numeric', second: 'numeric',
-    hour12: false
-};
-datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
-formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
+const boardSettings  = {
+    verbose: true,                                                  //  Print out useful debugging events
+    debug: false,                                                   //  Print out a raw dump of bytes sent and received
+    simulate: false,                                                // Full functionality, just mock data. Must attach Daisy module by setting
+    channelsOff: [false,false,true,false,false,false,false,false],  // power down unused channel 1 - 8
+    control: "save"                                                 // Control type
+}
 
 let stream;
-let init = true;
 
-//create json file
-function getStream(){
+if(process.argv[2] === 'start'){
+    start();
+};
+
+function start() {
+    console.log(start);
+    // connect to the board and process samples with sampleFunction
+    let sampleFunction = saveData;
+    openBoard.start(sampleFunction,boardSettings);
+
+    //get date in format for file name like "data-2018-4-6-21-13-08.json"
+    options = {
+        year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', second: 'numeric',
+        hour12: false
+    };
+
+    datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
+    formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
+
     stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
 }
 
 
 //save incoming sample's to json file with current date time in filename
 function saveData(sample) {
-    if(init){
-        getStream();
-        init = false;
-    }
     var record = JSON.stringify(sample);
-
     stream.write(record + ",\n")
     process.stdout.write("save data...\r");
 }
