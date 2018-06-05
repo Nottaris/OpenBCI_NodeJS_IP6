@@ -23,7 +23,7 @@ function start(){
                 return;
             }
 
-            if (fs.statSync(filename).isDirectory()) filename += 'src/plot/index.html';
+            if (fs.statSync(filename).isDirectory()) filename += 'src/gui/plot/index.html';
 
             fs.readFile(filename, "binary", function(err, file) {
                 if(err) {
