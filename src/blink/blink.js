@@ -1,12 +1,11 @@
 /**
  * extract blinks from eeg signal
  *
- * first approach: direct volt from channel 2
- * second approach: channel 1 -
  *
- * blinks last from 100 to 400ms in real
- * (EEG data: 20-40Hz)
  */
+const mathFunctions = require('../functions/mathFunctions');
+const saveData = require('../functions/saveData');
+const detectBlink = require('./detectBlink');
 
 module.exports = {
     getBlinks: function (sample) {
@@ -19,44 +18,41 @@ module.exports = {
     reset
 }
 
-const detectBlink = require('./detectBlink');
-const server = require('./server');
-
-const defaultSettings  = {
+const defaultSettings = {
     baselineLengthSec: 5,       // time in seconds for baseline
-    channel: 1,                 // number of channel ( from 1 to 8 )
-    sampleRate: 250,            // 250Hz
-    slots: 10,                  // data points per slot
-    threshold: 1.5,              // deviation factor
-    debug: true                  // show console.log
+    channel:           1,       // number of channel ( from 1 to 8 )
+    sampleRate:      250,       // 250Hz
+    slots:            5,       // data points per slot
+    threshold:       1.5,       // deviation factor
+    debug:          true        // show console.log
 }
 
-
-
-let averages = [];
-let average;
-let baseline  = [];
+let slotValues = [];
+let medianValues = [];
+let baseline = [];
 let count = 0;
-let avgInterval = 0;
 let blinkCount = 0;
 let settings = defaultSettings;
-let baselineSlots = settings.baselineLengthSec*settings.sampleRate/settings.slots; // number of slots in baseline (at 250Hz)
+let baselineSlots = settings.baselineLengthSec * settings.sampleRate / settings.slots; // number of slots in baseline (at 250Hz)
+
+saveData.getChannelDatafromJSON();
+
 function getSampleAverages(sample) {
 
     baseline = getBaseline();
 
     if (count < settings.slots) {
-        avgInterval = avgInterval+Number((sample.channelData[settings.channel-1] * 1000000).toFixed(20)); //microVolts
+        slotValues.push(Number((sample.channelData[settings.channel - 1] * 1000000))); //microVolts
         count++;
     } else if (count === settings.slots) {
-        averages.push(avgInterval/settings.slots);
-        average = Number(avgInterval/settings.slots);
+        let currentMedian = mathFunctions.getMedian(slotValues);
+        medianValues.push(currentMedian);
         count = 0;
-        avgInterval = 0;
+        slotValues = [];
 
         //if baseline is at least 1250 samples (5 sec.) -> detect Blinks
-        if(baseline.length*settings.slots>=settings.baselineLengthSec*settings.sampleRate) {
-            detectBlink.compareAverages(baseline,average);
+        if (baseline.length >= baselineSlots) {
+            detectBlink.compareAverages(baseline, currentMedian);
         } else {
             process.stdout.write("waiting for baseline...\r");
         }
@@ -64,43 +60,41 @@ function getSampleAverages(sample) {
 
 }
 
+// sliding window
 function getBaseline() {
-    if(averages.length>baselineSlots+30){ //slip first 30 data points
-        return averages.slice(-baselineSlots); // extract baseline form averages
+   // if(settings.debug) console.log("medianValues.length: "+medianValues.length);
+
+    if (medianValues.length > baselineSlots + 30) {   // skip first 30 data slots
+        let slidingWindow = mathFunctions.clone(medianValues);
+        slidingWindow = slidingWindow.slice(-baselineSlots);    // extract baseline form medianValues
+       // if(settings.debug) console.log("slidingWindow.length: "+slidingWindow.length);
+        return slidingWindow;
     } else {
-        return averages;
+        return medianValues;
     }
 }
 
-function setBlinkcount(){
+function setBlinkcount() {
     blinkCount++;
 }
 
-function getBlinkcount(){
+function getBlinkcount() {
     return blinkCount;
 }
 
-function getSettings(){
+function getSettings() {
     return settings;
 }
 
 function setSettings(newSettings) {
-    settings =  newSettings ;
+    settings = newSettings;
 }
 
-
-function setNextCommand() {
-    let idx = commands.indexOf(currentCommand);
-    currentCommand = commands[idx + 1];
-}
-
-
-function reset(){
-     settings = defaultSettings;
-     averages = [];
-     average;
-     baseline  = [];
-     count = 0;
-     avgInterval = 0;
-     blinkCount = 0;
+function reset() {
+    settings = defaultSettings;
+    medianValues = [];
+    slotValues = [];
+    baseline = [];
+    count = 0;
+    blinkCount = 0;
 }

@@ -6,7 +6,7 @@ let assert = require('assert');
 
 let settings = blink.getSettings();
 
-describe('blink', function () {
+describe('blink - with Paste', function () {
   before(function () {
       const testfile = "../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json";
       data = openData.loadJSON(testfile);
@@ -20,7 +20,7 @@ describe('blink', function () {
         blink.setSettings(settings);
     });
 
-  describe('#detectBlinks', function() {
+  describe('#detectBlinks default threshold', function() {
     it('5 blinks should be detected', function (done) {
 
       data.forEach(function(sample) {
@@ -31,9 +31,9 @@ describe('blink', function () {
       done();
     });
   });
-  describe('#detectBlinks with threshold of 0.2', function() {
-     it('5 blinks with min. threshold of 0.2', function (done) {
-        settings.threshold = 0.2;
+  describe('#detectBlinks with threshold of 1.3', function() {
+     it('5 blinks with min. threshold of 1.3', function (done) {
+        settings.threshold = 1.3;
         blink.setSettings(settings);
 
         data.forEach(function(sample) {
@@ -45,9 +45,9 @@ describe('blink', function () {
         done();
     });
   });
-    describe('#detectBlinks blinks with threshold 3.9', function() {
-        it('5 blinks with max. threshold 3.9', function (done) {
-            settings.threshold = 3.9;
+    describe('#detectBlinks blinks with threshold 3.0', function() {
+        it('5 blinks with max. threshold 3.0', function (done) {
+            settings.threshold = 4.2;
             blink.setSettings(settings);
             data.forEach(function(sample) {
                 blink.getBlinks(sample);
@@ -80,7 +80,7 @@ describe('blink - no Paste', function () {
         blink.setSettings(settings);
     });
 
-    describe('#detectBlinks', function() {
+    describe('#detectBlinks default threshold', function() {
         it('5 blinks should be detected', function (done) {
 
             data.forEach(function(sample) {
@@ -91,9 +91,9 @@ describe('blink - no Paste', function () {
             done();
         });
     });
-    describe('#detectBlinks with min. threshold of 0.9', function() {
-        it('5 blinks with threshold of 0.9', function (done) {
-            settings.threshold = 0.9;
+    describe('#detectBlinks with min. threshold of 1.4', function() {
+        it('5 blinks with threshold of 1.4', function (done) {
+            settings.threshold = 1.4;
             blink.setSettings(settings);
 
             data.forEach(function(sample) {
@@ -105,9 +105,9 @@ describe('blink - no Paste', function () {
             done();
         });
     });
-    describe('#detectBlinks blinks with max. threshold 1.7', function() {
-        it('5 blinks with threshold 1.7', function (done) {
-            settings.threshold = 1.7;
+    describe('#detectBlinks blinks with max. threshold 2.0', function() {
+        it('5 blinks with threshold 2.0', function (done) {
+            settings.threshold = 2.0;
             blink.setSettings(settings);
             data.forEach(function(sample) {
                 blink.getBlinks(sample);

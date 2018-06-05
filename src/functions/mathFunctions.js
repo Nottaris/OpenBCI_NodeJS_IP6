@@ -5,7 +5,8 @@ module.exports = {
     getStandardDeviation,
     getMaxValue,
     getMinValue,
-    getMedian
+    getMedian,
+    clone
 }
 
 // Percentage Change (newValue - oldValue) / |oldValue| *100
@@ -40,6 +41,7 @@ function getVariance(array) {
     }, 0) / array.length;
 }
 
+// standard deviation as square root of variance
 function getStandardDeviation(array) {
     return Math.sqrt(getVariance(array));
 }
@@ -57,3 +59,8 @@ function getMinValue(array) {
         return Math.min(a, b);
     });
 }
+
+// Get deep copy of array
+function clone(array) {
+	return JSON.parse(JSON.stringify(array));
+};

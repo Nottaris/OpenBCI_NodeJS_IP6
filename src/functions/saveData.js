@@ -25,10 +25,12 @@
 module.exports = {
     saveData,
     fixJsonFile,
-    getNewestFile
+    getNewestFile,
+    getChannelDatafromJSON
 }
 
 const fs = require('fs');
+const openData = require('./../functions/openData');
 
 //get date in format for file name like "data-2018-4-6-21-13-08.json"
 options = {
@@ -90,4 +92,13 @@ function getNewestFile() {
         return b.mtime - a.mtime;
     })
     return (out.length>0) ? out[0].file : "";
+}
+
+function getChannelDatafromJSON() {
+    const fs = require('fs');
+    let stream = fs.createWriteStream("data/dataChannelfromJSON.txt", { flags: 'a' });
+    let data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
+    data.forEach(function(d){
+        stream.write(d.channelData[0] + ",\n");
+    });
 }
