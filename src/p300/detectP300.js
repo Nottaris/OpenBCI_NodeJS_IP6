@@ -1,6 +1,6 @@
 const mathFunctions = require('../functions/mathFunctions');
 const p300 = require('./p300');
-const server = require('./server');
+const server = require('../socket/server');
 
 module.exports = {
     getVEP: detectP300

@@ -18,7 +18,7 @@ module.exports = {
     reset
 }
 
-const defaultSettings = {
+const defaultSettings  = {
     baselineLengthSec: 5,       // time in seconds for baseline
     channel:           1,       // number of channel ( from 1 to 8 )
     sampleRate:      250,       // 250Hz

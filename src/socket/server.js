@@ -1,25 +1,26 @@
 //******** send display commands to player via socket.io ************
-
 module.exports = {
     sendCmd,
     doCmd,
-    doBlinkCmd
+    doBlinkCmd,
+    streamData
 }
 
-
-
 const http = require('http');
+const port = 3001;
 let io;
 let app;
 
-(function start(){
-    // create socket server on port 3001
-    app = http.createServer(function(req, res) {});
-    io = require('socket.io').listen(app);
-    app.listen(3001, function(){
-        console.log('listening on *:3001');
-    });
-})();
+// create socket server on port 3001
+app = http.createServer(function(req, res) {});
+app.listen(port, function(){
+    console.log('listening on *:'+port);
+});
+io = require('socket.io').listen(app);
+app.listen(port, function(){
+    console.log('listening on *:'+port);
+});
+
 
 function sendCmd(command) {
     //emmit command event for each
@@ -39,4 +40,7 @@ function doBlinkCmd() {
     console.log("sent blinkcommand");
 }
 
-//**********************************************************
+function streamData(sample) {
+    //stream bci data to client
+    io.emit('sample', { sample: sample });
+}

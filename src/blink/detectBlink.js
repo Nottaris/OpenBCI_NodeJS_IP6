@@ -1,6 +1,6 @@
 const mathFunctions = require('../functions/mathFunctions');
 const blink = require('./blink');
-const server = require('./server');
+const server = require('../socket/server');
 
 module.exports = {
     compareAverages: detectBlink
@@ -103,6 +103,7 @@ function blinkFound() {
 function startFlushCmd() {
     setInterval(function () {
         //send next command to flash on player
+        console.log("send cmd"+currentCommand);
         setNextCommand();
         server.sendCmd(currentCommand);
     }, 1000);

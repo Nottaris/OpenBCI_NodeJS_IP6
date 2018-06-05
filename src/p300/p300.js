@@ -22,10 +22,10 @@ const commands = [
     "prev"
 ];
 
-var currentCommand = "play";
 
+const server = require('../socket/server');
 const detectP300 = require('./detectP300');
-const server = require('./server');
+var currentCommand = "play";
 
 const defaultSettings  = {
     channel: 5,                 // number of channel ( from 1 to 8 ) 5 === yellow Cz (middle top head) for p300

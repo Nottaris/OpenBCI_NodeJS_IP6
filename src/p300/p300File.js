@@ -1,17 +1,13 @@
 const openData = require('./../functions/openData');
 const p300 = require('./p300');
 
-module.exports = {
-    start
-};
 
-function start() {
 
-    console.log("p300file");
+console.log("p300file");
 
-    var data = openData.loadJSON("../../data/data-2018-4-17-21-30-56.json");
+var data = openData.loadJSON("../../data/data-2018-5-1-11-23-10.json");
 
-    data.forEach(function(sample) {
-        p300.getP300(sample);
-    });
-}
+data.forEach(function(sample) {
+    p300.getP300(sample);
+});
+
