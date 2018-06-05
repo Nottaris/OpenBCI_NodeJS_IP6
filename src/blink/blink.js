@@ -3,10 +3,6 @@
  *
  *
  */
-const mathFunctions = require('../functions/mathFunctions');
-const saveData = require('../functions/saveData');
-const detectBlink = require('./detectBlink');
-
 module.exports = {
     getBlinks: function (sample) {
         getSampleAverages(sample);
@@ -17,6 +13,11 @@ module.exports = {
     setSettings,
     reset
 }
+
+const mathFunctions = require('../functions/mathFunctions');
+//const saveData = require('../functions/saveData');
+const detectBlink = require('./detectBlink');
+
 
 const defaultSettings  = {
     baselineLengthSec: 5,       // time in seconds for baseline
@@ -35,7 +36,7 @@ let blinkCount = 0;
 let settings = defaultSettings;
 let baselineSlots = settings.baselineLengthSec * settings.sampleRate / settings.slots; // number of slots in baseline (at 250Hz)
 
-saveData.getChannelDatafromJSON();
+//saveData.getChannelDatafromJSON();
 
 function getSampleAverages(sample) {
 

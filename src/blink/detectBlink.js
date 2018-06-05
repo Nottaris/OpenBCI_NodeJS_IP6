@@ -49,7 +49,7 @@ function detectBlink(baseline, currentMedian) {
             console.log("  Baseline median:\t" + mathFunctions.getMedian(baseline).toFixed(2));
             console.log("  Variance:\t\t" + mathFunctions.getVariance(baseline).toFixed(2));
             console.log("  Standard deviation:\t" + mathFunctions.getStandardDeviation(baseline).toFixed(2));
-            console.log("  median-standardDev*a:\t " + Number(baselineMedian - standardDeviation * settings.threshold).toFixed(2));
+           // console.log("  median-standardDev*a:\t " + Number(baselineMedian - standardDeviation * settings.threshold).toFixed(2));
             console.log("  Max Value:\t\t" + mathFunctions.getMaxValue(baseline).toFixed(2));
             console.log("  Min Value:\t\t" + mathFunctions.getMinValue(baseline).toFixed(2));
             console.log("  -------");
