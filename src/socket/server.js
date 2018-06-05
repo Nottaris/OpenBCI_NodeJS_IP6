@@ -13,9 +13,6 @@ let app;
 
 // create socket server on port 3001
 app = http.createServer(function(req, res) {});
-app.listen(port, function(){
-    console.log('listening on *:'+port);
-});
 io = require('socket.io').listen(app);
 app.listen(port, function(){
     console.log('listening on *:'+port);
