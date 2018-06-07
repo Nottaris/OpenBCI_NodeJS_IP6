@@ -1,21 +1,57 @@
 const openData = require('./../functions/openData');
-const blink = require('./blink');
+var PythonShell = require('python-shell');
 
-/* OpenBCI-RAW-EyeBlink-V1-2018-04-09_20-08-00.txt
-12s Blink ~Row 2960
-17s Blink ~Row 4150
-22s Doppelblink ~Row 5450
-*/
+
+
+
 console.log("blinkfile");
 
-//data = openData.loadJSON("../../data/data-2018-5-1-11-23-10.json");
- data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
-// data = openData.loadJSON();
+ var data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
 
-data.forEach(function(sample) {
-    blink.getBlinks(sample);
+
+var pyshell = new PythonShell('./../pyscripts/butterworthBandpass.py');
+
+pyshell.stdout.on('data', function (data) {
+    console.log(data);
 });
 
-console.log(blink.getBlinkcount());
 
 
+data.forEach(function(sample) {
+     if(sample.channelData[0]!==0) {
+        // sends a message to the Python script via stdin
+        pyshell.send(sample.channelData[0] * 1000000);
+     }
+})
+
+
+// end the input stream and allow the process to exit
+pyshell.end(function (err,code,signal) {
+  if (err) throw err;
+  console.log('The exit code was: ' + code);
+  console.log('The exit signal was: ' + signal);
+  console.log('finished');
+  console.log('finished');
+});
+
+
+var pyshell = new PythonShell('./../pyscripts/butterworthBandpass.py');
+
+pyshell.stdout.on('data', function (data) {
+    console.log(data);
+});
+
+
+
+data[1].channelData[0]
+
+
+
+// end the input stream and allow the process to exit
+pyshell.end(function (err,code,signal) {
+  if (err) throw err;
+  console.log('The exit code was: ' + code);
+  console.log('The exit signal was: ' + signal);
+  console.log('finished');
+  console.log('finished');
+});
