@@ -22,8 +22,8 @@ const defaultSettings = {
     baselineLengthSec: 5,       // time in seconds for baseline
     channel:           1,       // number of channel ( from 1 to 8 )
     sampleRate:      250,       // 250Hz
-    slots:            10,        // data points per slot
-    threshold:       1.5,       // deviation factor
+    slots:            10,       // data points per slot
+    threshold:         4,       // deviation factor with paste upper bound
     debug:          true        // show console.log
 }
 
