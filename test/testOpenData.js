@@ -20,13 +20,13 @@ describe('openData', function () {
 
 
     describe('#getFiledata()', function () {
-        it('data/testdata.txt should be "123"', function () {
+        it('test/data/OpenDataTestTxT.txt should be "123"', function () {
             assert.equal(openData.getFiledata(testfilepath + 'OpenDataTestTxT.txt'), "123");
         });
     });
 
     describe('#loadJSON()', function () {
-        it('data/testdata.json should be {key:123}', function () {
+        it('test/data/OpenDataTestJson.json should be {key:123}', function () {
             assert.equal(openData.getFiledata(testfilepath + 'OpenDataTestJson.json'), '{"key":123}');
         });
     });

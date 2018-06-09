@@ -2,7 +2,7 @@
 const blink = require('./../src/blink/blink');
 const openData = require('./../src/functions/openData');
 
-let assert = require('assert');
+const assert = require('assert');
 
 let settings = blink.getSettings();
 
