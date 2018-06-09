@@ -1,38 +1,47 @@
 // test the openData
 const openData = require('./../src/functions/openData');
-var assert = require('assert');
+const assert = require('assert');
 const fs = require('fs');
-const testfilepath = "test/data/OpenDataTest";
+const testfilepath = "test/data/";
 
 describe('openData', function () {
-  before(function () {
-    var stream = fs.createWriteStream(testfilepath+'.txt', { flags: 'a' });
-    stream.write("123");
-    stream.close;
-  });
-  describe('#getFiledata()', function () {
-    it('data/testdata.txt should be "123"', function () {
-      assert.equal(openData.getFiledata(testfilepath+'.txt'), "123");
+
+
+    before(function () {
+        var streamTxt = fs.createWriteStream(testfilepath + 'OpenDataTestTxT.txt', {flags: 'a'});
+        streamTxt.write("123");
+        streamTxt.close;
+
+        var streamJson = fs.createWriteStream(testfilepath + 'OpenDataTestJson.json', {flags: 'a'});
+        streamJson.write(JSON.stringify({key: 123}));
+        streamJson.close;
+
     });
-  });
-  after(function () {
-    fs.unlink(testfilepath+'.txt', (err) => {
-      if (err) throw err;
+
+
+    describe('#getFiledata()', function () {
+        it('data/testdata.txt should be "123"', function () {
+            assert.equal(openData.getFiledata(testfilepath + 'OpenDataTestTxT.txt'), "123");
+        });
     });
-  });
-  before(function () {
-    var stream = fs.createWriteStream(testfilepath+'.json', { flags: 'a' });
-    stream.write(JSON.stringify({key:123}));
-    stream.close;
-  });
-  describe('#loadJSON()', function () {
-    it('data/testdata.json should be {key:123}', function () {
-      assert.equal(openData.getFiledata(testfilepath+'.json'), '{"key":123}');
+
+    describe('#loadJSON()', function () {
+        it('data/testdata.json should be {key:123}', function () {
+            assert.equal(openData.getFiledata(testfilepath + 'OpenDataTestJson.json'), '{"key":123}');
+        });
     });
-  });
-  after(function () {
-    fs.unlink(testfilepath+'.json', (err) => {
-      if (err) throw err;
+
+
+    after(function () {
+        fs.unlink(testfilepath + 'OpenDataTestTxT.txt', (err) => {
+            if (err) throw err;
+        });
+
+        fs.unlink(testfilepath + 'OpenDataTestJson.json', (err) => {
+            if (err) throw err;
+        });
+
     });
-  });
+
+
 });
