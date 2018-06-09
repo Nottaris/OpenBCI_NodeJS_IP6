@@ -6,6 +6,9 @@ const fs = require('fs');
 const data = {key:123};
 
 describe('saveData', function () {
+  before(function(){
+    saveData.start();
+  });
   describe('#saveData()', function () {
     it('should save without error', function (done) {
       saveData.saveData(data);
