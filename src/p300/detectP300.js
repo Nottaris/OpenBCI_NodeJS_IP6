@@ -1,16 +1,19 @@
+module.exports = {
+    getVEP: detectP300
+};
+
+
 const mathFunctions = require('../functions/mathFunctions');
 const p300 = require('./p300');
 const server = require('../socket/server');
 
-module.exports = {
-    getVEP: detectP300
-};
+var PythonShell = require('python-shell');
 
 var settings;
 var third = 50;
 var counter = 0;
 var init = true;
-var filter = false;
+var filter = true;
 var vppx = {
     play: 0,
     pause: 0,
@@ -20,6 +23,7 @@ var vppx = {
     voldown: 0
 };
 var nrOfCommands = Object.keys(vppx).length;
+var voltsFiltered = [];
 
 function detectP300(volts, command) {
 
@@ -36,32 +40,33 @@ function detectP300(volts, command) {
     }
 
     if(filter) {
-        const spawn = require('child_process').spawn;
-        const pyFile = ['src/pyscripts/bandpassfilter.py'];
-        const py = spawn('python3', pyFile);
 
-        py.stdout.on('data', (data) => {
-          console.log(`py stdout: ${data}`);
+        var pyshell = new PythonShell('/src/pyscripts/butterworthBandpass14.py');
+
+        // received a message sent from the Python script (a simple "print" statement)
+        pyshell.stdout.on('data', function (value) {
+             //console.log(value);
+             //get filtered data back
+             voltsFiltered.push(value);
         });
 
-        py.stderr.on('data', (data) => {
-          console.log(`py stderr: ${data}`);
+        // sends channel data to the Python script via stdin
+        volts.forEach(function(v) {
+                pyshell.send(v);
+        })
+
+        // end the input stream and allow the process to exit
+        pyshell.end(function (err) {
+          if (err) throw err;
+          console.log('finished');
         });
 
-        py.on('close', (code) => {
-          //console.log(`child process exited with code ${code}`);
-        });
-
-        const voltsString = volts.toString();
-
-        py.stdin.write(voltsString);
-        py.stdin.end();
     }
 
 
     // volts is 600ms; for min use 200-600ms "L2"; for max use 400-600ms "L1"
-    let voltsL1 = volts.slice(third * 2);
-    let voltsL2 = volts.slice(third);
+    let voltsL1 = voltsFiltered.slice(third * 2);
+    let voltsL2 = voltsFiltered.slice(third);
 
     let max = mathFunctions.getMaxValue(voltsL1);
     let min = mathFunctions.getMinValue(voltsL2);
