@@ -1,5 +1,6 @@
 from scipy.signal import butter, lfilter
-import sys, numpy as np, matplotlib.pyplot as plt
+import json, sys, numpy as np, matplotlib.pyplot as plt
+
 
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
@@ -24,19 +25,18 @@ def main():
     highcut = 4.0
 
     # get our data as an array from read_in()
-    lines = []
-    for line in sys.stdin:
-        lines.append(float(line))
+    # datainput = np.frombuffer(sys.stdin.read(), dtype=np.float32)
+    datainput = sys.stdin.read()
 
     # create a numpy array
-    data = np.array(lines)
+    # data = np.array(datainput)
+    data = np.array(json.loads(datainput))
 
     # filter data
     filteredData = butter_bandpass_filter(data, lowcut, highcut, fs, order=6)
 
     # send filtered data back to node
-    for f in filteredData:
-        print(f)
+    print(filteredData)
 
     # plot if needed
     #plot(data, filteredData, lowcut, highcut)

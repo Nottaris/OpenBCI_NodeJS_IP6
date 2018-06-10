@@ -23,7 +23,7 @@ var vppx = {
     voldown: 0
 };
 var nrOfCommands = Object.keys(vppx).length;
-var voltsFiltered = [];
+
 
 function detectP300(volts, command) {
 
@@ -41,48 +41,70 @@ function detectP300(volts, command) {
 
     if(filter) {
 
-        var pyshell = new PythonShell('/src/pyscripts/butterworthBandpass14.py');
-
-        // received a message sent from the Python script (a simple "print" statement)
-        pyshell.stdout.on('data', function (value) {
-             //console.log(value);
-             //get filtered data back
-             voltsFiltered.push(value);
-        });
+        var voltsFiltered = [];
+        const options = {mode: 'text'};
+        let pyshell = new PythonShell('/src/pyscripts/butterworthBandpass14.py', options);
+        let data = JSON.stringify(volts);
 
         // sends channel data to the Python script via stdin
-        volts.forEach(function(v) {
-                pyshell.send(v);
-        })
+        pyshell.send(data).end(function(err){
+            if (err){
+                console.log(err)
+            }else{
+                //console.log('data sent')
+            };
+        });
+
+        // received a message sent from the Python script (a simple "print" statement)
+        pyshell.stdout.on('data', function (data) {
+             //get filtered data back
+             let rawdata = data.split(' ');
+             for (let i = 0; i < rawdata.length; i++) {
+                 if(rawdata[i].length>3 && !isNaN(rawdata[i])){
+                    voltsFiltered.push(Number(rawdata[i]));
+                 }
+             }
+             //console.log(voltsFiltered);
+        });
 
         // end the input stream and allow the process to exit
         pyshell.end(function (err) {
           if (err) throw err;
-          console.log('finished');
+          //console.log('finished');
+          processP300(voltsFiltered, command);
+          voltsFiltered = [];
         });
 
     }
-
-
-    // volts is 600ms; for min use 200-600ms "L2"; for max use 400-600ms "L1"
-    let voltsL1 = voltsFiltered.slice(third * 2);
-    let voltsL2 = voltsFiltered.slice(third);
-
-    let max = mathFunctions.getMaxValue(voltsL1);
-    let min = mathFunctions.getMinValue(voltsL2);
-
-    let vpp = max - min;
-
-    // add value to dict prop command
-    vppx[command] = vpp;
-    counter++;
-
-    //after all vppx are newly set again evaluate getCommand()
-    if (!init  &&  counter % nrOfCommands === 0 ) {
-       counter = 0;
-       getCommand();
-    }
 }
+
+function processP300(voltsF, command){
+    if(voltsF.length>0){
+
+        // volts is 600ms; for min use 200-600ms "L2"; for max use 400-600ms "L1"
+        let voltsL1 = voltsF.slice(third * 2);
+        let voltsL2 = voltsF.slice(third);
+
+        let max = mathFunctions.getMaxValue(voltsL1);
+        let min = mathFunctions.getMinValue(voltsL2);
+        //console.log(max);
+
+        let vpp = max - min;
+
+        // add value to dict prop command
+        vppx[command] = vpp;
+        counter++;
+
+        //after all vppx are newly set again evaluate getCommand()
+        if (!init  &&  counter % nrOfCommands === 0 ) {
+           counter = 0;
+           getCommand();
+        }
+    }
+
+}
+
+
 
 function getCommand() {
     var command = "?";
