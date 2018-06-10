@@ -28,11 +28,11 @@ const detectP300 = require('./detectP300');
 var currentCommand = "play";
 
 const defaultSettings  = {
-    channel: 5,                 // number of channel ( from 1 to 8 ) 5 === yellow Cz (middle top head) for p300
-    sampleRate: 250,            // 250Hz
-    slots: 150,                  // data points per slot ( 600ms === 150 )
-    threshold: 2,              // deviation factor
-    debug: true                  // show console.log
+    channel:      5,             // number of channel ( from 1 to 8 ) 5 === yellow Cz (middle top head) for p300
+    sampleRate: 250,             // 250Hz
+    slots:      150,             // data points per slot ( 600ms === 150 )
+    threshold:  1.8,             // deviation factor
+    debug:      true             // show console.log
 }
 
 let volts = [];

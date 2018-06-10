@@ -22,7 +22,7 @@ var vppx = {
     volup: 0,
     voldown: 0
 };
-var nrOfCommands = Object.keys(vppx).length;
+var nrOfCommands = Object.keys(vppx).length;    // aka 6
 
 
 function detectP300(volts, command) {
@@ -34,7 +34,8 @@ function detectP300(volts, command) {
             settings = p300.getSettings();
             third = Math.floor(Number(volts.length / 3));
         }
-        if(counter===nrOfCommands){
+        //on last command coming in set init to false (counter = 5)
+        if(counter===nrOfCommands-1){
             init = false;
         }
     }
@@ -87,7 +88,6 @@ function processP300(voltsF, command){
 
         let max = mathFunctions.getMaxValue(voltsL1);
         let min = mathFunctions.getMinValue(voltsL2);
-        //console.log(max);
 
         let vpp = max - min;
 
@@ -95,8 +95,10 @@ function processP300(voltsF, command){
         vppx[command] = vpp;
         counter++;
 
+  console.log(!init  &&  (counter % nrOfCommands === 0) );
+
         //after all vppx are newly set again evaluate getCommand()
-        if (!init  &&  counter % nrOfCommands === 0 ) {
+        if (!init  &&  (counter % nrOfCommands === 0) ) {
            counter = 0;
            getCommand();
         }
