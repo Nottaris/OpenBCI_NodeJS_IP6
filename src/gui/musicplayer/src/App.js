@@ -18,8 +18,8 @@ class App extends Component {
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h5 className="App-title">bci Music Player</h5>
                 </header>
-                <PlayerBlink tracks={this.props.tracks}/>
-                {/*<PlayerP300 tracks={this.props.tracks}/>*/}
+                {/*<PlayerBlink tracks={this.props.tracks}/>*/}
+                <PlayerP300 tracks={this.props.tracks}/>
             </div>
         );
     }

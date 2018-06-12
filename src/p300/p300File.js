@@ -1,11 +1,10 @@
 const openData = require('./../functions/openData');
-const p300 = require('./p300');
+//const p300 = require('./p300');
 var PythonShell = require('python-shell');
 
 
-console.log("p300file");
 
-var data = openData.loadJSON("../../test/data/data-2018-6-12-11-34-27_P300_Versuch1_10s.json");
+var data = openData.loadJSON("../../test/data/data-2018-6-12-15-55-05_P300_Versuch5_30s.json");
 
 var pyshell = new PythonShell('/src/pyscripts/butterworthBandpass.py');
 
@@ -20,9 +19,8 @@ pyshell.stdout.on('data', function (value) {
 let jsonData=[];
 data.forEach(function(sample) {
        jsonData.push(sample.channelData);
-
 })
-//console.log(JSON.stringify(jsonData));
+
 pyshell.send(JSON.stringify(jsonData));
 
 
@@ -32,8 +30,8 @@ pyshell.end(function (err) {
   console.log('finished');
 });
 
-//
+
 // data.forEach(function(sample) {
 //     p300.getP300(sample);
 // });
-//
+
