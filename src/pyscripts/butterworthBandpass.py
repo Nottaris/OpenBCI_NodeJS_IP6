@@ -1,5 +1,5 @@
 from scipy.signal import butter, lfilter
-import sys, numpy as np, matplotlib.pyplot as plt
+import json,sys, numpy as np, matplotlib.pyplot as plt
 
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
@@ -24,24 +24,27 @@ def main():
     highcut = 4.0
 
     # get our data as an array from read_in()
-    lines = []
-    for line in sys.stdin:
-        lines.append(float(line))
-
-    # create a numpy array
-    data = np.array(lines)
+    datainput = sys.stdin.read()
+    data = np.array(json.loads(datainput))
+    print(data[:, 0])
 
     # filter data
-    filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order=6)
+    for i in range(0, 8):
+        filterdData = butter_bandpass_filter(data[:,i], lowcut, highcut, fs, order=6)
+        plot(data[:, i], filterdData, lowcut, highcut, i)
+
+    # show plots
+    plt.show()
 
     # send filterd data back to node
     for f in filterdData:
         print(f)
 
+def plot(data, filteredData, lowcut, highcut, channel):
     # Plot original and filtered data
-    plt.figure(1)
+    plt.figure(channel)
     plt.subplot(211)
-    plt.title('Eye Blink - No Filter')
+    plt.title('Channel %s - No Filter' %(channel+1))
     plt.plot(data, label="Original Data")
     plt.ylabel('microVolts')
     plt.xlabel('Samples')
@@ -49,16 +52,14 @@ def main():
     plt.grid(True)
 
     plt.subplot(212)
-    plt.title('Eye Blink - Bandpass Filter %d - %d Hz' % (lowcut, highcut))
-    plt.plot(filterdData, label="Filterd Data", color='r')
+    plt.title('Channel %s - Bandpass Filter %d - %d Hz' % (channel+1, lowcut, highcut))
+    plt.plot(filteredData, label="Filterd Data", color='r')
     plt.ylabel('microVolts')
     plt.xlabel('Samples')
     plt.grid(True)
     plt.legend(loc='upper right')
-    # axes = plt.gca()
-    # axes.set_ylim([-4000, 4000])
 
-    plt.show()
+
 
 
 #start process
