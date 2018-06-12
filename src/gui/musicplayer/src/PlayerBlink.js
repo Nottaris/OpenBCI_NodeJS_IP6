@@ -53,7 +53,7 @@ export default class PlayerBlink extends React.Component {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
             setTimeout(function () {
-                elem.style.background = "#2f2f";
+                elem.style.color = "#1c456e";
             }, 1000);
         }
     }
@@ -164,7 +164,7 @@ export default class PlayerBlink extends React.Component {
 
     render() {
         return (
-            <div className="Player">
+            <div className="Player Blink">
                 <div className="Info">
                     <div className="PlayerCover">
                         <div className="Artwork"

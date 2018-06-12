@@ -17,7 +17,6 @@ body {
     width: 100%;
     margin-top:40px;
     background: #000;
-    position: relative;
 }
 
 .Player .row {
@@ -28,6 +27,7 @@ body {
     display: table;
     width: 675px;
     margin: 0 auto;
+    position: relative;
 }
 .Player .cell {
     display: table-cell;
@@ -154,12 +154,13 @@ body {
 .Player .Controls {
     display: table;
     width: 100%;
-    min-height: 100%;
     align-items: center;
     justify-content: center;
     background: #000;
-    height: 300px;
-    margin-top: 100px;
+    height: 200px;
+    max-width: 675px;
+    margin: 0 auto;
+    padding-top: 100px;
 }
 
 .Player .Controls table {
@@ -181,16 +182,27 @@ body {
 }
 .Player .Controls .Button:hover  .fa{
     transform: scale(0.98);
-    color: #000;
-    background: #2f2f;
+    color: #FFF;
 }
 
 .Player .Controls .Button :active .fa {
-    color: #000;
-    background: #2f2f;
+    color: #FFF;
+
 }
 .Player .Controls .Button .fa {
-    color: #20239D;
+    color: #1c456e;
     font-size: 80px;
     padding: 44px;
 }
+
+
+/*Custom CSS for P300*/
+.P300 .Controls {
+    max-width: 100%;
+    min-height: 100%;
+}
+
+/* Custom CSS for Blink */
+/* .Blink {
+
+}*/

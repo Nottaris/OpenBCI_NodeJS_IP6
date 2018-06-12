@@ -18,7 +18,8 @@ export default class P300 extends React.Component {
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
-            currentCmd: 'no'
+            currentCmd: 'no',
+            colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
         };
 
         this.clickCommand = this.clickCommand.bind(this);
@@ -50,9 +51,11 @@ export default class P300 extends React.Component {
         if(null!==command){
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
+            elem.style.background = this.state.colors[Math.floor(Math.random()*this.state.colors.length)];
             setTimeout(function () {
-                elem.style.color = "#292dff";
-            }, 150);
+                elem.style.color = "#1c456e";
+                elem.style.background = "#000";
+            }, 250);
         }
     }
 
@@ -162,7 +165,7 @@ export default class P300 extends React.Component {
 
     render() {
         return (
-            <div className="Player">
+            <div className="Player P300">
                 <div className="Info">
                     <div className="PlayerCover">
                         <div className="Artwork"
