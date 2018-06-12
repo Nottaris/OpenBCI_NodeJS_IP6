@@ -1,21 +1,30 @@
 const openData = require('./../functions/openData');
-const blink = require('./blink');
+//const blink = require('./../blink/blink');
 
-/* OpenBCI-RAW-EyeBlink-V1-2018-04-09_20-08-00.txt
-12s Blink ~Row 2960
-17s Blink ~Row 4150
-22s Doppelblink ~Row 5450
-*/
+var PythonShell = require('python-shell');
+
+
 console.log("blinkfile");
 
-//data = openData.loadJSON("../../data/data-2018-5-1-11-23-10.json");
- data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
-// data = openData.loadJSON();
+var data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
+var pyshell = new PythonShell('/src/pyscripts/butterworthBandpassEyeBlink.py');
 
-data.forEach(function(sample) {
-    blink.getBlinks(sample);
+// received a message sent from the Python script (a simple "print" statement)
+pyshell.stdout.on('data', function (value) {
+     console.log(value);
+     //TODO: send filtered value to detectBlink
+     //blink.getBlinks(value);
 });
 
-console.log(blink.getBlinkcount());
+// sends channel data to the Python script via stdin
+data.forEach(function(sample) {
+     if(sample.channelData[0]!==0) {
+        pyshell.send((sample.channelData[0]* 1000000).toFixed(20));
+     }
+})
 
-
+// end the input stream and allow the process to exit
+pyshell.end(function (err) {
+  if (err) throw err;
+  console.log('finished');
+});

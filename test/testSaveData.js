@@ -11,6 +11,7 @@ describe('saveData', function () {
   });
   describe('#saveData()', function () {
     it('should save without error', function (done) {
+      saveData.start();
       saveData.saveData(data);
       done();
     });

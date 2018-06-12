@@ -1,16 +1,19 @@
+module.exports = {
+    getVEP: detectP300
+};
+
+
 const mathFunctions = require('../functions/mathFunctions');
 const p300 = require('./p300');
 const server = require('../socket/server');
 
-module.exports = {
-    getVEP: detectP300
-};
+var PythonShell = require('python-shell');
 
 var settings;
 var third = 50;
 var counter = 0;
 var init = true;
-var filter = false;
+var filter = true;
 var vppx = {
     play: 0,
     pause: 0,
@@ -19,7 +22,8 @@ var vppx = {
     volup: 0,
     voldown: 0
 };
-var nrOfCommands = Object.keys(vppx).length;
+var nrOfCommands = Object.keys(vppx).length;    // aka 6
+
 
 function detectP300(volts, command) {
 
@@ -30,54 +34,79 @@ function detectP300(volts, command) {
             settings = p300.getSettings();
             third = Math.floor(Number(volts.length / 3));
         }
-        if(counter===nrOfCommands){
+        //on last command coming in set init to false (counter = 5)
+        if(counter===nrOfCommands-1){
             init = false;
         }
     }
 
     if(filter) {
-        const spawn = require('child_process').spawn;
-        const pyFile = ['src/pyscripts/bandpassfilter.py'];
-        const py = spawn('python3', pyFile);
 
-        py.stdout.on('data', (data) => {
-          console.log(`py stdout: ${data}`);
+        var voltsFiltered = [];
+        const options = {mode: 'text'};
+        let pyshell = new PythonShell('/src/pyscripts/butterworthBandpass14.py', options);
+        let data = JSON.stringify(volts);
+
+        // sends channel data to the Python script via stdin
+        pyshell.send(data).end(function(err){
+            if (err){
+                console.log(err)
+            }else{
+                //console.log('data sent')
+            };
         });
 
-        py.stderr.on('data', (data) => {
-          console.log(`py stderr: ${data}`);
+        // received a message sent from the Python script (a simple "print" statement)
+        pyshell.stdout.on('data', function (data) {
+             //get filtered data back
+             let rawdata = data.split(' ');
+             for (let i = 0; i < rawdata.length; i++) {
+                 if(rawdata[i].length>3 && !isNaN(rawdata[i])){
+                    voltsFiltered.push(Number(rawdata[i]));
+                 }
+             }
+             //console.log(voltsFiltered);
         });
 
-        py.on('close', (code) => {
-          //console.log(`child process exited with code ${code}`);
+        // end the input stream and allow the process to exit
+        pyshell.end(function (err) {
+          if (err) throw err;
+          //console.log('finished');
+          processP300(voltsFiltered, command);
+          voltsFiltered = [];
         });
 
-        const voltsString = volts.toString();
-
-        py.stdin.write(voltsString);
-        py.stdin.end();
-    }
-
-
-    // volts is 600ms; for min use 200-600ms "L2"; for max use 400-600ms "L1"
-    let voltsL1 = volts.slice(third * 2);
-    let voltsL2 = volts.slice(third);
-
-    let max = mathFunctions.getMaxValue(voltsL1);
-    let min = mathFunctions.getMinValue(voltsL2);
-
-    let vpp = max - min;
-
-    // add value to dict prop command
-    vppx[command] = vpp;
-    counter++;
-
-    //after all vppx are newly set again evaluate getCommand()
-    if (!init  &&  counter % nrOfCommands === 0 ) {
-       counter = 0;
-       getCommand();
     }
 }
+
+function processP300(voltsF, command){
+    if(voltsF.length>0){
+
+        // volts is 600ms; for min use 200-600ms "L2"; for max use 400-600ms "L1"
+        let voltsL1 = voltsF.slice(third * 2);
+        let voltsL2 = voltsF.slice(third);
+
+        let max = mathFunctions.getMaxValue(voltsL1);
+        let min = mathFunctions.getMinValue(voltsL2);
+
+        let vpp = max - min;
+
+        // add value to dict prop command
+        vppx[command] = vpp;
+        counter++;
+
+  console.log(!init  &&  (counter % nrOfCommands === 0) );
+
+        //after all vppx are newly set again evaluate getCommand()
+        if (!init  &&  (counter % nrOfCommands === 0) ) {
+           counter = 0;
+           getCommand();
+        }
+    }
+
+}
+
+
 
 function getCommand() {
     var command = "?";
