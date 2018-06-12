@@ -7,7 +7,7 @@ var PythonShell = require('python-shell');
 console.log("blinkfile");
 
 var data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
-var pyshell = new PythonShell('./../pyscripts/butterworthBandpass.py');
+var pyshell = new PythonShell('/src/pyscripts/butterworthBandpassEyeBlink.py');
 
 // received a message sent from the Python script (a simple "print" statement)
 pyshell.stdout.on('data', function (value) {

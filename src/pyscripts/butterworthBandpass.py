@@ -20,8 +20,8 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
 def main():
     # Sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
-    lowcut = 5.0
-    highcut = 50.0
+    lowcut = 1.0
+    highcut = 4.0
 
     # get our data as an array from read_in()
     lines = []
@@ -55,8 +55,8 @@ def main():
     plt.xlabel('Samples')
     plt.grid(True)
     plt.legend(loc='upper right')
-    axes = plt.gca()
-    axes.set_ylim([-4000, 4000])
+    # axes = plt.gca()
+    # axes.set_ylim([-4000, 4000])
 
     plt.show()
 
