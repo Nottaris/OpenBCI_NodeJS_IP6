@@ -27,6 +27,7 @@
     "mocha": "^5.1.0",
     "openbci": "^2.0.0",
     "openbci-cyton": "^1.1.2",
+    "python-shell": "^0.5.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-fontawesome": "^1.6.1",
