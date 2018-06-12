@@ -14,8 +14,7 @@ body {
     overflow: hidden;
     box-shadow: 0 5px 10px -5px #121212;
     height: 667px;
-    width: 675px;
-    max-width: 100%;
+    width: 100%;
     margin-top:40px;
     background: #000;
     position: relative;
@@ -27,7 +26,8 @@ body {
 
 .Player .Info {
     display: table;
-    width: 100%;
+    width: 675px;
+    margin: 0 auto;
 }
 .Player .cell {
     display: table-cell;
@@ -154,11 +154,12 @@ body {
 .Player .Controls {
     display: table;
     width: 100%;
+    min-height: 100%;
     align-items: center;
     justify-content: center;
     background: #000;
     height: 300px;
-    margin-top: 160px;
+    margin-top: 100px;
 }
 
 .Player .Controls table {
@@ -180,14 +181,16 @@ body {
 }
 .Player .Controls .Button:hover  .fa{
     transform: scale(0.98);
-    color: #FFFFFF;
+    color: #000;
+    background: #2f2f;
 }
 
 .Player .Controls .Button :active .fa {
-    color: #FFF;
-    background: #000;
+    color: #000;
+    background: #2f2f;
 }
 .Player .Controls .Button .fa {
-    color: #292dff;
+    color: #20239D;
     font-size: 80px;
+    padding: 44px;
 }

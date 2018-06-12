@@ -5,7 +5,7 @@ var PythonShell = require('python-shell');
 
 console.log("p300file");
 
-var data = openData.loadJSON("../../test/data/data-2018-6-12-11-43-57_P300_Versuch4_30s.json");
+var data = openData.loadJSON("../../test/data/data-2018-6-12-11-34-27_P300_Versuch1_10s.json");
 
 var pyshell = new PythonShell('/src/pyscripts/butterworthBandpass.py');
 

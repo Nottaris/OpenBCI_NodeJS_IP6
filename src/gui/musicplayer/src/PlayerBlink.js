@@ -53,7 +53,7 @@ export default class PlayerBlink extends React.Component {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
             setTimeout(function () {
-                elem.style.color = "#292dff";
+                elem.style.background = "#2f2f";
             }, 1000);
         }
     }

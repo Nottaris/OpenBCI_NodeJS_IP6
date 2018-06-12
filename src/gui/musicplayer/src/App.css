@@ -1,7 +1,9 @@
 body {
     background: #000000 !important;
 }
-
+#root {
+    width: 100%;
+}
 .App {
   text-align: center;
 }
