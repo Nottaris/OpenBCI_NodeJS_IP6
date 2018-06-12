@@ -2,7 +2,6 @@ from scipy.signal import butter, lfilter
 import json, sys, numpy as np, matplotlib.pyplot as plt
 
 
-
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
 
 def butter_bandpass(lowcut, highcut, fs, order=5):
@@ -21,15 +20,13 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
 def main():
     # Sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
-    lowcut = 1.0
+    lowcut = 0.5
     highcut = 4.0
 
     # get our data as an array from read_in()
-    # datainput = np.frombuffer(sys.stdin.read(), dtype=np.float32)
     datainput = sys.stdin.read()
 
     # create a numpy array
-    # data = np.array(datainput)
     data = np.array(json.loads(datainput))
 
     # filter data

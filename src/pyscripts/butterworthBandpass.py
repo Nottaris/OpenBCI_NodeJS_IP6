@@ -1,5 +1,5 @@
 from scipy.signal import butter, lfilter
-import json,sys, numpy as np, matplotlib.pyplot as plt
+import json, sys, numpy as np, matplotlib.pyplot as plt
 
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html

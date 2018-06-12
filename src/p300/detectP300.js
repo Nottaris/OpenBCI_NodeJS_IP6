@@ -13,6 +13,7 @@ var settings;
 var third = 50;
 var counter = 0;
 var init = true;
+var subBase = true;
 var filter = true;
 var vppx = {
     play: 0,
@@ -23,9 +24,24 @@ var vppx = {
     voldown: 0
 };
 var nrOfCommands = Object.keys(vppx).length;    // aka 6
+var baselineVolts = [];
 
 
 function detectP300(volts, command) {
+
+    if(subBase){
+        //add new values to baselineBuffer
+        baselineVolts.concat(volts);
+        //if baselineBuffer is larger than 12 times volts slot:
+        //purge old values from baselineBuffer (remove first (oldest) slot)
+        //calculate median and subtract it from current volts
+        if (baselineVolts.length > volts.length*13) {
+            baselineVolts.splice(0, volts.length);
+            //subtract baselineMedian from each value in current slot
+            let baselineMedian = mathFunctions.getMedian(baselineVolts);
+            volts.map(volt => volt - baselineMedian);
+        }
+    }
 
     //skip init phase after first values are in
     if (init) {
@@ -51,9 +67,7 @@ function detectP300(volts, command) {
         pyshell.send(data).end(function(err){
             if (err){
                 console.log(err)
-            }else{
-                //console.log('data sent')
-            };
+            }
         });
 
         // received a message sent from the Python script (a simple "print" statement)
@@ -65,13 +79,11 @@ function detectP300(volts, command) {
                     voltsFiltered.push(Number(rawdata[i]));
                  }
              }
-             //console.log(voltsFiltered);
         });
 
         // end the input stream and allow the process to exit
         pyshell.end(function (err) {
           if (err) throw err;
-          //console.log('finished');
           processP300(voltsFiltered, command);
           voltsFiltered = [];
         });
@@ -94,8 +106,6 @@ function processP300(voltsF, command){
         // add value to dict prop command
         vppx[command] = vpp;
         counter++;
-
-  console.log(!init  &&  (counter % nrOfCommands === 0) );
 
         //after all vppx are newly set again evaluate getCommand()
         if (!init  &&  (counter % nrOfCommands === 0) ) {
