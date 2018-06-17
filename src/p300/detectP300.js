@@ -13,7 +13,7 @@ var settings;
 var third = 50;
 var counter = 0;
 var init = true;
-var subBase = true;
+var subBase = false;
 var filter = true;
 var vppx = {
     play: 0,
@@ -66,7 +66,7 @@ function detectP300(volts, command) {
         // sends channel data to the Python script via stdin
         pyshell.send(data).end(function(err){
             if (err){
-                console.log(err)
+                console.log("pyshell send err: "+err)
             }
         });
 
@@ -88,6 +88,9 @@ function detectP300(volts, command) {
           voltsFiltered = [];
         });
 
+    }else{
+        //not filtered
+        processP300(volts, command);
     }
 }
 

@@ -9,6 +9,7 @@
     "blinkfile": "node src/blink/blinkFile",
     "p300": "node src/p300/app",
     "p300file": "node src/p300/p300File",
+    "p300filestream": "node src/p300/p300FileStream",
     "save": "node src/functions/saveData.js start",
     "plot": "node src/gui/plot/plot.js",
     "stream": "node src/functions/streamData",
