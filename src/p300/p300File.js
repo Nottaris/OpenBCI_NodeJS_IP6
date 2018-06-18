@@ -7,9 +7,9 @@ var PythonShell = require('python-shell');
 
 
 
-var data = openData.loadJSON("../../test/data/data-2018-6-12-15-55-05_P300_Versuch5_30s.json");
+var data = openData.loadJSON("../../test/data/data-2018-6-18-17-32-24.json");
 
-var pyshell = new PythonShell('/src/pyscripts/butterworthBandpass.py');
+var pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300.py');
 
 // received a message sent from the Python script (a simple "print" statement)
 pyshell.stdout.on('data', function (value) {
@@ -21,7 +21,7 @@ pyshell.stdout.on('data', function (value) {
 // sends channel data to the Python script via stdin
 let jsonData=[];
 data.forEach(function(sample) {
-       jsonData.push(sample.channelData);
+    jsonData.push(sample.channelData);
 })
 
 pyshell.send(JSON.stringify(jsonData));
