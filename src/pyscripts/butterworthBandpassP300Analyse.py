@@ -3,7 +3,6 @@ import json, sys, numpy as np, matplotlib.pyplot as plt
 
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
-
 def butter_bandpass(lowcut, highcut, fs, order):
     nyq = 0.5 * fs
     low = lowcut / nyq
@@ -18,210 +17,125 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     return y
 
 def main():
+    channel = 4 #channel 0-7
+
+    # load json
+    with open('../../test/data/p300_ex3/data-2018-6-22-14-27-04.json') as f:
+         dataJson = json.load(f)
+
+   # Get channel data
+    data = getChannelData(dataJson, channel)
+
+    # First 5 cycles focus on play
+    start = 251
+    cycle = 1
+    focus = 5
+    focusCmd = "play"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 1006
+    cycle = 2
+    focus = 6
+    focusCmd = "play"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 1762
+    cycle = 3
+    focus = 6
+    focusCmd = "play"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 2518
+    cycle = 4
+    focus = 6
+    focusCmd = "play"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 3274
+    cycle = 5
+    focus = 6
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+
+    # Next 5 cycles focus on voldown
+    start = 4030
+    cycle = 6
+    focus = 5
+    focusCmd = "voldown"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 4786
+    cycle = 7
+    focus = 3
+    focusCmd = "voldown"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 5542
+    cycle = 8
+    focus = 3
+    focusCmd = "voldown"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 6298
+    cycle = 9
+    focus = 3
+    focusCmd = "voldown"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 7054
+    cycle = 10
+    focus = 2
+    focusCmd = "voldown"
+    detectP300(data, start, cycle, focus, focusCmd)
+
+def detectP300(data,start,cycle,focus,focusCmd):
+    print("----- Cycle "+str(cycle)+" focused command "+str(focusCmd)+" correct pos"+str(focus)+" -----")
+
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 1.0
-    highcut = 30.0
+    highcut = 15.0
     order = 2
-    slotSize = 171 #0.5s
+    slotSize = 125 #0.5s
 
-    # get our data as an array from read_in() and creat np array
-    # datainput = sys.stdin.read()
-    # data = np.array(json.loads(datainput))
+    ## FILTER DATA
+    allDataFilterd = filterData(data, lowcut, highcut, fs, order)
 
-
-    # Cycle 1
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD5_next.json') as f:
-    #     dataJson = json.load(f)
-    # baseline = getChannelData(dataJson, 0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD6_play.json') as f:
-    #     dataJson = json.load(f)
-    # baseline = np.concatenate([baseline,getChannelData(dataJson, 0)])
-    # Volup
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD_volup.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd1=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD2_voldown.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd2=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD3_pause.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd3=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD4_prev.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd4=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD5_next.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd5=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD6_play.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd6=getChannelData(dataJson,0)
-
-    # Cycle 2
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD5_next.json') as f:
-    #     dataJson = json.load(f)
-    # baseline = getChannelData(dataJson, 0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C1_CMD6_play.json') as f:
-    #     dataJson = json.load(f)
-    # baseline = np.concatenate([baseline,getChannelData(dataJson, 0)])
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C2_CMD_volup.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd1=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C2_CMD2_pause.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd2=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C2_CMD3_voldown.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd3=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C2_CMD4_prev.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd4=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C2_CMD5_play.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd5=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C2_CMD6_next.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd6=getChannelData(dataJson,0)
-
-    # Cycle 3
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C2_CMD5_play.json') as f:
-    #     dataJson = json.load(f)
-    # baseline = getChannelData(dataJson, 0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C2_CMD6_next.json') as f:
-    #     dataJson = json.load(f)
-    # baseline = np.concatenate([baseline,getChannelData(dataJson, 0)])
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C3_CMD1_prev.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd1=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C3_CMD2_voldown.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd2=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C3_CMD3_pause.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd3=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C3_CMD4_next.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd4=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C3_CMD5_play.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd5=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C3_CMD6_volup.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd6=getChannelData(dataJson,0)
-
-    # Cycle 4
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C3_CMD5_play.json') as f:
-    #     dataJson = json.load(f)
-    # baseline = getChannelData(dataJson, 0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C3_CMD6_volup.json') as f:
-    #     dataJson = json.load(f)
-    # baseline = np.concatenate([baseline,getChannelData(dataJson, 0)])
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C4_CMD1_volup.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd1=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C4_CMD2_pause.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd2=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C4_CMD3_next.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd3=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C4_CMD4_voldown.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd4=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C4_CMD5_play.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd5=getChannelData(dataJson,0)
-    # with open('ex2/data-2018-6-21-17-51-07_Ex2_Run2_C4_CMD6_prev.json') as f:
-    #     dataJson = json.load(f)
-    # dataCmd6=getChannelData(dataJson,0)
-
-    # Cycle 5
-    with open('ex3/data-2018-6-22-11-47-41_cycle1_cmdvolup.json') as f:
-        dataJson = json.load(f)
-    baseline = getChannelData(dataJson, 0)
-    with open('ex3/data-2018-6-22-11-47-41_cycle2_cmdnext.json') as f:
-        dataJson = json.load(f)
-    baseline = np.concatenate([baseline,getChannelData(dataJson, 0)])
-    with open('ex3/data-2018-6-22-11-47-41_cycle2_cmdnext.json') as f:
-        dataJson = json.load(f)
-    dataCmd1=getChannelData(dataJson,0)
-    with open('ex3/data-2018-6-22-11-47-41_cycle2_cmdpause.json') as f:
-        dataJson = json.load(f)
-    dataCmd2=getChannelData(dataJson,0)
-    with open('ex3/data-2018-6-22-11-47-41_cycle2_cmdplay.json') as f:
-        dataJson = json.load(f)
-    dataCmd3=getChannelData(dataJson,0)
-    with open('ex3/data-2018-6-22-11-47-41_cycle2_cmdprev.json') as f:
-        dataJson = json.load(f)
-    dataCmd4=getChannelData(dataJson,0)
-    with open('ex3/data-2018-6-22-11-47-41_cycle2_cmdvoldown.json') as f:
-        dataJson = json.load(f)
-    dataCmd5=getChannelData(dataJson,0)
-    with open('ex/data-2018-6-22-11-47-41_cycle2_cmdvolup.json') as f:
-        dataJson = json.load(f)
-    dataCmd6=getChannelData(dataJson,0)
-
-    totalData=[]
-    slotSize
-    print(len(baseline))
-    totalData = np.concatenate([totalData, baseline])
-    totalData = np.concatenate([totalData, dataCmd1])
-    totalData = np.concatenate([totalData, dataCmd2])
-    totalData = np.concatenate([totalData, dataCmd3])
-    totalData = np.concatenate([totalData, dataCmd4])
-    totalData = np.concatenate([totalData, dataCmd5])
-    totalData = np.concatenate([totalData, dataCmd6])
-    print(len(totalData))
-    totalDataFilterd = filterData(totalData,lowcut,highcut,fs,order)
-
-    ## REMOVE BASELINE
-    filterDataWithoutBaseline= totalDataFilterd[slotSize*2:]
+    ## NORMALIZE DATA
+    # allDataFilterd = allDataFilterd-np.mean(allDataFilterd)
+    # allDataFilterd = allDataFilterd/np.std(allDataFilterd, ddof=1)
 
     ## SPLIT DATA IN COMMAND EPOCHES
-    dataP300_cmd1 = filterDataWithoutBaseline[:slotSize]
-    dataP300_cmd2 = filterDataWithoutBaseline[slotSize:slotSize*2]
-    dataP300_cmd3 = filterDataWithoutBaseline[slotSize*2:slotSize*3]
-    dataP300_cmd4 = filterDataWithoutBaseline[slotSize*3:slotSize*4]
-    dataP300_cmd5 = filterDataWithoutBaseline[slotSize*4:slotSize*5]
-    dataP300_cmd6 = filterDataWithoutBaseline[slotSize*5:slotSize*6]
+    end = start+slotSize
+    dataP300 = []
+    for i in range(6):
+        dataP300.append(allDataFilterd[start:end])
+        start = end
+        end = start + slotSize
 
-    ## GET RELEVANT DATA BETWEEN 250-450ms FOR EACH COMMAND
-    # start = 62; # After 250ms
-    # end = start+50; # After 450ms
-    # dataP300_cmd1 = dataP300_cmd1[start:end]
-    # dataP300_cmd2 = dataP300_cmd2[start:end]
-    # dataP300_cmd3 = dataP300_cmd3[start:end]
-    # dataP300_cmd4 = dataP300_cmd4[start:end]
-    # dataP300_cmd5 = dataP300_cmd5[start:end]
-    # dataP300_cmd6 = dataP300_cmd6[start:end]
+    ## ONLY ANALYSE DATA BETWEEN 250ms(62) and 450ms(120) AFTER CMD
+    # for i in range(6):
+    #     dataP300[i] = dataP300[i][62:120]
 
     ## CALCULATE AMPLITUDE
     diff = []
-    diff.append(np.max(dataP300_cmd1) - np.min(dataP300_cmd1))
-    diff.append(np.max(dataP300_cmd2) - np.min(dataP300_cmd2))
-    diff.append(np.max(dataP300_cmd3) - np.min(dataP300_cmd3))
-    diff.append(np.max(dataP300_cmd4) - np.min(dataP300_cmd4))
-    diff.append(np.max(dataP300_cmd5) - np.min(dataP300_cmd5))
-    diff.append(np.max(dataP300_cmd6) - np.min(dataP300_cmd6))
-    cmd = 1
-    for val in diff:
-        print(str(cmd)+" "+str(val))
-        cmd += 1
+    for i in range(6):
+        diff.append(np.max(dataP300[i]) - np.min(dataP300[i]))
 
-    print("Found mean: " + str(np.mean(diff)))
-    print("Found Max: "+str(np.max(diff)))
+    stringDiff = ''.join(str(diff))
+    print("diff values: "+stringDiff)
+    print("mean: " + str(np.mean(diff)))
+    print("Max: "+str(np.max(diff)))
+    idx = diff.index(np.max(diff))
+    if(idx == focus):
+        print(str(idx+1)+" CORRECT P300 detection")
+    else:
+        print(str(idx+1)+" wrong P300 detection. Correct would be cmd "+str(focus))
 
     ## PLOT DATA
-    plt.figure(0)
-    plot(totalDataFilterd[slotSize*2:],lowcut,highcut,order,"totalDataFilterd",1,'b')
+
+    #plt.figure(0)
+    # plot(allDataFilterd[slotSize*2:],lowcut,highcut,order,"totalDataFilterd",1,'b')
     plt.figure(1)
-    plot(dataP300_cmd1,lowcut,highcut,order,"volup",1,'b')
-    plot(dataP300_cmd2,lowcut,highcut,order,"pause",1,'g')
-    plot(dataP300_cmd3,lowcut,highcut,order,"down",1,'r')
-    # plt.figure(2)
-    plot(dataP300_cmd4,lowcut,highcut,order,"prev",1,'y')
-    plot(dataP300_cmd5,lowcut,highcut,order,"play",1,'k')
-    plot(dataP300_cmd6,lowcut,highcut,order,"next",1,'w')
+
+    for i in range(6):
+        if(i == focus-1):
+            plot(dataP300[i], lowcut, highcut, cycle, focusCmd, 1, 'r')
+        else:
+            plot(dataP300[i], lowcut, highcut, cycle, ("cmd %s"%(i+1)), 1, 'b')
+
     plt.show()
 
 def getChannelData(data, channel):
@@ -235,11 +149,11 @@ def filterData(data,lowcut,highcut,fs,order):
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
     return filterdData
 
-def plot(filteredData, lowcut, highcut, order,title,cmd,color):
+def plot(filteredData, lowcut, highcut, cycle,title,cmd,color):
     # Plot original and filtered data
     nr = 310+cmd
     plt.subplot(nr)
-    plt.title(' Compare Commands P300 - (%d - %d Hz)' % (lowcut, highcut))
+    plt.title(' Compare P300 - Cycle %d (%d - %d Hz)' % (cycle, lowcut, highcut))
     plt.plot(filteredData, label=title, color=color)
     plt.ylabel('microVolts')
     plt.xlabel('Samples')

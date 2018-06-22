@@ -82,16 +82,12 @@ function digestSamples(sample) {
                 count++;
                 //send past 1000ms and past command to evaluate
                 // detectP300.getVEP(volts, currentCommand, baseline);
-                //} else if (count >= (settings.slots+settings.skip)) {
-                // reset
+
                 volts = [];
                 count = 0;
                 //send next command to flash on player
                 setNextCommand();
                 server.sendCmd(currentCommand);
-                // } else {
-                //     //Skip samples
-                //     count++;
             }
         }
     } else {
@@ -111,7 +107,7 @@ function setNextCommand() {
         shuffleCommands.sort(function() { return 0.5 - Math.random() });
         cycle++;
         console.log("New cycle "+cycle);
-        cmd = 0;
+        cmd = 0
     }
     //set current command and remove command from suffle array
 

@@ -40,10 +40,12 @@ export default class P300 extends React.Component {
     flashCommand = (data) => {
         this.setState({ currentCmd: data.command });
         this.blinkCommandButton(data.command);
+        console.log("blink: "+data.command);
     }
 
     execCommand = (data) => {
         this.clickCommand(data.docommand);
+        console.log("blink: "+data.docommand);
     }
 
     //Set the color of the command to white for X seconds
