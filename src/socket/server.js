@@ -3,7 +3,9 @@ module.exports = {
     sendCmd,
     doCmd,
     doBlinkCmd,
-    streamData
+    streamData,
+    startSocketServer,
+    closeSocketServer
 }
 
 const http = require('http');
@@ -12,11 +14,33 @@ let io;
 let app;
 
 // create socket server on port 3001
-app = http.createServer(function(req, res) {});
-io = require('socket.io').listen(app);
-app.listen(port, function(){
-    console.log('listening on *:'+port);
-});
+console.log("app "+app);
+console.log("io "+io);
+
+function startSocketServer() {
+    app = http.createServer(function(req, res) {});
+    io = require('socket.io').listen(app);
+
+    app.listen(port, function(){
+        console.log('listening on *:'+port);
+    });
+
+    app.on('error', function (e) {
+        console.log("error "+e);
+        callback(true);
+    });
+}
+
+function closeSocketServer() {
+    console.log("closeSocketServer ");
+    app.close();
+}
+// app.on('listening', function (e) {
+//     console.log("listening "+e);
+//     app.close();
+//     callback(false);
+// });
+
 
 
 function sendCmd(command) {

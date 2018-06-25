@@ -11,7 +11,7 @@
  */
 
 const saveData = require('./../functions/saveData'); //to fix JsonFiles in cleanup
-
+const server = require('./../socket/server');
 module.exports = {
     start
 };
@@ -96,7 +96,10 @@ function start(sampleFunction,boardSettings){
         }
         if (err) console.log(err.stack);
         if (options.exit) {
-            if (verbose) console.log('exit');
+            if (verbose) {
+                console.log('exit');
+                server.closeSocketServer();
+            }
             ourBoard.disconnect().catch(console.log);
         }
 

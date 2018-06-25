@@ -32,6 +32,7 @@ function detectBlinkOld(baseline, currentMedian) {
     var standardDeviation = mathFunctions.getStandardDeviation(baseline);
 
     if (init) {
+        server.startSocketServer();
         //get Settings
         settings = blink.getSettings();
 
