@@ -140,19 +140,19 @@ export default class PlayerBlink extends React.Component {
     }
 
     volup(audio) {
-        if (this.state.audioVolume < 0.9) {
-            let newVol = this.state.audioVolume + 0.1;
+        if (this.state.audioVolume < 0.8) {
+            let newVol = this.state.audioVolume + 0.25;
             this.setState({audioVolume: newVol});
-            audio.volume = this.state.audioVolume;
+            audio.volume = newVol;
             this.updateVolumeProgressBar(newVol);
         }
     }
 
     voldown(audio) {
-        if (this.state.audioVolume > 0.1) {
-            let newVol = this.state.audioVolume - 0.1;
+        if (this.state.audioVolume > 0.2) {
+            let newVol = this.state.audioVolume - 0.25;
             this.setState({audioVolume: newVol});
-            audio.volume = this.state.audioVolume;
+            audio.volume = newVol;
             this.updateVolumeProgressBar(newVol);
         }
     }
