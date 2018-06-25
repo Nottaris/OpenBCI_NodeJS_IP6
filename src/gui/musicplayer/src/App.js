@@ -11,6 +11,7 @@ class App extends Component {
     constructor(props) {
         super(props);
     }
+
     render() {
         return (
             <div className="App">
@@ -26,22 +27,32 @@ class App extends Component {
 }
 
 App.defaultProps = {
-    tracks: [{
-        name: "We Were Young",
-        artist: "Odesza",
-        album: "Summer's Gone",
-        year: 2012,
-        artwork: "https://funkadelphia.files.wordpress.com/2012/09/odesza-summers-gone-lp.jpg",
-        duration: 192,
-        source: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/wwy.mp3"
-    },
+    tracks: [
+        {
+            name: "Violin Spider",
+            artist: "Marco Trovatello ",
+            album: "Not At All",
+            year: 2018,
+            artwork: "https://freemusicarchive.org/file/images/albums/Marco_Trovatello_-_Not_At_All_-_20180519102404987.jpg",
+            duration: 42,
+            source: "https://freemusicarchive.org/music/download/bfa7b9613d5e7863cce918da1f88d8aa1523b761"
+        },
+        {
+            name: "We Were Young",
+            artist: "Odesza",
+            album: "Summer's Gone",
+            year: 2012,
+            artwork: "https://funkadelphia.files.wordpress.com/2012/09/odesza-summers-gone-lp.jpg",
+            duration: 192,
+            source: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/wwy.mp3"
+        },
         {
             name: "Summer",
             artist: "Bensound",
             album: "Summer's Gone",
             year: 2013,
             artwork: "https://www.bensound.com/bensound-img/summer.jpg",
-            duration: 192,
+            duration: 217,
             source: mp3File_summer
         },
         {
@@ -50,7 +61,7 @@ App.defaultProps = {
             album: "Summer's Gone",
             year: 2014,
             artwork: "https://www.bensound.com/bensound-img/anewbeginning.jpg",
-            duration: 192,
+            duration: 155,
             source: mp3File_anewbeginning
         },
         {
@@ -59,8 +70,9 @@ App.defaultProps = {
             album: "Summer's Gone",
             year: 2015,
             artwork: "https://www.bensound.com/bensound-img/happyrock.jpg",
-            duration: 192,
+            duration: 106,
             source: mp3File_happyrock
         }
-    ]};
+    ]
+};
 export default App;
