@@ -1,8 +1,13 @@
+from scipy import sparse
+from scipy._lib.six import xrange
 from scipy.signal import butter, lfilter
+from scipy.sparse.linalg import spsolve
 import json, sys, numpy as np, matplotlib.pyplot as plt
 
-
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
+
+
+
 def butter_bandpass(lowcut, highcut, fs, order):
     nyq = 0.5 * fs
     low = lowcut / nyq
@@ -59,26 +64,26 @@ def main():
     focus = 2
     focusCmd = "volup"
     detectP300(data,start,cycle,focus,focusCmd)
-    # start = 4786
-    # cycle = 7
-    # focus = 2
-    # focusCmd = "volup"
-    # detectP300(data,start,cycle,focus,focusCmd)
-    # start = 5542
-    # cycle = 8
-    # focus = 1
-    # focusCmd = "volup"
-    # detectP300(data,start,cycle,focus,focusCmd)
-    # start = 6298
-    # cycle = 9
-    # focus = 3
-    # focusCmd = "volup"
-    # detectP300(data,start,cycle,focus,focusCmd)
-    # start = 7054
-    # cycle = 10
-    # focus = 6
-    # focusCmd = "voldown"
-    # detectP300(data, start, cycle, focus, focusCmd)
+    start = 4786
+    cycle = 7
+    focus = 2
+    focusCmd = "volup"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 5542
+    cycle = 8
+    focus = 1
+    focusCmd = "volup"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 6298
+    cycle = 9
+    focus = 3
+    focusCmd = "volup"
+    detectP300(data,start,cycle,focus,focusCmd)
+    start = 7054
+    cycle = 10
+    focus = 6
+    focusCmd = "voldown"
+    detectP300(data, start, cycle, focus, focusCmd)
 
 def detectP300(data,start,cycle,focus,focusCmd):
     print("----- Cycle "+str(cycle)+" focused command "+str(focusCmd)+" correct pos"+str(focus)+" -----")
@@ -91,16 +96,29 @@ def detectP300(data,start,cycle,focus,focusCmd):
     slotSize = 125 #0.5s
 
     ## FILTER DATA
+    #allDataFilterd = data    // if no bandpass desired
     allDataFilterd = filterData(data, lowcut, highcut, fs, order)
 
     ## NORMALIZE DATA
     # allDataFilterd = allDataFilterd-np.mean(allDataFilterd)
     # allDataFilterd = allDataFilterd/np.std(allDataFilterd, ddof=1)
 
+    ## BASELINE CORRECTION   // https://stackoverflow.com/a/29185844
+    def baseline_als(y, lam=10^5, p=0.01, niter=10):
+        L = len(y)
+        D = sparse.csc_matrix(np.diff(np.eye(L), 2))
+        w = np.ones(L)
+        for i in xrange(niter):
+            W = sparse.spdiags(w, 0, L, L)
+            Z = W + lam * D.dot(D.transpose())
+            z = spsolve(Z, w * y)
+            w = p * (y > z) + (1 - p) * (y < z)
+        return z
+
+    allDataFilterd = baseline_als(allDataFilterd)
+
     ## Decibel Conversion - Reference = 1mV = 1e-3
-    print("before" + str(allDataFilterd))
     allDataFilterd = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), allDataFilterd))
-    print("after" + str(allDataFilterd))
 
 
     ## SPLIT DATA IN COMMAND EPOCHES
@@ -117,47 +135,56 @@ def detectP300(data,start,cycle,focus,focusCmd):
         start = end
         end = start + slotSize
 
-    ## SUBSTRACT BASELINE
-    # dataP300Baseline = []
-    # for i in range(6):
+    ## SUBTRACT BASELINE MEAN ( equally ajust height )
+    #dataP300Baseline = []
+    #for i in range(6):
     #      mean = np.mean(dataP300[i])
     #      print("baseline mean: "+str(mean))
     #      dataP300Baseline.append(dataP300[i]-mean)
 
+    ## SUBTRACT BASELINE for each datapoint from period before
+    #for i in range(6):
+    #    dataP300[i]=dataP300[i] - dataP300[i-1]
+
+    ## Decibel Conversion - Reference = 1mV = 1e-3   for each epoch
+    #for i in range(6):
+    #    dataP300[i] = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), dataP300[i]))
 
     # ONLY ANALYSE DATA BETWEEN 250ms(62) and 450ms(120) AFTER CMD
-    for i in range(6):
-        dataP300[i] = dataP300[i]
+    # for i in range(6):
+    #   dataP300[i] = dataP300[i][62:120]
 
     ## CALCULATE AMPLITUDE
-    # diff = []
-    # for i in range(6):
-    #     diff.append(np.max(dataP300[i]) - np.min(dataP300[i]))
-    #
-    # stringDiff = ''.join(str(diff))
-    # print("diff values: "+stringDiff)
-    # print("mean: " + str(np.mean(diff)))
-    # print("Max: "+str(np.max(diff)))
-    # idx = diff.index(np.max(diff))
-    # if(idx == focus):
-    #     print(str(idx+1)+" CORRECT P300 detection")
-    # else:
-    #     print(str(idx+1)+" wrong P300 detection. Correct would be cmd "+str(focus))
+    diff = []
+    for i in range(6):
+         diff.append(np.max(dataP300[i]) - np.min(dataP300[i]))
+
+    stringDiff = ''.join(str(diff))
+    print("diff values: "+stringDiff)
+    print("mean: " + str(np.mean(diff)))
+    print("Max: "+str(np.max(diff)))
+    idx = diff.index(np.max(diff)) + 1  # get index and add 1 to match cmd 1-6
+    if(idx == focus):
+         print(str(idx)+" CORRECT P300 detection")
+    else:
+         print(str(idx)+" wrong P300 detection. Correct would be cmd "+str(focus))
 
     ## PLOT DATA
 
     #plt.figure(0)
     #plot(allDataFilterd[slotSize*4:],lowcut,highcut,order,"totalDataFilterd",1,'b')
     plt.figure(1)
+    axes = plt.gca()
+    axes.set_ylim([0, 100])
 
     for i in range(6):
         if(i == focus-1):
             plot(dataP300[i], lowcut, highcut, cycle, focusCmd, 1, 'r')
             print("Max: " + str(np.max(dataP300[i][60:80]* 1000000)))
             print("mean: " + str(np.mean(dataP300[i])*1000000))
-           # plot(data300SubBaseline[i], lowcut, highcut, cycle, focusCmd, 1, 'b')
-        # else:
-        #     plot(dataP300[i], lowcut, highcut, cycle, ("cmd %s"%(i+1)), 1, 'b')
+            #plot(dataP300Baseline[i], lowcut, highcut, cycle, focusCmd, 1, 'b')
+        else:
+            plot(dataP300[i], lowcut, highcut, cycle, ("cmd %s"%(i+1)), 1, 'b')
 
     plt.show()
 
@@ -180,7 +207,7 @@ def plot(filteredData, lowcut, highcut, cycle,title,cmd,color):
     plt.plot(filteredData, label=title, color=color)
     plt.ylabel('volts')
     plt.xlabel('Samples 250/s')
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.legend(loc='best', bbox_to_anchor=(1, 0.5))
     plt.grid(True)
 
 
