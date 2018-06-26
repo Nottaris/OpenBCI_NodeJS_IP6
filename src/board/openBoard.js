@@ -19,7 +19,9 @@ module.exports = {
 function start(sampleFunction,boardSettings){
     const debug = boardSettings.debug; // Pretty print any bytes in and out... it's amazing...
     const verbose = boardSettings.verbose; // Adds verbosity to functions
-
+    const resyncPeriodMin = 5; // re sync every five minutes
+    const secondsInMinute = 60;
+    let sampleRate = 250;
     const Cyton = require('openbci-cyton');
     let ourBoard = new Cyton({
         simulate: boardSettings.simulate,
@@ -79,6 +81,22 @@ function start(sampleFunction,boardSettings){
                     });
 
                     ourBoard.on('sample', (sample) => {
+                         // Resynchronize every every 5 minutes
+                        if (sample._count % (sampleRate * resyncPeriodMin * secondsInMinute) === 0) {
+                            ourBoard.syncClocksFull()
+                                .then(syncObj => {
+                                    // Sync was successful
+                                    if (syncObj.valid) {
+                                        // Log the object to check it out!
+                                        console.log(`syncObj`, syncObj);
+
+                                        // Sync was not successful
+                                    } else {
+                                        // Retry it
+                                        console.log(`Was not able to sync, please retry?`);
+                                    }
+                                });
+                        }
                         sampleFunction(sample);
                     });
                 });
