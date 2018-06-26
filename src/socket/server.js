@@ -5,7 +5,8 @@ module.exports = {
     doBlinkCmd,
     streamData,
     startSocketServer,
-    closeSocketServer
+    closeSocketServer,
+    subscribeToCmds
 }
 
 const http = require('http');
@@ -29,18 +30,22 @@ function startSocketServer() {
         console.log("error "+e);
         callback(true);
     });
+     io.on('P300command', function (data) {
+        console.log("P300command"+data);
+    });
+
+}
+
+
+function subscribeToCmds(callbackP300commandCmd) {
+       io.on('connection', function (socket) {
+           socket.on('P300command', P300command => callbackP300commandCmd(P300command));
+     });
 }
 
 function closeSocketServer() {
-    console.log("closeSocketServer ");
     app.close();
 }
-// app.on('listening', function (e) {
-//     console.log("listening "+e);
-//     app.close();
-//     callback(false);
-// });
-
 
 
 function sendCmd(command) {

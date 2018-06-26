@@ -1,6 +1,6 @@
 import React from 'react';
 import './Player.css';
-import { subscribeToCmds } from './api';
+import { subscribeToCmds, sendP300Cmd } from './api';
 import TrackInformation from './components/TrackInformation';
 import Scrubber from './components/Scrubber';
 import Timestamps from './components/Timestamps';
@@ -12,7 +12,6 @@ import Controls from './components/Controls';
 export default class P300 extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             playStatus: 'play',
             currentTime: 0,
@@ -20,33 +19,48 @@ export default class P300 extends React.Component {
             trackNr: 0,
             currentCmd: 'no',
             colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
+            commands: ["next","voldown","prev","pause","volup", "play","voldown", "play","volup","next","prev","pause"]
         };
 
         this.clickCommand = this.clickCommand.bind(this);
-        this.flashCommand = this.flashCommand.bind(this);
         this.execCommand = this.execCommand.bind(this);
-
+        this.generateCommands = this.generateCommands.bind(this);
+        this.flashP300Command = this.execCommand.bind(this);
 
         subscribeToCmds(
             this.flashCommand,
             this.execCommand,
-            this.execCommand
+            this.execCommand,
         );
 
-        // this.generateCommands();
     };
 
+     componentDidMount() {
+         this.generateCommands();
+      }
+
+
+    generateCommands() {
+         var commandIdx = 0;
+
+        setInterval(function() {
+            this.blinkCommandButton(this.state.commands[commandIdx]);
+            if(commandIdx<this.state.commands.length-1) {
+                commandIdx++;
+            } else {
+                commandIdx = 0;
+            }
+        }.bind(this), 250);
+     }
 
     flashCommand = (data) => {
-        this.setState({ currentCmd: data.command });
-        this.blinkCommandButton(data.command);
-        console.log("blink: "+data.command);
-    }
+        console.log("getting command  "+data.command);
+    };
 
     execCommand = (data) => {
         this.clickCommand(data.docommand);
-        console.log("blink: "+data.docommand);
-    }
+      //  console.log("blink: "+data.docommand);
+    };
 
     //Set the color of the command to white for X seconds
     blinkCommandButton(command) {
@@ -54,6 +68,10 @@ export default class P300 extends React.Component {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
             elem.style.background = this.state.colors[Math.floor(Math.random()*this.state.colors.length)];
+
+            //Send flushed command and timestamp to server
+            sendP300Cmd(command, Date.now());
+
             setTimeout(function () {
                 elem.style.color = "#1c456e";
                 elem.style.background = "#000";
@@ -107,6 +125,7 @@ export default class P300 extends React.Component {
     }
 
     play(audio) {
+        this.blinkCommandButton("play");
         audio.play();
         audio.volume = this.state.audioVolume;
         let that = this;
