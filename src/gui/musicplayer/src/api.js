@@ -3,7 +3,7 @@ const  socket = openSocket('http://localhost:3001');
 
 //******** socket.io to listen to commands from p300 *****
 
-function subscribeToCmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd) {
+function subscribeToCmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd,callbackP300commandCmd) {
   socket.on('command', command => callbackFlashCmd(command));
   socket.on('docommand', docommand => callbackExecCmd(docommand));
   socket.on('blinkcommand', _ => callbackBlinkCmd());
@@ -12,4 +12,10 @@ function subscribeToCmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd) {
   socket.on('message', console.log.bind(console));
 }
 
-export { subscribeToCmds };
+function sendP300Cmd(command,timestamp) {
+    //send flashed command and timestamp to server
+    socket.emit('P300command', { command: command, time: timestamp });
+    //console.log("sending P300commands: "+command+" "+timestamp);
+}
+
+export { subscribeToCmds, sendP300Cmd };

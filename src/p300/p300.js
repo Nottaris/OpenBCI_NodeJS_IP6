@@ -39,6 +39,8 @@ let volts = [];
 let count = 0;
 let settings = defaultSettings;
 
+server.startSocketServer();
+
 function digestSamples(sample) {
 
     // fetch 600ms of samples from channel 5

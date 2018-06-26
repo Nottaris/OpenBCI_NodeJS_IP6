@@ -3,7 +3,10 @@ module.exports = {
     sendCmd,
     doCmd,
     doBlinkCmd,
-    streamData
+    streamData,
+    startSocketServer,
+    closeSocketServer,
+    subscribeToCmds
 }
 
 const http = require('http');
@@ -12,11 +15,34 @@ let io;
 let app;
 
 // create socket server on port 3001
-app = http.createServer(function(req, res) {});
-io = require('socket.io').listen(app);
-app.listen(port, function(){
-    console.log('listening on *:'+port);
-});
+function startSocketServer() {
+    app = http.createServer(function(req, res) {});
+    io = require('socket.io').listen(app);
+
+    app.listen(port, function(){
+        console.log('listening on *:'+port);
+    });
+
+    app.on('error', function (e) {
+        console.log("error "+e);
+        callback(true);
+    });
+     io.on('P300command', function (data) {
+        console.log("P300command"+data);
+    });
+
+}
+
+
+function subscribeToCmds(callbackP300commandCmd) {
+       io.on('connection', function (socket) {
+           socket.on('P300command', P300command => callbackP300commandCmd(P300command));
+     });
+}
+
+function closeSocketServer() {
+    app.close();
+}
 
 
 function sendCmd(command) {
