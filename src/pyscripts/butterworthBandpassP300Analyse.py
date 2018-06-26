@@ -25,64 +25,116 @@ def main():
     channel = 0 #channel 0-7
 
     # load json
-    with open('../../test/data/p300_job_3_white_black/data-2018-6-25-14-46-47.json') as f:
+    with open('../../test/data/p300_job_4/data-2018-6-26-12-39-22.json') as f:
          dataJson = json.load(f)
 
    # Get channel data
     data = getChannelData(dataJson, channel)
 
-    # First 5 cycles focus on play
-    start = 251
-    cycle = 1
+    # 6 - 12 cycles focus on play
+    start = 5653
+    cycle = 6
+    focus = 3
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 6134
+    cycle = 7
     focus = 6
     focusCmd = "play"
-    detectP300(data,start,cycle,focus,focusCmd)
-    start = 1006
-    cycle = 2
-    focus = 5
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 6494
+    cycle = 8
+    focus = 3
     focusCmd = "play"
-    detectP300(data,start,cycle,focus,focusCmd)
-    start = 1762
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 6855
+    cycle = 9
+    focus = 6
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7216
+    cycle = 10
+    focus = 3
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7577
+    cycle = 11
+    focus = 6
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7937
+    cycle = 12
+    focus = 3
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7577
+    cycle = 13
+    focus = 6
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7937
+    cycle = 14
+    focus = 3
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7577
+    cycle = 15
+    focus = 6
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7937
+    cycle = 16
+    focus = 3
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7577
+    cycle = 17
+    focus = 6
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7937
+    cycle = 18
+    focus = 3
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+
+    # load json
+    with open('../../test/data/p300_job_4/data-2018-6-26-12-40-45.json') as f:
+        dataJson = json.load(f)
+
+    # Get channel data
+    data = getChannelData(dataJson, channel)
+
+    # 6 - 12 cycles focus on play
+    start = 4449
     cycle = 3
     focus = 6
     focusCmd = "play"
-    detectP300(data,start,cycle,focus,focusCmd)
-    start = 2518
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 5171
     cycle = 4
-    focus = 5
+    focus = 3
     focusCmd = "play"
-    detectP300(data,start,cycle,focus,focusCmd)
-    start = 3274
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 5772
     cycle = 5
     focus = 6
     focusCmd = "play"
     detectP300(data, start, cycle, focus, focusCmd)
-
-    #Next 5 cycles focus on voldown
-    start = 4030
+    start = 6494
     cycle = 6
-    focus = 2
-    focusCmd = "volup"
-    detectP300(data,start,cycle,focus,focusCmd)
-    start = 4786
-    cycle = 7
-    focus = 2
-    focusCmd = "volup"
-    detectP300(data,start,cycle,focus,focusCmd)
-    start = 5542
-    cycle = 8
-    focus = 1
-    focusCmd = "volup"
-    detectP300(data,start,cycle,focus,focusCmd)
-    start = 6298
-    cycle = 9
     focus = 3
-    focusCmd = "volup"
-    detectP300(data,start,cycle,focus,focusCmd)
-    start = 7054
-    cycle = 10
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7215
+    cycle = 7
     focus = 6
-    focusCmd = "voldown"
+    focusCmd = "play"
+    detectP300(data, start, cycle, focus, focusCmd)
+    start = 7816
+    cycle = 8
+    focus = 3
+    focusCmd = "play"
     detectP300(data, start, cycle, focus, focusCmd)
 
 def detectP300(data,start,cycle,focus,focusCmd):
@@ -115,10 +167,10 @@ def detectP300(data,start,cycle,focus,focusCmd):
             w = p * (y > z) + (1 - p) * (y < z)
         return z
 
-    allDataFilterd = baseline_als(allDataFilterd)
+   # allDataFilterd = baseline_als(allDataFilterd)
 
     ## Decibel Conversion - Reference = 1mV = 1e-3
-    allDataFilterd = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), allDataFilterd))
+    # allDataFilterd = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), allDataFilterd))
 
 
     ## SPLIT DATA IN COMMAND EPOCHES
@@ -183,8 +235,8 @@ def detectP300(data,start,cycle,focus,focusCmd):
             print("Max: " + str(np.max(dataP300[i][60:80]* 1000000)))
             print("mean: " + str(np.mean(dataP300[i])*1000000))
             #plot(dataP300Baseline[i], lowcut, highcut, cycle, focusCmd, 1, 'b')
-        else:
-            plot(dataP300[i], lowcut, highcut, cycle, ("cmd %s"%(i+1)), 1, 'b')
+       # else:
+       #     plot(dataP300[i], lowcut, highcut, cycle, ("cmd %s"%(i+1)), 1, 'b')
 
     plt.show()
 
