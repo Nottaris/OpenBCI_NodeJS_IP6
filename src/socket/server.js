@@ -15,9 +15,6 @@ let io;
 let app;
 
 // create socket server on port 3001
-console.log("app "+app);
-console.log("io "+io);
-
 function startSocketServer() {
     app = http.createServer(function(req, res) {});
     io = require('socket.io').listen(app);
