@@ -97,6 +97,11 @@ def detectP300(data,start,cycle,focus,focusCmd):
     # allDataFilterd = allDataFilterd-np.mean(allDataFilterd)
     # allDataFilterd = allDataFilterd/np.std(allDataFilterd, ddof=1)
 
+    ## Decibel Conversion - Reference = 1mV = 1e-3
+    print("before" + str(allDataFilterd))
+    allDataFilterd = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), allDataFilterd))
+    print("after" + str(allDataFilterd))
+
 
     ## SPLIT DATA IN COMMAND EPOCHES
     end = start+slotSize
