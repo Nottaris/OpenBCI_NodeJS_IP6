@@ -19,13 +19,14 @@ export default class P300 extends React.Component {
             trackNr: 0,
             currentCmd: 'no',
             colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
-            commands: ["next","voldown","prev","pause","volup", "play","voldown", "play","volup","next","prev","pause"]
+            commands: ["next","voldown", "play","prev","pause","volup"],
+            cmdInterval: 300,
+            flashCmdInterval: 120
         };
 
         this.clickCommand = this.clickCommand.bind(this);
         this.execCommand = this.execCommand.bind(this);
         this.generateCommands = this.generateCommands.bind(this);
-        this.flashP300Command = this.execCommand.bind(this);
 
         subscribeToCmds(
             this.flashCommand,
@@ -50,7 +51,7 @@ export default class P300 extends React.Component {
             } else {
                 commandIdx = 0;
             }
-        }.bind(this), 250);
+        }.bind(this), this.state.cmdInterval);
      }
 
     flashCommand = (data) => {
@@ -75,7 +76,7 @@ export default class P300 extends React.Component {
             setTimeout(function () {
                 elem.style.color = "#1c456e";
                 elem.style.background = "#000";
-            }, 250);
+            }, this.state.flashCmdInterval);
         }
     }
 
