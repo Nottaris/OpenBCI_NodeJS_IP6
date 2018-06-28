@@ -4,8 +4,8 @@ from scipy.signal import butter, lfilter
 from scipy.sparse.linalg import spsolve
 import json, sys, numpy as np, matplotlib.pyplot as plt
 
-# Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
 
+# Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
 
 
 def butter_bandpass(lowcut, highcut, fs, order):
@@ -21,14 +21,15 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     y = lfilter(b, a, data)
     return y
 
+
 def main():
-    channel = 0 #channel 0-7
+    channel = 0  # channel 0-7
 
     # load json
     with open('../../test/data/p300_job_4/data-2018-6-26-12-39-22.json') as f:
-         dataJson = json.load(f)
+        dataJson = json.load(f)
 
-   # Get channel data
+    # Get channel data
     data = getChannelData(dataJson, channel)
 
     # 6 - 12 cycles focus on play
@@ -156,7 +157,7 @@ def detectP300(data,start,cycle,focus,focusCmd):
     # allDataFilterd = allDataFilterd/np.std(allDataFilterd, ddof=1)
 
     ## BASELINE CORRECTION   // https://stackoverflow.com/a/29185844
-    def baseline_als(y, lam=10^5, p=0.01, niter=10):
+    def baseline_als(y, lam=10 ^ 5, p=0.01, niter=10):
         L = len(y)
         D = sparse.csc_matrix(np.diff(np.eye(L), 2))
         w = np.ones(L)
@@ -167,14 +168,13 @@ def detectP300(data,start,cycle,focus,focusCmd):
             w = p * (y > z) + (1 - p) * (y < z)
         return z
 
-   # allDataFilterd = baseline_als(allDataFilterd)
+    # allDataFilterd = baseline_als(allDataFilterd)
 
     ## Decibel Conversion - Reference = 1mV = 1e-3
     # allDataFilterd = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), allDataFilterd))
 
-
     ## SPLIT DATA IN COMMAND EPOCHES
-    end = start+slotSize
+    end = start + slotSize
     dataP300 = []
     data300SubBaseline = []
     for i in range(6):
@@ -188,72 +188,81 @@ def detectP300(data,start,cycle,focus,focusCmd):
         end = start + slotSize
 
     ## SUBTRACT BASELINE MEAN ( equally ajust height )
-    #dataP300Baseline = []
-    #for i in range(6):
+    # dataP300Baseline = []
+    # for i in range(6):
     #      mean = np.mean(dataP300[i])
     #      print("baseline mean: "+str(mean))
     #      dataP300Baseline.append(dataP300[i]-mean)
 
     ## SUBTRACT BASELINE for each datapoint from period before
-    #for i in range(6):
-    #    dataP300[i]=dataP300[i] - dataP300[i-1]
+    for i in range(6):
+        dataP300[i] = dataP300[i] - dataP300[i - 1]
 
     ## Decibel Conversion - Reference = 1mV = 1e-3   for each epoch
     #for i in range(6):
     #    dataP300[i] = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), dataP300[i]))
 
     # ONLY ANALYSE DATA BETWEEN 250ms(62) and 450ms(120) AFTER CMD
-    # for i in range(6):
-    #   dataP300[i] = dataP300[i][62:120]
+    #for i in range(6):
+    #    dataP300[i] = dataP300[i][62:120]
 
-    ## CALCULATE AMPLITUDE
+    ## CALCULATE AMPLITUDE # ONLY ANALYSE DATA BETWEEN 200ms(50) and 400ms(100) AFTER CMD
     diff = []
     for i in range(6):
-         diff.append(np.max(dataP300[i]) - np.min(dataP300[i]))
+        diff.append(np.max(dataP300[i][80:110]) - np.min(dataP300[i][80:110]))
+    #get max index
+    idx = diff.index(np.max(diff))
+
+    max = np.max(dataP300[idx])
+    mean = np.mean(dataP300[idx])
+    if (True):
+         if (idx+1 == focus):
+            print(str(idx+1) + " CORRECT P300 detection")
+         else:
+            print(str(idx+1) + " wrong P300 detection. Correct would be cmd " + str(focus))
 
     stringDiff = ''.join(str(diff))
-    print("diff values: "+stringDiff)
-    print("mean: " + str(np.mean(diff)))
-    print("Max: "+str(np.max(diff)))
-    idx = diff.index(np.max(diff)) + 1  # get index and add 1 to match cmd 1-6
-    if(idx == focus):
-         print(str(idx)+" CORRECT P300 detection")
-    else:
-         print(str(idx)+" wrong P300 detection. Correct would be cmd "+str(focus))
+    print("diff values: " + stringDiff)
+    #print("diff values Mean: " + str(np.mean(diff)))
+    #print("diff values Max: " + str(np.max(diff)))
 
     ## PLOT DATA
 
-    #plt.figure(0)
-    #plot(allDataFilterd[slotSize*4:],lowcut,highcut,order,"totalDataFilterd",1,'b')
+    # plt.figure(0)
+    # plot(allDataFilterd[slotSize*4:],lowcut,highcut,order,"totalDataFilterd",1,'b')
     plt.figure(1)
     axes = plt.gca()
     axes.set_ylim([0, 100])
 
     for i in range(6):
-        if(i == focus-1):
+        if (i == focus - 1):
             plot(dataP300[i], lowcut, highcut, cycle, focusCmd, 1, 'r')
-            print("Max: " + str(np.max(dataP300[i][60:80]* 1000000)))
-            print("mean: " + str(np.mean(dataP300[i])*1000000))
-            #plot(dataP300Baseline[i], lowcut, highcut, cycle, focusCmd, 1, 'b')
-       # else:
-       #     plot(dataP300[i], lowcut, highcut, cycle, ("cmd %s"%(i+1)), 1, 'b')
+            print("Max: " + str(np.max(dataP300[i])*100000))
+            print("mean: " + str(np.mean(dataP300[i])*100000))
+            print("max-mean: " + str(np.max(dataP300[i])*100000 - np.mean(dataP300[i])*100000))
+            print("max/mean: "+ str(np.max(dataP300[i])/np.mean(dataP300[i])))
+        else:
+            plot(dataP300[i], lowcut, highcut, cycle, ("cmd %s" % (i + 1)), 1, 'b')
 
     plt.show()
 
+
 def getChannelData(data, channel):
-    channelData=[]
+    channelData = []
     for val in data:
         channelData.append(val["channelData"][channel])
     return channelData
 
-def filterData(data,lowcut,highcut,fs,order):
-    #filter data with butter bandpass
+
+def filterData(data, lowcut, highcut, fs, order):
+    # filter data with butter bandpass
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
     return filterdData
 
-def plot(filteredData, lowcut, highcut, cycle,title,cmd,color):
+
+def plot(filteredData, lowcut, highcut, cycle, title, cmd, color):
     # Plot original and filtered data
-    nr = 310+cmd
+    nr = 310 + cmd
     plt.subplot(nr)
     plt.title(' Compare P300 - Cycle %d (%d - %d Hz)' % (cycle, lowcut, highcut))
     plt.plot(filteredData, label=title, color=color)
@@ -263,6 +272,6 @@ def plot(filteredData, lowcut, highcut, cycle,title,cmd,color):
     plt.grid(True)
 
 
-#start process
+# start process
 if __name__ == '__main__':
     main()
