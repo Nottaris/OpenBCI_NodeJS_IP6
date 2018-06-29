@@ -3,6 +3,7 @@ import logo from './logo.png';
 import mp3File_summer from './music/bensound-summer.mp3';
 import mp3File_anewbeginning from './music/bensound-anewbeginning.mp3';
 import mp3File_happyrock from './music/bensound-happyrock.mp3';
+import mp3File_violinspider from './music/Marco_Trovatello_-_06_-_Violin_Spider.mp3';
 import PlayerBlink from './PlayerBlink';
 import PlayerP300 from './PlayerP300';
 import './App.css';
@@ -35,7 +36,7 @@ App.defaultProps = {
             year: 2018,
             artwork: "https://freemusicarchive.org/file/images/albums/Marco_Trovatello_-_Not_At_All_-_20180519102404987.jpg",
             duration: 42,
-            source: "https://freemusicarchive.org/music/download/bfa7b9613d5e7863cce918da1f88d8aa1523b761"
+            source: mp3File_violinspider
         },
         {
             name: "We Were Young",

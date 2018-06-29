@@ -4,8 +4,8 @@ from scipy.signal import butter, lfilter
 from scipy.sparse.linalg import spsolve
 import json, sys, numpy as np, matplotlib.pyplot as plt
 
-# Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
 
+# Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
 
 
 def butter_bandpass(lowcut, highcut, fs, order):
@@ -21,14 +21,15 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     y = lfilter(b, a, data)
     return y
 
+
 def main():
-    channel = 0 #channel 0-7
+    channel = 0  # channel 0-7
 
     # load json
     with open('../../test/data/p300_ina_1/data-2018-6-29-11-32-11.json') as f:
          dataJson = json.load(f)
 
-   # Get channel data
+    # Get channel data
     data = getChannelData(dataJson, channel)
     # commands data/data-2018-6-29-11-32-11.json
     # command order: next,voldown,play,prev,pause,volup
@@ -163,7 +164,7 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
     # allDataFilterd = allDataFilterd/np.std(allDataFilterd, ddof=1)
 
     ## BASELINE CORRECTION   // https://stackoverflow.com/a/29185844
-    def baseline_als(y, lam=10^5, p=0.01, niter=10):
+    def baseline_als(y, lam=10 ^ 5, p=0.01, niter=10):
         L = len(y)
         D = sparse.csc_matrix(np.diff(np.eye(L), 2))
         w = np.ones(L)
@@ -174,11 +175,10 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
             w = p * (y > z) + (1 - p) * (y < z)
         return z
 
-   # allDataFilterd = baseline_als(allDataFilterd)
+    # allDataFilterd = baseline_als(allDataFilterd)
 
     ## Decibel Conversion - Reference = 1mV = 1e-3
     # allDataFilterd = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), allDataFilterd))
-
 
     ## SPLIT DATA IN COMMAND EPOCHES
     dataP300 = []
@@ -201,21 +201,31 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
     dataP300 = dataP300Baseline
 
     ## SUBTRACT BASELINE for each datapoint from period before
-    #for i in range(6):
-    #    dataP300[i]=dataP300[i] - dataP300[i-1]
+    for i in range(6):
+        dataP300[i] = dataP300[i] - dataP300[i - 1]
 
     ## Decibel Conversion - Reference = 1mV = 1e-3   for each epoch
     #for i in range(6):
     #    dataP300[i] = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), dataP300[i]))
 
     # ONLY ANALYSE DATA BETWEEN 250ms(62) and 450ms(120) AFTER CMD
-    # for i in range(6):
-    #   dataP300[i] = dataP300[i][62:120]
+    #for i in range(6):
+    #    dataP300[i] = dataP300[i][62:120]
 
-    ## CALCULATE AMPLITUDE
+    ## CALCULATE AMPLITUDE # ONLY ANALYSE DATA BETWEEN 200ms(50) and 400ms(100) AFTER CMD
     diff = []
     for i in range(6):
-         diff.append(np.max(dataP300[i]) - np.min(dataP300[i]))
+        diff.append(np.max(dataP300[i][80:110]) - np.min(dataP300[i][80:110]))
+    #get max index
+    idx = diff.index(np.max(diff))
+
+    max = np.max(dataP300[idx])
+    mean = np.mean(dataP300[idx])
+    if (True):
+         if (idx+1 == focus):
+            print(str(idx+1) + " CORRECT P300 detection")
+         else:
+            print(str(idx+1) + " wrong P300 detection. Correct would be cmd " + str(focus))
 
     stringDiff = ''.join(str(diff))
     print("diff values: "+stringDiff)
@@ -246,14 +256,16 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
 
     plt.show()
 
+
 def getChannelData(data, channel):
-    channelData=[]
+    channelData = []
     for val in data:
         channelData.append(val["channelData"][channel])
     return channelData
 
-def filterData(data,lowcut,highcut,fs,order):
-    #filter data with butter bandpass
+
+def filterData(data, lowcut, highcut, fs, order):
+    # filter data with butter bandpass
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
     return filterdData
 
