@@ -101,10 +101,10 @@ def detectP300(data, start, cycle, focus, focusCmd):
 
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
-    lowcut = 0.1
+    lowcut = 0.01
     highcut = 15.0
     order = 2
-    slotSize = 125  # 0.5s
+    slotSize = 125  #500ms
 
     ## FILTER DATA
     allDataFilterd = filterData(data, lowcut, highcut, fs, order)
@@ -114,27 +114,30 @@ def detectP300(data, start, cycle, focus, focusCmd):
     dataP300 = []
     for i in range(6):
         dataP300.append(allDataFilterd[start:end])
-        start = end
+        start = start+62
         end = start + slotSize
 
 
-    # ONLY ANALYSE DATA BETWEEN 280ms(70) and 440ms(110) AFTER CMD
+    # ONLY ANALYSE DATA BETWEEN 320ms(70) and 450ms(112) AFTER CMD
+    dataP300Slots = []
+    dataBaseline = []
     for i in range(6):
-        dataP300[i] = dataP300[i][70:110]
+        dataBaseline.append(dataP300[i][0:79])
+        dataP300Slots.append(dataP300[i][80:120])
 
     ## SUBTRACT BASELINE for each datapoint from period before
     for i in range(6):
-        dataP300[i] = dataP300[i] - dataP300[i - 1]
+        dataP300Slots[i] = dataP300Slots[i] - dataBaseline[i]
 
     ## CALCULATE AMPLITUDE
     diff = []
     for i in range(6):
-        diff.append(np.max(dataP300[i]) - np.min(dataP300[i]))
+        diff.append(np.max(dataP300Slots[i]) - np.min(dataP300Slots[i]))
     #get index of max diff
     idx = diff.index(np.max(diff))
 
-    max = np.max(dataP300[idx])
-    mean = np.mean(dataP300[idx])
+    max = np.max(dataP300Slots[idx])
+    mean = np.mean(dataP300Slots[idx])
     if (True):
          if (idx+1 == focus):
             print(str(idx+1) + " is CORRECT")
@@ -148,10 +151,10 @@ def detectP300(data, start, cycle, focus, focusCmd):
 
     #for i in range(6):
     #   if (i == focus - 1):
-    #print("Max: " + str(np.max(dataP300[idx])*100000))
-    #print("mean: " + str(np.mean(dataP300[idx])*100000))
-    #print("max-mean: " + str(np.max(dataP300[idx])*100000 - np.mean(dataP300[idx])*100000))
-    #print("max/mean: "+ str(np.max(dataP300[idx])/np.mean(dataP300[idx])))
+    #print("Max: " + str(np.max(dataP300Slots[idx])*100000))
+    #print("mean: " + str(np.mean(dataP300Slots[idx])*100000))
+    #print("max-mean: " + str(np.max(dataP300Slots[idx])*100000 - np.mean(dataP300Slots[idx])*100000))
+    print("max/mean: "+ str(np.max(dataP300Slots[idx])/np.mean(dataP300Slots[idx])))
 
 
 
