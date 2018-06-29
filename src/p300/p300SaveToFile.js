@@ -7,14 +7,8 @@ module.exports = {
     reset
 }
 
-const commands = [
-    "prev",
-    "play",
-    "next",
-    "voldown",
-    "pause",
-    "volup"
-];
+const commands =  ["next","voldown", "play","prev","pause","volup"];
+const focus = 1; //command 0-5
 
 const server = require('../socket/server');
 // const detectP300 = require('./detectP300');
@@ -38,7 +32,9 @@ let cmd = 0;
 let settings = defaultSettings;
 const fs = require('fs');
 let stream;
-
+timestamps = [];
+flashedCmds = [];
+cmdRow = [];
 //get date in format for file name like "data-2018-4-6-21-13-08.json"
 options = {
     year: 'numeric', month: 'numeric', day: 'numeric',
@@ -50,10 +46,13 @@ datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
 formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
 
 streamCommands = fs.createWriteStream("data/data-" + formatDate + "_commands.json", { flags: 'a' });
-streamCommands.write("commands data/data-" + formatDate +".json\n");
-
+streamCommands.write("# commands data/data-" + formatDate +".json\n");
+streamCommands.write("# command order: "+commands.toString() +"\n");
 stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
-
+streamCommands.write("# 1 cycles focus on"+commands[focus]+"\n");
+streamCommands.write("cycle ="+cycle+"\n");
+streamCommands.write("focus ="+focus+"\n");
+streamCommands.write("focusCmd =\""+commands[focus]+"\"\n");
 // Connect to socket server
 server.startSocketServer();
 
@@ -72,10 +71,28 @@ flashCommand = (flashedCmd) => {
     if(flashedCmd.command !== undefined) {
         if(cmd>5){
             cycle++;
+            streamCommands.write("# "+cycle+" cycles focus on"+commands[focus]+"\n");
+            streamCommands.write("cycle ="+cycle+"\n");
+            streamCommands.write("focus ="+focus+"\n");
+            streamCommands.write("focusCmd =\""+commands[focus]+"\"\n");
+            cmdRow = [];
+            timestamps = [];
+            flashedCmds = [];
             cmd = 0;
         }
         cmd++;
-        streamCommands.write(""+cycle+"\t cmd "+cmd+" ("+flashedCmd.command+") \trow: "+getSampleRow(flashedCmd.time)+" \t"+flashedCmd.time+"\n");
+
+        cmdRow.push(getSampleRow(flashedCmd.time));
+        timestamps.push(flashedCmd.time);
+        flashedCmds.push(flashedCmd.command);
+        if(cmd>5){
+            streamCommands.write("cmdRow = "+JSON.stringify(cmdRow)+"\n");
+            streamCommands.write("# timestamps: "+JSON.stringify(timestamps)+"\n");
+            streamCommands.write("# commands: "+JSON.stringify(commands)+"\n");
+            console.log(cmdRow);
+            console.log(timestamps);
+            streamCommands.write("detectP300(data, cmdRow, cycle, focus, focusCmd)\n");
+        }
     } else {
         console.log("undefined command");
     }
