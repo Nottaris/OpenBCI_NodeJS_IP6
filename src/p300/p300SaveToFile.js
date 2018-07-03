@@ -59,7 +59,7 @@ server.startSocketServer();
 // Process samples from board
 function digestSamples(sample) {
     //save channel data and timestamp
-    samples.push({time: sample.timestamp, sample: Number(sample.channelData[settings.channel - 1])});
+    samples.push({time: sample.timestamp.toString().slice(0, -1), sample: Number(sample.channelData[settings.channel - 1])});
     // write sample to json file
     var record = JSON.stringify(sample);
     stream.write(record + ",\n");
@@ -102,13 +102,13 @@ server.subscribeToCmds(flashCommand);
 // find timestamp in samples array
 function getSampleRow(timestamp){
   let samplesReverse = samples.reverse();
-  return samplesReverse.length-samplesReverse.findIndex(findIndexForTimestamp(timestamp))-1;
+  return samplesReverse.length-samplesReverse.findIndex(findIndexForTimestamp(timestamp.toString().slice(0, -1)))-1;
 }
 
 //find timestamp in sample that is <= 2 compared with given timestamp
 function findIndexForTimestamp(timestamp) {
   return function(element) {
-       return Math.abs(timestamp - element.time) <= 2;
+       return timestamp === element.time;
     }
 }
 

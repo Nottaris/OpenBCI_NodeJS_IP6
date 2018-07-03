@@ -26,124 +26,110 @@ def main():
     channel = 0  # channel 0-7
 
     # load json
-    with open('../../test/data/p300_ina_1/data-2018-6-29-11-32-11.json') as f:
+    with open('../../test/data/p300_ina_1/data-2018-6-29-14-06-10.json') as f:
          dataJson = json.load(f)
 
     # Get channel data
     data = getChannelData(dataJson, channel)
-    # commands data/data-2018-6-29-11-32-11.json
+    next = [3953, 4628, 5304, 5979]
+    detectP300Cycles(data, next, "next",1)
+    voldown = [4065, 4741, 5410, 6092]
+    detectP300Cycles(data, voldown, "voldown",2)
+    play = [4178, 4853, 5529, 6204]
+    prev = [4290, 4966, 5641, 6317]
+    pause = [4403, 5078, 5754, 6430]
+    volup = [4516, 5191, 5867, 6542]
+
+    plt.show()
+
+
+    # commands data/data-2018-6-29-14-06-10.json
     # command order: next,voldown,play,prev,pause,volup
-    # 1 cycles focus onvoldown
-    cycle = 1
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [4329, 4449, 4570, 4690, 4810, 4930]
-    # timestamps: [1530264752620,1530264753068,1530264753519,1530264753968,1530264754418,1530264754868]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 2 cycles focus onvoldown
-    cycle = 2
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [5051, 5171, 5290, 5403, 5411, 5532]
-    # timestamps: [1530264755325,1530264755771,1530264756218,1530264756668,1530264757119,1530264757568]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
+    # # 1 cycles focus onvoldown
+    # cycle = 1
+    # focus = 1
+    # focusCmd = "voldown"
+    # cmdRow = [2607, 2714, 2827, 2939, 3052, 3165]
+    # # timestamps: [1530273985005,1530273985439,1530273985887,1530273986337,1530273986789,1530273987239]
+    # # commands: ["next","voldown","play","prev","pause","volup"]
+    # detectP300(data, cmdRow, cycle, focus, focusCmd)
+    # # 2 cycles focus onvoldown
+    # cycle = 2
+    # focus = 1
+    # focusCmd = "voldown"
+    # cmdRow = [3277, 3390, 3502, 3607, 3726, 3840]
+    # # timestamps: [1530273987687,1530273988136,1530273988587,1530273989039,1530273989488,1530273989938]
+    # # commands: ["next","voldown","play","prev","pause","volup"]
+    # detectP300(data, cmdRow, cycle, focus, focusCmd)
     # 3 cycles focus onvoldown
-    cycle = 3
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [5652, 5772, 5892, 6127, 6133, 6253]
-    # timestamps: [1530264758020,1530264758468,1530264758917,1530264759560,1530264759818,1530264760269]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 4 cycles focus onvoldown
-    cycle = 4
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [6373, 6494, 6614, 6734, 6854, 6975]
-    # timestamps: [1530264760719,1530264761169,1530264761620,1530264762068,1530264762518,1530264762968]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 5 cycles focus onvoldown
-    cycle = 5
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [7092, 7095, 7215, 7335, 7456, 7576]
-    # timestamps: [1530264763420,1530264763869,1530264764318,1530264764769,1530264765219,1530264765670]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 6 cycles focus onvoldown
-    cycle = 6
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [7696, 7816, 7936, 8057, 8177, 8297]
-    # timestamps: [1530264766118,1530264766569,1530264767018,1530264767470,1530264767919,1530264768369]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 7 cycles focus onvoldown
-    cycle = 7
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [8417, 8538, 8658, 8778, 8893, 8898]
-    # timestamps: [1530264768819,1530264769269,1530264769718,1530264770169,1530264770619,1530264771069]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 8 cycles focus onvoldown
-    cycle = 8
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [9019, 9139, 9259, 9379, 9500, 9620]
-    # timestamps: [1530264771551,1530264771969,1530264772419,1530264772869,1530264773318,1530264773768]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 9 cycles focus onvoldown
-    cycle = 9
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [9740, 9860, 9981, 10101, 10221, 10341]
-    # timestamps: [1530264774219,1530264774670,1530264775120,1530264775568,1530264776018,1530264776469]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 10 cycles focus onvoldown
-    cycle = 10
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [10462, 10582, 10695, 10702, 10943, 10943]
-    # timestamps: [1530264776919,1530264777368,1530264777819,1530264778268,1530264778830,1530264779168]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 11 cycles focus onvoldown
-    cycle = 11
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [11063, 11183, 11303, 11424, 11544, 11664]
-    # timestamps: [1530264779620,1530264780068,1530264780519,1530264780969,1530264781418,1530264781868]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 12 cycles focus onvoldown
-    cycle = 12
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [11784, 11904, 12025, 12145, 12265, 12384]
-    # timestamps: [1530264782319,1530264782769,1530264783219,1530264783757,1530264784120,1530264784569]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 13 cycles focus onvoldown
-    cycle = 13
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [12385, 12506, 12626, 12746, 12866, 12987]
-    # timestamps: [1530264785018,1530264785469,1530264785918,1530264786383,1530264786819,1530264787270]
-    # commands: ["next","voldown","play","prev","pause","volup"]
-    detectP300(data, cmdRow, cycle, focus, focusCmd)
-    # 14 cycles focus onvoldown
-    cycle = 14
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [13107, 13227, 13347, 13468, 13588, 13588]
-    # timestamps: [1530264787719,1530264788168,1530264788676,1530264789070,1530264789518,1530264789968]
-    # commands: ["next","voldown","play","prev","pause","volup"]
+    # cycle = 3
+    # focus = 1
+    # focusCmd = "voldown"
+    # cmdRow = [3953, 4065, 4178, 4290, 4403, 4516]
+    # # timestamps: [1530273990387,1530273990837,1530273991288,1530273991737,1530273992187,1530273992638]
+    # # commands: ["next","voldown","play","prev","pause","volup"]
+    # detectP300(data, cmdRow, cycle, focus, focusCmd)
+    # # 4 cycles focus onvoldown
+    # cycle = 4
+    # focus = 1
+    # focusCmd = "voldown"
+    # cmdRow = [4628, 4741, 4853, 4966, 5078, 5191]
+    # # timestamps: [1530273993086,1530273993538,1530273993989,1530273994436,1530273994886,1530273995337]
+    # # commands: ["next","voldown","play","prev","pause","volup"]
+    # detectP300(data, cmdRow, cycle, focus, focusCmd)
+    # # 5 cycles focus onvoldown
+    # cycle = 5
+    # focus = 1
+    # focusCmd = "voldown"
+    # cmdRow = [5304, 5410, 5529, 5641, 5754, 5867]
+    # # timestamps: [1530273995787,1530273996237,1530273996687,1530273997139,1530273997587,1530273998037]
+    # # commands: ["next","voldown","play","prev","pause","volup"]
+    # detectP300(data, cmdRow, cycle, focus, focusCmd)
+    # # 6 cycles focus onvoldown
+    # cycle = 6
+    # focus = 1
+    # focusCmd = "voldown"
+    # cmdRow = [5979, 6092, 6204, 6317, 6430, 6542]
+    # # timestamps: [1530273998487,1530273998937,1530273999387,1530273999837,1530274000287,1530274000737]
+    # # commands: ["next","voldown","play","prev","pause","volup"]
+    # detectP300(data, cmdRow, cycle, focus, focusCmd)
+    # # # 7 cycles focus onvoldown
+    # # cycle = 7
+    # # focus = 1
+    # # focusCmd = "voldown"
+    # # cmdRow = [6655, 6767, 6880, 6992, 7094, 7214]
+    # # # timestamps: [1530274001188,1530274001637,1530274002087,1530274002537,1530274002987,1530274003437]
+    # # # commands: ["next","voldown","play","prev","pause","volup"]
+    # # detectP300(data, cmdRow, cycle, focus, focusCmd)
+
+
+def detectP300Cycles(data,cmdRow,cmd,nr):
+    print("-----  command "+str(cmd)+"  -----")
+
+    # Define sample rate and desired cutoff frequencies (in Hz).
+    fs = 250.0
+    lowcut = 0.1
+    highcut = 15.0
+    order = 2
+    slotSize = 125 #0.5s
+
+    ## FILTER DATA
+    allDataFilterd = filterData(data, lowcut, highcut, fs, order)
+    ## SPLIT DATA IN COMMAND EPOCHES
+    dataP300 = []
+    data300SubBaseline = []
+    for i in range(4):
+        ## SUBTRACT BASELINE MEAN
+         dataP300.append(allDataFilterd[cmdRow[i]:cmdRow[i]+slotSize])
+
+    mean = np.mean(np.array(dataP300).flatten())
+    data300SubBasline = dataP300 - mean
+    print(dataP300[1])
+    print(data300SubBasline[1])
+    plt.figure(1)
+    for i in range(4):
+        plot(dataP300[1], 0, 1, nr, 'r', cmdRow[2])
+        plot(data300SubBasline[1], 0, 1, nr, 'b', cmdRow[2])
 
 def detectP300(data,cmdRow,cycle,focus,focusCmd):
     print("----- Cycle "+str(cycle)+" focused command "+str(focusCmd)+" correct pos"+str(focus)+" -----")
@@ -215,17 +201,21 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
     ## CALCULATE AMPLITUDE # ONLY ANALYSE DATA BETWEEN 200ms(50) and 400ms(100) AFTER CMD
     diff = []
     for i in range(6):
-        diff.append(np.max(dataP300[i][80:110]) - np.min(dataP300[i][80:110]))
+        diff.append(np.max(dataP300[i][50:100]) - np.min(dataP300[i][50:100]))
+        max = np.max(dataP300[i][50:100])
+        mean = np.mean(dataP300[i][50:100])
+        std = np.mean(dataP300[i][50:100])
+        print("max: "+str(max)+" mean "+str(mean)+" std "+str(std))
     #get max index
     idx = diff.index(np.max(diff))
 
     max = np.max(dataP300[idx])
     mean = np.mean(dataP300[idx])
     if (True):
-         if (idx+1 == focus):
-            print(str(idx+1) + " CORRECT P300 detection")
+         if (idx == focus):
+            print(str(idx) + " CORRECT P300 detection")
          else:
-            print(str(idx+1) + " wrong P300 detection. Correct would be cmd " + str(focus))
+            print(str(idx) + " wrong P300 detection. Correct would be cmd " + str(focus))
 
     stringDiff = ''.join(str(diff))
     print("diff values: "+stringDiff)
@@ -248,8 +238,8 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
     for i in range(6):
         if(i == focus):
             plot(dataP300[i], cycle, focusCmd, i+1, 'r', cmdRow[i])
-            print("Max: " + str(np.max(dataP300[i][60:80]* 1000000)))
-            print("mean: " + str(np.mean(dataP300[i])*1000000))
+            print("Max: " + str(np.max(dataP300[i][60:80])))
+            print("mean: " + str(np.mean(dataP300[i])))
             #plot(dataP300Baseline[i], lowcut, highcut, cycle, focusCmd, 1, 'b')
         else:
             plot(dataP300[i], cycle, ("cmd %s"%(i+1)), i+1, 'b', cmdRow[i])
@@ -274,9 +264,9 @@ def plot(filteredData, cycle,title,cmd,color,row):
     nr = 320+cmd
     plt.subplot(nr)
     plt.title(' P300 Cmd: %d Cycle %d (row: %d)' % (cmd, cycle, row))
-    plt.plot(filteredData*1000000, label=title, color=color)
+    plt.plot(filteredData, label=title, color=color)
     axes = plt.gca()
-    axes.set_ylim([-35, 35])
+    # axes.set_ylim([-100, 100])
     # plt.ylabel('volts')
     # plt.xlabel('Samples 250/s')
     # plt.legend(loc='best', bbox_to_anchor=(1, 0.5))
@@ -285,7 +275,15 @@ def plot(filteredData, cycle,title,cmd,color,row):
 def plotCycle(data, lowcut, highcut, cycle):
     plt.figure(cycle)
     plt.title(' P300 Cmd: %d Cycle (%d - %d Hz)' % (cycle, lowcut, highcut))
-    plt.plot(data*1000000, 'b')
+    plt.plot(data, 'b')
+    axes = plt.gca()
+
+def plotCmd(data, lowcut, highcut, cmd):
+    plt.figure(0)
+    plt.title(' P300 Cmd: %d Cycle (%d - %d Hz)' % (cmd, lowcut, highcut))
+    plt.plot(data, 'b')
+    axes = plt.gca()
+
 #start process
 if __name__ == '__main__':
     main()
