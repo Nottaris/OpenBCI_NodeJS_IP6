@@ -13,7 +13,7 @@ export default class Controls extends React.Component {
     render() {
         return (
             <div className="Controls">
-                <div className="row">
+               <div className="row">
                     <div onClick={() => this.setCommand('prev')} id="prev" className="Button">
                         <i className='fa fa-fw fa-backward'></i>
                     </div>
