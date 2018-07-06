@@ -115,12 +115,12 @@ export default class PlayerBlink extends React.Component {
             that.updateScrubber(percent);
             that.updateTime(currentTime);
         }, 100);
-        this.setState({playStatus: 'pause'});
+        this.setState({playpauseToggle: 'pause'});
     }
 
     pause(audio) {
         audio.pause();
-        this.setState({playStatus: 'play'});
+        this.setState({playpauseToggle: 'play'});
     }
 
     next(audio) {

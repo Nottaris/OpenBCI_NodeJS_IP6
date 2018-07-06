@@ -13,15 +13,16 @@ export default class P300 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            playStatus: 'pause',
+            playpauseToggle: 'play',
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
             currentCmd: 'no',
-            colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
-            commands: ["next", "voldown", "play", "prev", "volup"],
-            cmdInterval: 300,
-            flashCmdInterval: 120
+            //colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
+            colors: ['#fff'],
+            commands: ["next", "voldown", "playpause", "prev", "volup"],
+            cmdInterval: 450,
+            flashCmdInterval: 140
         };
 
         this.clickCommand = this.clickCommand.bind(this);
@@ -67,7 +68,7 @@ export default class P300 extends React.Component {
     blinkCommandButton(command) {
         if (null !== command) {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
-            elem.style.color = "#ffffff";
+            //elem.style.color = "#ffffff";
             elem.style.background = this.state.colors[Math.floor(Math.random() * this.state.colors.length)];
 
             //Send flushed command and timestamp to server
@@ -83,12 +84,6 @@ export default class P300 extends React.Component {
     clickCommand = (state) => {
         let audio = document.getElementById('audio');
         switch (state) {
-            case "play":
-                this.play(audio);
-                break;
-            case "pause":
-                this.pause(audio);
-                break;
             case "next":
                 this.next(audio);
                 break;
@@ -102,9 +97,9 @@ export default class P300 extends React.Component {
                 this.voldown(audio);
                 break;
             case "playpause":
-                if (this.state.playStatus === 'pause') {
+                if (this.state.playpauseToggle === 'play') {
                     this.play(audio);
-                } else if (this.state.playStatus === 'play'){
+                } else if (this.state.playpauseToggle === 'pause'){
                     this.pause(audio);
                 };
                 break;
@@ -133,7 +128,6 @@ export default class P300 extends React.Component {
     }
 
     play(audio) {
-        this.blinkCommandButton("play");
         audio.play();
         audio.volume = this.state.audioVolume;
         let that = this;
@@ -145,12 +139,12 @@ export default class P300 extends React.Component {
             that.updateScrubber(percent);
             that.updateTime(currentTime);
         }, 100);
-        this.setState({playStatus: 'play'});
+        this.setState({playpauseToggle: 'pause'});
     }
 
     pause(audio) {
         audio.pause();
-        this.setState({playStatus: 'pause'});
+        this.setState({playpauseToggle: 'play'});
     }
 
     next(audio) {
@@ -214,7 +208,7 @@ export default class P300 extends React.Component {
                     </div>
 
                 </div>
-                <ControlsP300 playstatus={this.state.playStatus} clickCommand={this.clickCommand}/>
+                <ControlsP300 playpauseToggle={this.state.playpauseToggle} clickCommand={this.clickCommand}/>
             </div>
 
         )

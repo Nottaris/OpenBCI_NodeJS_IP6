@@ -56,12 +56,12 @@ export const play = (audio) => {
         that.updateScrubber(percent);
         that.updateTime(currentTime);
     }, 100);
-    this.setState({playStatus: 'pause'});
+    this.setState({playpauseToggle: 'pause'});
 }
 
 export const pause = (audio) => {
     audio.pause();
-    this.setState({playStatus: 'play'});
+    this.setState({playpauseToggle: 'play'});
 }
 
 export const next = (audio) => {
