@@ -14,9 +14,9 @@ body {
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 0 5px 10px -5px #121212;
-    height: 667px;
+    height: 100%;
     width: 100%;
-    margin-top: 40px;
+    margin-top: 20px;
     background: #000;
 }
 
@@ -173,7 +173,7 @@ body {
     align-items: center;
     justify-content: center;
     background: #000;
-    height: 200px;
+    height: 400px;
     max-width: 675px;
     margin: 0 auto;
     padding-top: 100px;
@@ -216,12 +216,12 @@ body {
 
 /*Custom CSS for P300*/
 .P300 .Controls {
-    max-width: 80%;
+    max-width: 70%;
     min-height: 100%;
-
 }
 .P300 div.Controls div.row div.Button i.P300.fa {
-    padding: 150px 20px 150px 20px;
+    padding: 220px 20px 150px 20px;
+    height: 400px;
 }
 
 /* Custom CSS for Blink */
