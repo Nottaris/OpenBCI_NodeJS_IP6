@@ -1,36 +1,40 @@
 body {
     background: #000000 !important;
 }
+
 #root {
     width: 100%;
+    height: 100%;
 }
+
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-   height: 38px;
+    height: 38px;
 }
 
 .App-header {
-  height: 38px;
-  padding: 20px 0px 0px 0px;
-  color: black;
+    height: 38px;
+    padding: 20px 0px 0px 0px;
+    color: black;
     width: 240px;
-    text-align:center;
+    text-align: center;
     margin: 0 auto;
-    display:table;
+    display: table;
 }
 
 .App-header img {
-    display:table-cell;
-    vertical-align:middle
+    display: table-cell;
+    vertical-align: middle
 }
+
 .App-title {
-  font-size: 1.5em;
+    font-size: 1.5em;
     color: #FFF;
     margin: 0;
     font-weight: normal;
-    display:table-cell;
-    vertical-align:middle
+    display: table-cell;
+    vertical-align: middle
 }

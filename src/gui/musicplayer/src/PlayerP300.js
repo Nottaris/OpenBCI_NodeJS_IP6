@@ -1,11 +1,11 @@
 import React from 'react';
 import './Player.css';
-import { subscribeToCmds, sendP300Cmd } from './api';
+import {subscribeToCmds, sendP300Cmd} from './api';
 import TrackInformation from './components/TrackInformation';
 import Scrubber from './components/Scrubber';
 import Timestamps from './components/Timestamps';
 import AudioVolume from './components/AudioVolume';
-import Controls from './components/Controls';
+import ControlsP300 from './components/ControlsP300';
 
 
 // Player
@@ -13,13 +13,13 @@ export default class P300 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            playStatus: 'play',
+            playStatus: 'pause',
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
             currentCmd: 'no',
             colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
-            commands: ["next","voldown", "play","prev","pause","volup"],
+            commands: ["next", "voldown", "play", "prev", "volup"],
             cmdInterval: 300,
             flashCmdInterval: 120
         };
@@ -36,39 +36,39 @@ export default class P300 extends React.Component {
 
     };
 
-     componentDidMount() {
-         this.generateCommands();
-      }
+    componentDidMount() {
+        this.generateCommands();
+    }
 
 
     generateCommands() {
-         var commandIdx = 0;
+        var commandIdx = 0;
 
-        setInterval(function() {
+        setInterval(function () {
             this.blinkCommandButton(this.state.commands[commandIdx]);
-            if(commandIdx<this.state.commands.length-1) {
+            if (commandIdx < this.state.commands.length - 1) {
                 commandIdx++;
             } else {
                 commandIdx = 0;
             }
         }.bind(this), this.state.cmdInterval);
-     }
+    }
 
     flashCommand = (data) => {
-        console.log("getting command  "+data.command);
+        console.log("getting command  " + data.command);
     };
 
     execCommand = (data) => {
         this.clickCommand(data.docommand);
-      //  console.log("blink: "+data.docommand);
+        //  console.log("blink: "+data.docommand);
     };
 
     //Set the color of the command to white for X seconds
     blinkCommandButton(command) {
-        if(null!==command){
+        if (null !== command) {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
-            elem.style.background = this.state.colors[Math.floor(Math.random()*this.state.colors.length)];
+            elem.style.background = this.state.colors[Math.floor(Math.random() * this.state.colors.length)];
 
             //Send flushed command and timestamp to server
             sendP300Cmd(command, Date.now());
@@ -100,6 +100,13 @@ export default class P300 extends React.Component {
                 break;
             case "voldown":
                 this.voldown(audio);
+                break;
+            case "playpause":
+                if (this.state.playStatus === 'pause') {
+                    this.play(audio);
+                } else if (this.state.playStatus === 'play'){
+                    this.pause(audio);
+                };
                 break;
             default:
                 //this should never happen
@@ -138,12 +145,12 @@ export default class P300 extends React.Component {
             that.updateScrubber(percent);
             that.updateTime(currentTime);
         }, 100);
-        this.setState({playStatus: 'pause'});
+        this.setState({playStatus: 'play'});
     }
 
     pause(audio) {
         audio.pause();
-        this.setState({playStatus: 'play'});
+        this.setState({playStatus: 'pause'});
     }
 
     next(audio) {
@@ -207,7 +214,7 @@ export default class P300 extends React.Component {
                     </div>
 
                 </div>
-                <Controls clickCommand={this.clickCommand}/>
+                <ControlsP300 playstatus={this.state.playStatus} clickCommand={this.clickCommand}/>
             </div>
 
         )
