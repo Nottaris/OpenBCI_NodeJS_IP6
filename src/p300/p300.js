@@ -14,7 +14,7 @@ module.exports = {
 
 
 const server = require('../socket/server');
-const detectP300 = require('./detectP300');
+const detectP300 = require('./detectP300v2');
 
 const defaultSettings  = {
     channel:      1,             // number of channel ( from 1 to 8 ) 1 === OZ for p300
@@ -46,9 +46,15 @@ function digestSamples(sample) {
     // fetch samples for slottime from requested channel
     if (count < settings.slots) {
         //save channel data and timestamp
-        volts.push({time: sample.timestamp.toString().slice(0, -1), sample: Number(sample.channelData[settings.channel - 1]* 1000000)}); //microVolts
+        //volts.push({time: sample.timestamp.toString().slice(0, -1), sample: Number(sample.channelData[settings.channel - 1]* 1000000)}); //microVolts
+
+        //save channel data
+        volts.push(Number((sample.channelData[settings.channel-1] * 1000000))); //microVolts
         count++;
     } else if (count >= settings.slots) {
+        //TODO: eventually here get volts synced to cmd timestamp
+
+
         //send data to evaluate
         detectP300.getVEP(volts, currentCommand, currentTime);
 
