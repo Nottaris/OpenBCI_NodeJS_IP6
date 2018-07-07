@@ -7,8 +7,8 @@ module.exports = {
     reset
 }
 
-const commands =  ["next","voldown", "play","prev","pause","volup"];
-const focus = 1; //command 0-5
+const commands =  ["next", "voldown", "playpause", "prev", "volup"];
+const focus = 1; //command 0-4
 
 const server = require('../socket/server');
 // const detectP300 = require('./detectP300');
@@ -69,8 +69,9 @@ function digestSamples(sample) {
 flashCommand = (flashedCmd) => {
     console.log("command: "+flashedCmd.command);
     if(flashedCmd.command !== undefined) {
-        if(cmd>5){
+        if(cmd > commands.length-1){
             cycle++;
+            console.log("cycle: "+cycle);
             streamCommands.write("# "+cycle+" cycles focus on"+commands[focus]+"\n");
             streamCommands.write("cycle ="+cycle+"\n");
             streamCommands.write("focus ="+focus+"\n");
@@ -85,12 +86,10 @@ flashCommand = (flashedCmd) => {
         cmdRow.push(getSampleRow(flashedCmd.time));
         timestamps.push(flashedCmd.time);
         flashedCmds.push(flashedCmd.command);
-        if(cmd>5){
+        if(cmd > commands.length-1){
             streamCommands.write("cmdRow = "+JSON.stringify(cmdRow)+"\n");
             streamCommands.write("# timestamps: "+JSON.stringify(timestamps)+"\n");
             streamCommands.write("# commands: "+JSON.stringify(commands)+"\n");
-            console.log(cmdRow);
-            console.log(timestamps);
             streamCommands.write("detectP300(data, cmdRow, cycle, focus, focusCmd)\n");
         }
     } else {
