@@ -88,7 +88,3 @@ cmdRow = [12184,12297,12409,12522,12634,12747]
 # timestamps: [1530880413284,1530880413732,1530880414183,1530880414633,1530880415083,1530880415534]
 # commands: ["next","voldown","playpause","prev","volup"]
 detectP300(data, cmdRow, cycle, focus, focusCmd)
-# 12 cycles focus onplaypause
-cycle =12
-focus =2
-focusCmd ="playpause"

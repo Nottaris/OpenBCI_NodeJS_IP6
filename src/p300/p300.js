@@ -12,25 +12,14 @@ module.exports = {
     reset
 }
 
-const commands = [
-    "prev",
-    "play",
-    "next",
-    "voldown",
-    "pause",
-    "volup",
-    "prev"
-];
-
 
 const server = require('../socket/server');
 const detectP300 = require('./detectP300');
-var currentCommand = "play";
 
 const defaultSettings  = {
-    channel:      5,             // number of channel ( from 1 to 8 ) 5 === yellow Cz (middle top head) for p300
+    channel:      1,             // number of channel ( from 1 to 8 ) 1 === OZ for p300
     sampleRate: 250,             // 250Hz
-    slots:      150,             // data points per slot ( 600ms === 150 )
+    slots:      112,             // data points per slot ( 450ms === 112 )
     threshold:  1.8,             // deviation factor
     debug:      true             // show console.log
 }
@@ -38,33 +27,35 @@ const defaultSettings  = {
 let volts = [];
 let count = 0;
 let settings = defaultSettings;
+var currentCommand; //cmd player is showing
+var currentTime; //time player showed cmd
 
 server.startSocketServer();
 
+function getCmdTimefromPlayer(data) {
+    currentCommand = data.command;
+    currentTime = data.time;
+    //console.log("from player: "+data.command+" "+data.time);
+};
+
+server.subscribeToCmds(getCmdTimefromPlayer);
+
+
 function digestSamples(sample) {
 
-    // fetch 600ms of samples from channel 5
+    // fetch samples for slottime from requested channel
     if (count < settings.slots) {
-        volts.push(Number((sample.channelData[settings.channel-1] * 1000000).toFixed(20))); //microVolts
+        //save channel data and timestamp
+        volts.push({time: sample.timestamp.toString().slice(0, -1), sample: Number(sample.channelData[settings.channel - 1]* 1000000)}); //microVolts
         count++;
     } else if (count >= settings.slots) {
-        //send past 600ms and past command to evaluate
-        detectP300.getVEP(volts, currentCommand);
-
-        //send next command to flash on player
-        setNextCommand();
-        server.sendCmd(currentCommand);
+        //send data to evaluate
+        detectP300.getVEP(volts, currentCommand, currentTime);
 
         // reset
         volts = [];
         count = 0;
     }
-}
-
-
-function setNextCommand() {
-    let idx = commands.indexOf(currentCommand);
-    currentCommand = commands[idx + 1];
 }
 
 

@@ -30,7 +30,6 @@ export default class P300 extends React.Component {
         this.generateCommands = this.generateCommands.bind(this);
 
         subscribeToCmds(
-            this.flashCommand,
             this.execCommand,
             this.execCommand,
         );
@@ -46,7 +45,7 @@ export default class P300 extends React.Component {
         var commandIdx = 0;
 
         setInterval(function () {
-            this.blinkCommandButton(this.state.commands[commandIdx]);
+            this.flashCommandButton(this.state.commands[commandIdx]);
             if (commandIdx < this.state.commands.length - 1) {
                 commandIdx++;
             } else {
@@ -55,24 +54,21 @@ export default class P300 extends React.Component {
         }.bind(this), this.state.cmdInterval);
     }
 
-    flashCommand = (data) => {
-        console.log("getting command  " + data.command);
-    };
-
     execCommand = (data) => {
         this.clickCommand(data.docommand);
-        //  console.log("blink: "+data.docommand);
+        //  console.log("p300: "+data.docommand);
     };
 
     //Set the color of the command to white for X seconds
-    blinkCommandButton(command) {
+    flashCommandButton(command) {
         if (null !== command) {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             //elem.style.color = "#ffffff";
             elem.style.background = this.state.colors[Math.floor(Math.random() * this.state.colors.length)];
 
-            //Send flushed command and timestamp to server
-            sendP300Cmd(command, Date.now());
+            //Send flashed command and timestamp to server
+            let time = Date.now();
+            sendP300Cmd(command, time);
 
             setTimeout(function () {
                 elem.style.color = "#1c456e";

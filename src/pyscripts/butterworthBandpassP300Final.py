@@ -1,5 +1,8 @@
+from typing import List, Any
+
 from scipy.signal import butter, lfilter
 import json, numpy as np
+
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
 
@@ -18,18 +21,20 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     return y
 
 
+data: List[Any] = []
+
+
 def main():
     channel = 0  # channel 0-7
     # 0 = OZ
-
 
     # load json
     with open('../../test/data/p300_job_06-07-18/data-2018-7-6-14-32-40.json') as f:
         dataJson = json.load(f)
 
     # Get channel data
+    global data
     data = getChannelData(dataJson, channel)
-
 
     # commands data/data-2018-7-6-14-32-40.json
     # command order: next,voldown,playpause,prev,volup
@@ -123,6 +128,25 @@ def main():
     detectP300(data, cmdRow, cycle, focus, focusCmd)
 
 
+    cmdRows = np.array([[7117, 7229, 7342, 7454, 7567],
+              [7680, 7792, 7905, 8017, 8130],
+              [8243, 8355, 8468, 8581, 8693],
+              [8806, 8918, 9031, 9144, 9256],
+              [9369, 9481, 9594, 9707, 9819],
+              [9932, 10044, 10157, 10270, 10382]])
+    print(cmdRows.shape)
+
+    avgdata = np.zeros(5)
+    cmdCount = 5
+
+
+    for i in range(5):   # 0-5 = 6 cycles
+        for j in range(cmdCount - 1):   # 0-4 = 5 cmds
+            print(str(j)+" "+str(i))
+            print(cmdRows[j][i])
+            avgdata[j].append(data[cmdRows[j][i]:cmdRows[j][i]+112])
+
+
 def detectP300(data, cmdRow, cycle, focus, focusCmd):
     print("----- Cycle " + str(cycle) + " focused command " + str(focusCmd) + " correct pos" + str(focus) + " -----")
 
@@ -131,7 +155,7 @@ def detectP300(data, cmdRow, cycle, focus, focusCmd):
     lowcut = 0.1
     highcut = 15.0
     order = 2
-    slotSize = 125  #500ms
+    slotSize = 125  # 500ms
     cmdCount = 5
 
     ## FILTER DATA
@@ -157,29 +181,27 @@ def detectP300(data, cmdRow, cycle, focus, focusCmd):
     diff = []
     for i in range(cmdCount):
         diff.append(np.max(dataP300Slots[i]) - np.min(dataP300Slots[i]))
-    #get index of max diff
+    # get index of max diff
     idx = diff.index(np.max(diff))
 
     max = np.max(dataP300Slots[idx])
     mean = np.mean(dataP300Slots[idx])
     if (True):
-         if (idx == focus):
+        if (idx == focus):
             print(str(idx) + " is CORRECT")
-         else:
+        else:
             print(str(idx) + " is wrong. Correct would be cmd " + str(focus))
 
-    #print("diff values: " + ''.join(str(diff)))
-    #print("diff values Mean: " + str(np.mean(diff)))
-    #print("diff values Max: " + str(np.max(diff)))
+    # print("diff values: " + ''.join(str(diff)))
+    # print("diff values Mean: " + str(np.mean(diff)))
+    # print("diff values Max: " + str(np.max(diff)))
 
-
-    #for i in range(cmdCount):
+    # for i in range(cmdCount):
     #   if (i == focus - 1):
-    #print("Max: " + str(np.max(dataP300Slots[idx])*100000))
-    #print("mean: " + str(np.mean(dataP300Slots[idx])*100000))
-    #print("max-mean: " + str(np.max(dataP300Slots[idx])*100000 - np.mean(dataP300Slots[idx])*100000))
-    print("max/mean: "+ str(np.max(dataP300Slots[idx])/np.mean(dataP300Slots[idx])))
-
+    # print("Max: " + str(np.max(dataP300Slots[idx])*100000))
+    # print("mean: " + str(np.mean(dataP300Slots[idx])*100000))
+    # print("max-mean: " + str(np.max(dataP300Slots[idx])*100000 - np.mean(dataP300Slots[idx])*100000))
+    print("max/mean: " + str(np.max(dataP300Slots[idx]) / np.mean(dataP300Slots[idx])))
 
 
 def getChannelData(data, channel):
