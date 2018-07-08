@@ -149,15 +149,10 @@ def main():
     for i in range(5):  # 0-4 = 5 cmds
         avgdata[i] = np.average(avgdata[i], axis=0)
 
-    newAvgData = []
 
-    for i in range(5):  # 0-4 = 5 cmds
-        newAvgData.extend(avgdata[i])
-
-    #
     #detectP300(newAvgData, focus, focusCmd)
 
-    detectP300(newAvgData, 2, "playpause")
+    detectP300(avgdata, 2, "playpause")
 
 
 
@@ -166,19 +161,16 @@ def detectP300(data, focus, focusCmd):
 
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
-    lowcut = 0.1
-    highcut = 15.0
+    lowcut = 1
+    highcut = 8.0
     order = 2
-    slotSize = 112  # 500ms
     cmdCount = 5
 
-    ## FILTER DATA
-    allDataFilterd = filterData(data, lowcut, highcut, fs, order)
+    dataP300 = [[], [], [], [], []]
 
-    ## SPLIT DATA IN COMMAND EPOCHES
-    dataP300 = []
-    for i in range(cmdCount):
-        dataP300.append(allDataFilterd[ i*slotSize : i*slotSize+slotSize ])
+    ## FILTER DATA
+    for i in range(5):  # 0-4 = 5 cmds
+        dataP300[i] = filterData(data[i], lowcut, highcut, fs, order)
 
     # ONLY ANALYSE DATA BETWEEN 320ms(70) and 450ms(112) AFTER CMD
     dataP300Slots = []
