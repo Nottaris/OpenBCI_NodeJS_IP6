@@ -149,6 +149,7 @@ body {
 
 .Player .Controls {
     display: table;
+    border-spacing:10px;
     width: 100%;
     align-items: center;
     justify-content: center;
@@ -177,9 +178,7 @@ body {
     margin: auto;
     pointer-events: all;
     cursor: pointer;
-    margin-right: 20px;
-    width: 240px;
-    height: 240px;
+    width: 100%;
 }
 .Player .Controls .Button:hover  .fa{
     transform: scale(0.98);
@@ -192,7 +191,7 @@ body {
 }
 .Player .Controls .Button  {
     color: #1c456e;
-    font-size: 80px;;
+    font-size: 80px;
 }
 
 .Player .Controls .Button.noCmd .fa {
@@ -207,10 +206,31 @@ body {
 }
 
 .P300 .Controls .row{
-    margin: 0 auto 30px;
+    margin: 0 auto;
     display: table;
+    max-width: 1200px;
+}
+
+.P300 .Controls .Button {
+    width: 200px;
+    height: 200px;
 }
 
 /* Custom CSS for Blink */
-/* .Blink {
-}*/
+.Blink .Controls {
+    border-spacing: 25px;
+    display: table;
+    width: 757px;
+    padding-top: 50px;
+}
+
+.Blink .Controls .row{
+    margin: 0 auto;
+    display: table;
+    max-width: 1200px;
+}
+
+.Blink  .Controls .Button {
+    padding: 30px 60px;
+    width: 33%;
+}
