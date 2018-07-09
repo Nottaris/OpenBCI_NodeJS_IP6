@@ -1,0 +1,106 @@
+# commands data/data-2018-7-9-11-31-05.json
+# command order: next,voldown,playpause,prev,volup
+# 1 cycles focus onplaypause
+cycle =1
+focus =2
+focusCmd ="playpause"
+cmdRow = [3953,4005,4067,4130,4192]
+# timestamps: [1531128685284,1531128685493,1531128685744,1531128685993,1531128686243]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 2 cycles focus onplaypause
+cycle =2
+focus =2
+focusCmd ="playpause"
+cmdRow = [4255,4319,4381,4443,4506]
+# timestamps: [1531128686494,1531128686748,1531128686994,1531128687244,1531128687494]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 3 cycles focus onplaypause
+cycle =3
+focus =2
+focusCmd ="playpause"
+cmdRow = [4568,4631,4690,4756,4818]
+# timestamps: [1531128687744,1531128687994,1531128688245,1531128688494,1531128688744]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 4 cycles focus onplaypause
+cycle =4
+focus =2
+focusCmd ="playpause"
+cmdRow = [4881,4944,5006,5069,5131]
+# timestamps: [1531128688994,1531128689244,1531128689493,1531128689744,1531128689995]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 5 cycles focus onplaypause
+cycle =5
+focus =2
+focusCmd ="playpause"
+cmdRow = [5194,5256,5319,5382,5444]
+# timestamps: [1531128690244,1531128690494,1531128690744,1531128690995,1531128691245]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 6 cycles focus onplaypause
+cycle =6
+focus =2
+focusCmd ="playpause"
+cmdRow = [5507,5569,5632,5694,5757]
+# timestamps: [1531128691494,1531128691745,1531128691994,1531128692243,1531128692495]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 7 cycles focus onplaypause
+cycle =7
+focus =2
+focusCmd ="playpause"
+cmdRow = [5820,5882,5945,6007,6070]
+# timestamps: [1531128692744,1531128692994,1531128693244,1531128693494,1531128693744]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 8 cycles focus onplaypause
+cycle =8
+focus =2
+focusCmd ="playpause"
+cmdRow = [6132,6195,6254,6320,6383]
+# timestamps: [1531128693994,1531128694245,1531128694494,1531128694744,1531128694994]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 9 cycles focus onplaypause
+cycle =9
+focus =2
+focusCmd ="playpause"
+cmdRow = [6445,6508,6570,6633,6696]
+# timestamps: [1531128695245,1531128695494,1531128695744,1531128695995,1531128696245]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 10 cycles focus onplaypause
+cycle =10
+focus =2
+focusCmd ="playpause"
+cmdRow = [6758,6820,6883,6945,7008]
+# timestamps: [1531128696494,1531128696744,1531128696995,1531128697245,1531128697495]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 11 cycles focus onplaypause
+cycle =11
+focus =2
+focusCmd ="playpause"
+cmdRow = [7071,7134,7196,7259,7321]
+# timestamps: [1531128697746,1531128697994,1531128698246,1531128698493,1531128698744]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 12 cycles focus onplaypause
+cycle =12
+focus =2
+focusCmd ="playpause"
+cmdRow = [7384,7446,7509,7572,7634]
+# timestamps: [1531128698995,1531128699245,1531128699495,1531128699745,1531128699995]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 13 cycles focus onplaypause
+cycle =13
+focus =2
+focusCmd ="playpause"
+cmdRow = [7697,7759,7822,7884,7947]
+# timestamps: [1531128700245,1531128700494,1531128700744,1531128700995,1531128701244]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
