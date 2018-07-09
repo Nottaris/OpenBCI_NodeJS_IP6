@@ -14,7 +14,7 @@ module.exports = {
 
 
 const server = require('../socket/server');
-const detectP300 = require('./detectP300v3');
+const detectP300 = require('./detectP300v4');
 
 const defaultSettings = {
     channel: 1,             // number of channel ( from 1 to 8 ) 1 === OZ for p300
@@ -25,11 +25,29 @@ const defaultSettings = {
 }
 
 let volts = [];
+let timestamps = [];
 let count = 0;
+let cycles = 3; //nr of cycles that will be analysed
 let settings = defaultSettings;
 var currentCommand; //cmd player is showing
 var currentTime; //time player showed cmd
 
+// index of in samples array for
+var cmdIndex = {
+        playpause: [],
+        next: [],
+        prev: [],
+        volup: [],
+        voldown: []
+    };
+
+var commands = [
+    'playpause',
+    'next',
+    'prev',
+    'volup',
+    'voldown'
+];
 server.startSocketServer();
 
 function getCmdTimefromPlayer(data) {
@@ -45,47 +63,60 @@ function digestSamples(sample) {
 
     // fetch samples for slottime from requested channel
     if (count < settings.slots) {
-        //save channel data and timestamp
-        volts.push({
-            time: sample.timestamp.toString().slice(0, -1),
-            sample: Number(sample.channelData[settings.channel - 1] * 1000000)
-        }); //microVolts
-
+        //save timestamp
+        timestamps.push(sample.timestamp.toString().slice(0, -1));
+        //save samples
+        volts.push(Number(sample.channelData[settings.channel - 1] * 1000000));
         count++;
-    } else if (count >= settings.slots) {
-        //delete volts newer than command timestamp
-        corvolts = Object.create(volts);     //clone
-        timeforCommand = currentTime + 600;    //currentTime plus 600ms
-        timeindex = getSampleRow(timeforCommand);  //get index of currenttime / command
-        corvolts = corvolts.splice(timeindex, corvolts.length);     //cut of newer stuff
-        samples = volts.map(a => a.sample); //throw away timestamps
+    } else if (count >= settings.slots && typeof currentCommand !== 'undefined') {
 
-        //send data to evaluate
-        if(typeof currentCommand != 'undefined'){
-             detectP300.getVEP(samples, currentCommand, currentTime);
+        if(typeof cmdIndex[currentCommand] !== "undefined"){
+            timeindex = getSampleRow(currentTime);  //get index of currenttime / command
+            console.log(currentCommand);
+            console.log(timeindex);
+            ///Wait until every cmd has enough data for given cycles
+            if(!enoughDataForP300(cmdIndex,commands,cycles)) {
+                 cmdIndex[currentCommand].push(timeindex);
+            } else {
+                  console.log(volts.length);
+                  console.log(cmdIndex);
+
+                    var compareCmd = [];
+                    commands.forEach(function(cmd, i){
+                        compareCmd[i] = cmdIndex[cmd].splice(0,cycles);
+                    });
+                    console.log(cmdIndex);
+
+                  detectP300.getVEP(volts, compareCmd);
+                  cmdIndex = [];
+            }
+
         }
 
 
+
         // reset
-        volts = [];
         count = 0;
     }
 }
 
 
 // find timestamp in samples array
-function getSampleRow(time) {
-    let voltsReverse = volts.reverse();
-    return voltsReverse.length - voltsReverse.findIndex(findIndexForTimestamp(time.toString().slice(0, -1))) - 1;
+function getSampleRow(currentTime) {
+    let timestampsReverse = timestamps.reverse();
+    return timestampsReverse.length - timestampsReverse.findIndex(findIndexForTimestamp(currentTime.toString().slice(0, -1))) - 1;
 }
 
 //find timestamp in sample that is equal to time from command
-function findIndexForTimestamp(time) {
-    return function (element) {
-        return time === element.time;
+function findIndexForTimestamp(currentTime) {
+    return function (timestamp) {
+        return timestamp === currentTime;
     }
 }
-
+// check if for each cycles data are in every command
+function enoughDataForP300(cmdIndex,commands,compareCycles) {
+    return commands.filter(cmd => cmdIndex[cmd].length > compareCycles).length === commands.length;
+}
 
 function getSettings() {
     return settings;

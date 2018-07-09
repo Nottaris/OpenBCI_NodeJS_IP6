@@ -21,7 +21,7 @@ export default class P300 extends React.Component {
             colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
             //colors: ['#fff'],
             commands: ["noCmd1","next","noCmd2", "voldown", "noCmd3","playpause", "noCmd4","prev", "noCmd5","volup","noCmd1","next","noCmd5", "voldown", "noCmd3","playpause", "noCmd2","prev", "noCmd4","volup"],
-            cmdInterval: 250,
+            cmdInterval: 300,
             flashCmdInterval: 125
         };
 

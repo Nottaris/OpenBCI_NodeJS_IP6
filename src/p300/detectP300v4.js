@@ -34,29 +34,16 @@ var commands = [
 var nrOfCommands = commands.length;    // aka 5
 
 
-function detectP300(volts, command, time) {
+function detectP300(volts, cmdIdx) {
 
-
-    if (init) {
-        if (counter === 0) {
-            //get Settings only once
-            settings = p300.getSettings();
-            console.log("created volts")
-        }
-        //after 5 cycles of 5 cmds each = 25 -> counter > 30(safety)
-        if (counter > 30) {
-            init = false;
-        }
-    }
-    counter++;
+    console.log("cmd 0: "+ cmdIdx[0]+" sampels length: " + volts.length);
 
 
     //collect volt values sorted by cmd // 5 cycles * 112 slotsize = 560 samples
     if(typeof volts5[command] !== "undefined"){
          volts5[command].push(volts);
-          console.log(counter + "cmd: " + command + " volts5[command].length: " + volts5[command].length);
+         console.log(counter + "cmd: " + command + " volts5[command].length: " + volts5[command].length);
     }
-
 
     //if init is over (after 5 cycles aka counter 25) and 5 cycles are in of every command
     if (!init) {
@@ -66,7 +53,7 @@ function detectP300(volts, command, time) {
             //limit data to last 5 cycles
             var voltslast5 = Object.create(volts5);     //clone
             commands.forEach(cmd => {
-                let len = voltslast5[cmd].length
+                let len = voltslast5[cmd].length;
                 voltslast5[cmd].splice(0, len - cycles);   //cut out from start till end-cycles
             });
 
@@ -112,14 +99,5 @@ function detectP300(volts, command, time) {
 
         }
 
-    }
-
-    function each5Ready(commands,volts5) {
-        commands.forEach(cmd => {
-            if (volts5[command].length < cycles * slotsize) {  // 5 cycles * 112 slotsize = 560 samples
-                return false;
-            }
-        });
-        return true;
     }
 }
