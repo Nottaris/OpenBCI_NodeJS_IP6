@@ -14,14 +14,14 @@ module.exports = {
 
 
 const server = require('../socket/server');
-const detectP300 = require('./detectP300v2');
+const detectP300 = require('./detectP300v3');
 
-const defaultSettings  = {
-    channel:      1,             // number of channel ( from 1 to 8 ) 1 === OZ for p300
+const defaultSettings = {
+    channel: 1,             // number of channel ( from 1 to 8 ) 1 === OZ for p300
     sampleRate: 250,             // 250Hz
-    slots:      112,             // data points per slot ( 450ms === 112 )
-    threshold:  1.8,             // deviation factor
-    debug:      true             // show console.log
+    slots: 112,             // data points per slot ( 450ms === 112 )
+    threshold: 1.8,             // deviation factor
+    debug: true             // show console.log
 }
 
 let volts = [];
@@ -35,7 +35,7 @@ server.startSocketServer();
 function getCmdTimefromPlayer(data) {
     currentCommand = data.command;
     currentTime = data.time;
-    //console.log("from player: "+data.command+" "+data.time);
+    console.log("from player: " + data.command + " " + data.time);
 };
 
 server.subscribeToCmds(getCmdTimefromPlayer);
@@ -46,17 +46,22 @@ function digestSamples(sample) {
     // fetch samples for slottime from requested channel
     if (count < settings.slots) {
         //save channel data and timestamp
-        //volts.push({time: sample.timestamp.toString().slice(0, -1), sample: Number(sample.channelData[settings.channel - 1]* 1000000)}); //microVolts
+        volts.push({
+            time: sample.timestamp.toString().slice(0, -1),
+            sample: Number(sample.channelData[settings.channel - 1] * 1000000)
+        }); //microVolts
 
-        //save channel data
-        volts.push(Number((sample.channelData[settings.channel-1] * 1000000))); //microVolts
         count++;
     } else if (count >= settings.slots) {
-        //TODO: eventually here get volts synced to cmd timestamp
-
+        //delete volts newer than command timestamp
+        corvolts = Object.create(volts);     //clone
+        timeforCommand = currentTime + 600;    //currentTime plus 600ms
+        timeindex = getSampleRow(timeforCommand);  //get index of currenttime / command
+        corvolts = corvolts.splice(timeindex, corvolts.length);     //cut of newer stuff
+        samples = volts.map(a => a.sample); //throw away timestamps
 
         //send data to evaluate
-        detectP300.getVEP(volts, currentCommand, currentTime);
+        detectP300.getVEP(samples, currentCommand, currentTime);
 
         // reset
         volts = [];
@@ -65,16 +70,30 @@ function digestSamples(sample) {
 }
 
 
-function getSettings(){
+// find timestamp in samples array
+function getSampleRow(time) {
+    let voltsReverse = volts.reverse();
+    return voltsReverse.length - voltsReverse.findIndex(findIndexForTimestamp(time.toString().slice(0, -1))) - 1;
+}
+
+//find timestamp in sample that is equal to time from command
+function findIndexForTimestamp(time) {
+    return function (element) {
+        return time === element.time;
+    }
+}
+
+
+function getSettings() {
     return settings;
 }
 
 function setSettings(newSettings) {
-    settings =  newSettings ;
+    settings = newSettings;
 }
 
-function reset(){
-     settings = defaultSettings;
-     count = 0;
-     volts = [];
+function reset() {
+    settings = defaultSettings;
+    count = 0;
+    volts = [];
 }
