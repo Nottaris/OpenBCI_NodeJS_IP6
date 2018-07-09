@@ -1,0 +1,86 @@
+# commands data/data-2018-7-6-14-52-13.json
+# command order: next,voldown,playpause,prev,volup
+# 1 cycles focus onvoldown
+cycle =1
+focus =1
+focusCmd ="voldown"
+cmdRow = [5701,5803,5916,6029,6141,6253]
+# timestamps: [1530881560607,1530881561011,1530881561461,1530881561913,1530881562362,1530881562811]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 2 cycles focus onvoldown
+cycle =2
+focus =1
+focusCmd ="voldown"
+cmdRow = [6366,6479,6592,6704,6817,6929]
+# timestamps: [1530881563262,1530881563712,1530881564163,1530881564611,1530881565061,1530881565512]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 3 cycles focus onvoldown
+cycle =3
+focus =1
+focusCmd ="voldown"
+cmdRow = [7042,7155,7267,7380,7492,7605]
+# timestamps: [1530881565962,1530881566412,1530881566862,1530881567312,1530881567762,1530881568212]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 4 cycles focus onvoldown
+cycle =4
+focus =1
+focusCmd ="voldown"
+cmdRow = [7718,7830,7937,8055,8168,8281]
+# timestamps: [1530881568661,1530881569111,1530881569561,1530881570012,1530881570462,1530881570912]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 5 cycles focus onvoldown
+cycle =5
+focus =1
+focusCmd ="voldown"
+cmdRow = [8393,8506,8618,8731,8844,8956]
+# timestamps: [1530881571361,1530881571811,1530881572261,1530881572711,1530881573162,1530881573611]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 6 cycles focus onvoldown
+cycle =6
+focus =1
+focusCmd ="voldown"
+cmdRow = [9069,9181,9294,9407,9519,9632]
+# timestamps: [1530881574062,1530881574512,1530881574963,1530881575411,1530881575862,1530881576311]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 7 cycles focus onvoldown
+cycle =7
+focus =1
+focusCmd ="voldown"
+cmdRow = [9741,9857,9970,10082,10195,10307]
+# timestamps: [1530881576762,1530881577212,1530881577662,1530881578113,1530881578562,1530881579011]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 8 cycles focus onvoldown
+cycle =8
+focus =1
+focusCmd ="voldown"
+cmdRow = [10420,10533,10645,10758,10870,10983]
+# timestamps: [1530881579461,1530881579911,1530881580362,1530881580811,1530881581263,1530881581712]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 9 cycles focus onvoldown
+cycle =9
+focus =1
+focusCmd ="voldown"
+cmdRow = [11096,11208,11321,11433,11545,11659]
+# timestamps: [1530881582161,1530881582611,1530881583062,1530881583514,1530881583963,1530881584411]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 10 cycles focus onvoldown
+cycle =10
+focus =1
+focusCmd ="voldown"
+cmdRow = [11771,11884,11996,12109,12222,12266]
+# timestamps: [1530881584862,1530881585313,1530881585762,1530881586212,1530881586661,1530881587112]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 11 cycles focus onvoldown
+cycle =11
+focus =1
+focusCmd ="voldown"

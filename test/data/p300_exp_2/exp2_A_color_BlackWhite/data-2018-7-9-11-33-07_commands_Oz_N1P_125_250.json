@@ -1,0 +1,106 @@
+# commands data/data-2018-7-9-11-33-07.json
+# command order: next,voldown,playpause,prev,volup
+# 1 cycles focus onplaypause
+cycle =1
+focus =2
+focusCmd ="playpause"
+cmdRow = [4419,4506,4547,4592,4654]
+# timestamps: [1531128809488,1531128809838,1531128809998,1531128810175,1531128810424]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 2 cycles focus onplaypause
+cycle =2
+focus =2
+focusCmd ="playpause"
+cmdRow = [4717,4779,4842,4905,4967]
+# timestamps: [1531128810674,1531128810925,1531128811173,1531128811425,1531128811675]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 3 cycles focus onplaypause
+cycle =3
+focus =2
+focusCmd ="playpause"
+cmdRow = [5029,5092,5154,5217,5279]
+# timestamps: [1531128811923,1531128812173,1531128812425,1531128812674,1531128812923]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 4 cycles focus onplaypause
+cycle =4
+focus =2
+focusCmd ="playpause"
+cmdRow = [5342,5405,5468,5530,5593]
+# timestamps: [1531128813173,1531128813424,1531128813673,1531128813924,1531128814173]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 5 cycles focus onplaypause
+cycle =5
+focus =2
+focusCmd ="playpause"
+cmdRow = [5653,5718,5780,5843,5906]
+# timestamps: [1531128814424,1531128814674,1531128814924,1531128815174,1531128815423]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 6 cycles focus onplaypause
+cycle =6
+focus =2
+focusCmd ="playpause"
+cmdRow = [5968,6031,460931,6156,6218]
+# timestamps: [1531128815674,1531128815923,1531128816173,1531128816423,1531128816673]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 7 cycles focus onplaypause
+cycle =7
+focus =2
+focusCmd ="playpause"
+cmdRow = [6281,6343,6406,6486,6531]
+# timestamps: [1531128816923,1531128817174,1531128817424,1531128817674,1531128817925]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 8 cycles focus onplaypause
+cycle =8
+focus =2
+focusCmd ="playpause"
+cmdRow = [6594,6656,6718,6782,6844]
+# timestamps: [1531128818174,1531128818424,1531128818673,1531128818925,1531128819174]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 9 cycles focus onplaypause
+cycle =9
+focus =2
+focusCmd ="playpause"
+cmdRow = [6907,6969,7032,7094,7157]
+# timestamps: [1531128819423,1531128819674,1531128819924,1531128820174,1531128820425]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 10 cycles focus onplaypause
+cycle =10
+focus =2
+focusCmd ="playpause"
+cmdRow = [7220,7282,7345,7407,7470]
+# timestamps: [1531128820674,1531128820924,1531128821174,1531128821425,1531128821673]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 11 cycles focus onplaypause
+cycle =11
+focus =2
+focusCmd ="playpause"
+cmdRow = [7532,7595,7658,7720,7783]
+# timestamps: [1531128821924,1531128822174,1531128822425,1531128822673,1531128822925]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 12 cycles focus onplaypause
+cycle =12
+focus =2
+focusCmd ="playpause"
+cmdRow = [7845,7908,7970,8033,8095]
+# timestamps: [1531128823174,1531128823424,1531128823673,1531128823924,1531128824173]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 13 cycles focus onplaypause
+cycle =13
+focus =2
+focusCmd ="playpause"
+cmdRow = [8158,8221,8283,8346,8408]
+# timestamps: [1531128824424,1531128824673,1531128824923,1531128825174,1531128825425]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
