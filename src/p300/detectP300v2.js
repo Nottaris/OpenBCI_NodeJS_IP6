@@ -2,6 +2,7 @@ module.exports = {
     getVEP: detectP300
 };
 
+//baseline in node.js, bandpass and detection in python
 
 const mathFunctions = require('../functions/mathFunctions');
 const p300 = require('./p300');
@@ -114,7 +115,7 @@ function detectP300(volts, command, time) {
             //send last 5 commands data to python for filter and detect
             let docommand = "nop"; //no operation detected so far
             const options = {mode: 'text'};
-            let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300Live.py', options);
+            let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300v2.py', options);
             let data = JSON.stringify(sendVoltsCmds);
 
             // sends channel data to the Python script via stdin
