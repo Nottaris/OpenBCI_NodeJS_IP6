@@ -16,7 +16,13 @@ var slotsize = 112;
 var cycles = 5;
 
 //volts per cmd
-var volts5;
+var volts5 = {
+        playpause: [],
+        next: [],
+        prev: [],
+        volup: [],
+        voldown: []
+    };
 //commands (as keys for collections)
 var commands = [
     'playpause',
@@ -35,13 +41,6 @@ function detectP300(volts, command, time) {
         if (counter === 0) {
             //get Settings only once
             settings = p300.getSettings();
-            volts5 = {
-                playpause: [],
-                next: [],
-                prev: [],
-                volup: [],
-                voldown: []
-            };
             console.log("created volts")
         }
         //after 5 cycles of 5 cmds each = 25 -> counter > 30(safety)
@@ -53,7 +52,7 @@ function detectP300(volts, command, time) {
 
 
     //collect volt values sorted by cmd // 5 cycles * 112 slotsize = 560 samples
-    if(typeof volts5[command] != "undefined"){
+    if(typeof volts5[command] !== "undefined"){
          volts5[command].push(volts);
           console.log(counter + "cmd: " + command + " volts5[command].length: " + volts5[command].length);
     }

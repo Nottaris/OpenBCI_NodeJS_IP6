@@ -23,7 +23,7 @@ const defaultSettings = {
     channel:           1,       // number of channel ( from 1 to 8 )
     sampleRate:      250,       // 250Hz
     slots:            10,       // data points per slot
-    threshold:         4,       // deviation factor with paste upper bound
+    threshold:         3,       // deviation factor with paste upper bound
     debug:          true        // show console.log
 }
 
