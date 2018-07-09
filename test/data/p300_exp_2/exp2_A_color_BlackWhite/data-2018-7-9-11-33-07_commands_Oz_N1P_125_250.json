@@ -44,7 +44,7 @@ detectP300(data, cmdRow, cycle, focus, focusCmd)
 cycle =6
 focus =2
 focusCmd ="playpause"
-cmdRow = [5968,6031,460931,6156,6218]
+cmdRow = [5968,6031,6093,6156,6218]
 # timestamps: [1531128815674,1531128815923,1531128816173,1531128816423,1531128816673]
 # commands: ["next","voldown","playpause","prev","volup"]
 detectP300(data, cmdRow, cycle, focus, focusCmd)

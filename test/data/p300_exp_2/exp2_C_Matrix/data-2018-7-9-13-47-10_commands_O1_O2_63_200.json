@@ -1,0 +1,150 @@
+# commands data/data-2018-7-9-13-47-10.json
+# command order: next,voldown,playpause,prev,volup
+# 1 cycles focus onplaypause
+cycle =1
+focus =2
+focusCmd ="playpause"
+cmdRow = [6074,6222,6372,6522,6672]
+# timestamps: [1531136858336,1531136858928,1531136859528,1531136860127,1531136860727]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 2 cycles focus onplaypause
+cycle =2
+focus =2
+focusCmd ="playpause"
+cmdRow = [6822,6972,7122,7272,7422]
+# timestamps: [1531136861327,1531136861928,1531136862529,1531136863128,1531136863728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 3 cycles focus onplaypause
+cycle =3
+focus =2
+focusCmd ="playpause"
+cmdRow = [7572,7722,7873,8023,8173]
+# timestamps: [1531136864328,1531136864928,1531136865528,1531136866129,1531136866727]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 4 cycles focus onplaypause
+cycle =4
+focus =2
+focusCmd ="playpause"
+cmdRow = [8323,8473,8623,8774,8924]
+# timestamps: [1531136867328,1531136867927,1531136868528,1531136869129,1531136869729]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 5 cycles focus onplaypause
+cycle =5
+focus =2
+focusCmd ="playpause"
+cmdRow = [9074,9224,9374,9525,9675]
+# timestamps: [1531136870327,1531136870928,1531136871528,1531136872128,1531136872727]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 6 cycles focus onplaypause
+cycle =6
+focus =2
+focusCmd ="playpause"
+cmdRow = [9825,9975,10125,10276,10426]
+# timestamps: [1531136873328,1531136873928,1531136874528,1531136875127,1531136875729]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 7 cycles focus onplaypause
+cycle =7
+focus =2
+focusCmd ="playpause"
+cmdRow = [10578,10726,10876,11026,11177]
+# timestamps: [1531136876330,1531136876928,1531136877527,1531136878128,1531136878728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 8 cycles focus onplaypause
+cycle =8
+focus =2
+focusCmd ="playpause"
+cmdRow = [11327,11477,11627,11777,11928]
+# timestamps: [1531136879328,1531136879928,1531136880528,1531136881127,1531136881727]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 9 cycles focus onplaypause
+cycle =9
+focus =2
+focusCmd ="playpause"
+cmdRow = [12078,12228,12378,12528,12678]
+# timestamps: [1531136882327,1531136882929,1531136883527,1531136884127,1531136884728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 10 cycles focus onplaypause
+cycle =10
+focus =2
+focusCmd ="playpause"
+cmdRow = [12829,12979,13129,13279,13429]
+# timestamps: [1531136885328,1531136885928,1531136886527,1531136887128,1531136887728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 11 cycles focus onplaypause
+cycle =11
+focus =2
+focusCmd ="playpause"
+cmdRow = [13580,13730,13880,14033,14068]
+# timestamps: [1531136888329,1531136888927,1531136889527,1531136890134,1531136890728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 12 cycles focus onplaypause
+cycle =12
+focus =2
+focusCmd ="playpause"
+cmdRow = [14068,14068,14068,14068,14068]
+# timestamps: [1531136891329,1531136891928,1531136892533,1531136893127,1531136893728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 13 cycles focus onplaypause
+cycle =13
+focus =2
+focusCmd ="playpause"
+cmdRow = [14068,14068,14068,14068,14068]
+# timestamps: [1531136894329,1531136894930,1531136895528,1531136896128,1531136896729]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 14 cycles focus onplaypause
+cycle =14
+focus =2
+focusCmd ="playpause"
+cmdRow = [14068,14068,14068,14068,14068]
+# timestamps: [1531136897327,1531136897928,1531136898528,1531136899127,1531136899728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 15 cycles focus onplaypause
+cycle =15
+focus =2
+focusCmd ="playpause"
+cmdRow = [14068,14068,14068,14068,14068]
+# timestamps: [1531136900328,1531136900927,1531136901527,1531136902127,1531136902728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 16 cycles focus onplaypause
+cycle =16
+focus =2
+focusCmd ="playpause"
+cmdRow = [14068,14068,14068,14068,14068]
+# timestamps: [1531136903329,1531136903929,1531136904528,1531136905128,1531136905728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 17 cycles focus onplaypause
+cycle =17
+focus =2
+focusCmd ="playpause"
+cmdRow = [14068,14068,14068,14068,14068]
+# timestamps: [1531136906327,1531136906927,1531136907534,1531136908128,1531136908728]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 18 cycles focus onplaypause
+cycle =18
+focus =2
+focusCmd ="playpause"
+cmdRow = [14068,14068,14068,14068,14068]
+# timestamps: [1531136909327,1531136909928,1531136910528,1531136911128,1531136911729]
+# commands: ["next","voldown","playpause","prev","volup"]
+detectP300(data, cmdRow, cycle, focus, focusCmd)
+# 19 cycles focus onplaypause
+cycle =19
+focus =2
+focusCmd ="playpause"
