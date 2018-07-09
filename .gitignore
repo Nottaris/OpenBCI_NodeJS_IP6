@@ -37,3 +37,4 @@ data/data*.json
 package-lock.json
 src/gui/playerP300/build
 venv
+dataChannelfromJSON.txt
