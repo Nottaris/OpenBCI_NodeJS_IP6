@@ -18,11 +18,11 @@ export default class P300 extends React.Component {
             audioVolume: 0.5,
             trackNr: 0,
             currentCmd: 'no',
-            //colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
-            colors: ['#fff'],
-            commands: ["next", "voldown", "playpause", "prev", "volup"],
-            cmdInterval: 450,
-            flashCmdInterval: 140
+            colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
+            //colors: ['#fff'],
+            commands: ["noCmd1","next","noCmd2", "voldown", "noCmd3","playpause", "noCmd4","prev", "noCmd5","volup","noCmd1","next","noCmd5", "voldown", "noCmd3","playpause", "noCmd2","prev", "noCmd4","volup"],
+            cmdInterval: 200,
+            flashCmdInterval: 63
         };
 
         this.clickCommand = this.clickCommand.bind(this);
@@ -62,13 +62,17 @@ export default class P300 extends React.Component {
     //Set the color of the command to white for X seconds
     flashCommandButton(command) {
         if (null !== command) {
-            let elem = document.getElementById(command).getElementsByClassName('fa')[0];
-            //elem.style.color = "#ffffff";
+            let elem = document.getElementById(command);
+            elem.style.color = "#ffffff";
             elem.style.background = this.state.colors[Math.floor(Math.random() * this.state.colors.length)];
 
             //Send flashed command and timestamp to server
-            let time = Date.now();
-            sendP300Cmd(command, time);
+            if(!command.startsWith("noCmd")){
+                let time = Date.now();
+                sendP300Cmd(command, time);
+                console.log("sendcmd"+command);
+            }
+
 
             setTimeout(function () {
                 elem.style.color = "#1c456e";
