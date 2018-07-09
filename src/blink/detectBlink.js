@@ -48,7 +48,7 @@ function detectBlinkOld(baseline, currentMedian) {
             console.log("  Min Value:\t\t" + mathFunctions.getMinValue(baseline).toFixed(2));
             console.log("==============================================");
         }
-        startFlushCmd();
+        startFlashCmd();
         init = false;
     }
 
@@ -71,12 +71,12 @@ function detectBlinkOld(baseline, currentMedian) {
 
 }
 
-function startFlushCmd(){
+function startFlashCmd(){
     setInterval(function(){
         //send next command to flash on player
         setNextCommand();
         server.sendCmd(currentCommand);
-    }, 1000);
+    }, 1500);
 }
 
 function setNextCommand() {
