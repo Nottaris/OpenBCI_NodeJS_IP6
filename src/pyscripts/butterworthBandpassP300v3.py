@@ -54,7 +54,7 @@ def detectP300(data, commands):
     highcut = 15.0
     order = 2
     cmdCount = 5
-    threshold = 6
+    threshold = 10
     cycleCount = 5
 
     ## FILTER DATA

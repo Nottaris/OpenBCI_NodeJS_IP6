@@ -3,7 +3,7 @@ const  socket = openSocket('http://localhost:3001');
 
 //******** socket.io to listen to commands from p300 *****
 
-function subscribeToCmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd,callbackP300commandCmd) {
+function subscribeToCmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd) {
   socket.on('command', command => callbackFlashCmd(command));
   socket.on('docommand', docommand => callbackExecCmd(docommand));
   socket.on('blinkcommand', _ => callbackBlinkCmd());

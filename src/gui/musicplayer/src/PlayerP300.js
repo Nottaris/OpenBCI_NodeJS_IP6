@@ -30,6 +30,7 @@ export default class P300 extends React.Component {
         this.generateCommands = this.generateCommands.bind(this);
 
         subscribeToCmds(
+            this.flashCommand,
             this.execCommand,
             this.execCommand,
         );
@@ -56,7 +57,7 @@ export default class P300 extends React.Component {
 
     execCommand = (data) => {
         this.clickCommand(data.docommand);
-        //  console.log("p300: "+data.docommand);
+        console.log("p300: "+data.docommand);
     };
 
     //Set the color of the command to white for X seconds

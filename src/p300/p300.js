@@ -35,7 +35,7 @@ server.startSocketServer();
 function getCmdTimefromPlayer(data) {
     currentCommand = data.command;
     currentTime = data.time;
-    console.log("from player: " + data.command + " " + data.time);
+    //console.log("from player: " + data.command + " " + data.time);
 };
 
 server.subscribeToCmds(getCmdTimefromPlayer);
