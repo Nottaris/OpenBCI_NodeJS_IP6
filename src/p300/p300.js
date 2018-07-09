@@ -61,7 +61,10 @@ function digestSamples(sample) {
         samples = volts.map(a => a.sample); //throw away timestamps
 
         //send data to evaluate
-        detectP300.getVEP(samples, currentCommand, currentTime);
+        if(typeof currentCommand != 'undefined'){
+             detectP300.getVEP(samples, currentCommand, currentTime);
+        }
+
 
         // reset
         volts = [];

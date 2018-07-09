@@ -91,8 +91,7 @@ def detectP300(data, commands):
         mean = np.mean(dataP300[idx])
         if (max>mean*threshold):
             return commands[idx]
-    else:
-        return "nop"
+    return "nop"
 
 
 

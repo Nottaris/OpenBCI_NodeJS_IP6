@@ -88,7 +88,6 @@ export default class P300 extends React.Component {
             if(!command.startsWith("noCmd")){
                 let time = Date.now();
                 sendP300Cmd(command, time);
-                console.log("sendcmd"+command);
             }
 
 
@@ -119,15 +118,15 @@ export default class P300 extends React.Component {
                     this.play(audio);
                 } else if (this.state.playpauseToggle === 'pause'){
                     this.pause(audio);
-                };
+                }
                 break;
             default:
                 //this should never happen
-                console.log("Error: clickCommand had unknown state")
+                console.log("Error: clickCommand had unknown state "+typeof state);
                 break;
         }
 
-    }
+    };
 
     updateTime(timestamp) {
         timestamp = Math.floor(timestamp);
