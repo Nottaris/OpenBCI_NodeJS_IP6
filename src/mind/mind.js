@@ -17,12 +17,12 @@ const detectMind = require('./detectMind');
 const trainMind = require('./trainMind');
 const fs = require('fs');
 
+//TODO: set correct trainingSampleSize 15000 ; 1500 samples = 6sec. is for dev
 const defaultSettings = {
     sampleRate: 250,        // 250Hz
     slots: 112,             // data points per slot ( 450ms === 112 )
     debug: true,             // show console.log
-    //TODO: set correct trainingSampleSize 15000 ; 1500 samples = 6sec. is for dev
-    trainingSampleSize: 1500      // 1 minute = 60 sec. = 60000ms = 15000 samples
+    trainingSampleSize: 20      // 1 minute = 60 sec. = 60000ms = 15000 samples
 }
 
 let volts = [];

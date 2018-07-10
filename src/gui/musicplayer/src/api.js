@@ -28,7 +28,7 @@ function sendP300Cmd(command,timestamp) {
 function sendTrainingCmd(command) {
     //send init training for command x
     socket.emit('training', { command: command });
-    console.log("sending training command from player: "+command);
+    //console.log("sending training command from player: "+command);
 }
 
 export { subscribeToCmds, subscribeToMindCmds, sendP300Cmd , sendTrainingCmd};
