@@ -55,6 +55,8 @@ def detectP300(data, cmdIdx):
 
 
     # ## FILTER DATA
+
+    for i in range(cmdCount):
     # # double data before filter and cut of first half afterwards
     # doubledata = np.concatenate([data, data])
     # doubledataFilterd = filterData(doubledata, lowcut, highcut, fs, order)

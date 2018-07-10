@@ -54,22 +54,27 @@ server.startSocketServer();
 function getCmdTimefromPlayer(data) {
     currentCommand = data.command;
     currentTime = data.time;
-    console.log("from player: " + data.command + " " + data.time+" "+volts.length);
+
 
     if (settings.baselineLength < volts.length && typeof currentCommand !== 'undefined') {
-
+        //console.log("from player: " + data.command + " " + data.time+" "+volts.length+" "+getIdxForTimestamp(timestamps, currentTime));
         if (!enoughDataForP300(cmdTimestamps, settings.commands, cycles)) {
-            if (counter === 0) {
-                //save first timestampe as startidx
-                startIdx = getSampleRow(currentTime);
-                console.log("Search for P300 startIdx: " + startIdx + " " + currentTime);
-            }
-
             //Add current timestamp to cmd array
             cmdTimestamps[currentCommand].push(currentTime);
 
         } else {
             var compareCmd = [];
+            var firstTimestamps = [];
+
+            //save first timestampe as startidx
+            settings.commands.forEach(function (cmd) {
+                firstTimestamps.push(cmdTimestamps[cmd][0]);
+            });
+
+            //get first timestamp
+            startTime = firstTimestamps.sort()[0];
+            startIdx = getIdxForTimestamp(timestamps, startTime.toString().slice(0, -1));
+            console.log("Search for P300 startIdx: " + startIdx + " " + currentTime);
 
             //save timestamps that will be analysed for p300 and remove them from cmdTimestamps Object
             settings.commands.forEach(function (cmd, i) {
@@ -81,12 +86,9 @@ function getCmdTimefromPlayer(data) {
 
             //get timestamp from startIdx until the end of timestamp array (buffer 10 samples)
             timestampesForCycles = timestamps.slice(startIdx - 1);
-            timestampesForCycles[0];
-            console.log(voltsForCycles.length);
-            console.log(timestampesForCycles.length);
-            console.log(compareCmd);
+
             //Analayse data for P300
-            //detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
+            detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
 
             // downsize volts and timestamp array
             if (volts.length > settings.voltsMaxLength) {
@@ -96,11 +98,11 @@ function getCmdTimefromPlayer(data) {
 
             //Add current timestamp to cmdTimestamp array
             cmdTimestamps[currentCommand].push(currentTime);
-            startIdx = getSampleRow(currentTime);
-            console.log("Search for P300 startIdx: " + startIdx + " " + currentTime);
-            counter = 0;
+
+            //reset
+            startTime = 0;
+            firstTimestamps = [];
         }
-        counter += 1;
     } else {
         process.stdout.write("waiting for baseline...\r");
     }
@@ -118,17 +120,10 @@ function digestSamples(sample) {
 }
 
 
-// find timestamp in samples array
-function getSampleRow(currentTime) {
-    let timestampsReverse = timestamps.reverse();
-    return timestampsReverse.length - timestampsReverse.findIndex(findIndexForTimestamp(currentTime.toString().slice(0, -1))) - 1;
-}
 
-//find timestamp in sample that is equal to time from command
-function findIndexForTimestamp(currentTime) {
-    return function (timestamp) {
-        return timestamp === currentTime;
-    }
+// find timestamp idx in timestamp array
+function getIdxForTimestamp(timestamps, currentTime) {
+    return timestamps.findIndex(timestamp => timestamp === currentTime);
 }
 
 // check if for each cycles data are in every command
