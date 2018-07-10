@@ -1,11 +1,12 @@
 import React from 'react';
 import './Player.css';
-import { subscribeToCmds } from './api';
+import {subscribeToMindCmds, sendTrainingCmd} from './api';
 import TrackInformation from './components/TrackInformation';
 import Scrubber from './components/Scrubber';
 import Timestamps from './components/Timestamps';
 import AudioVolume from './components/AudioVolume';
-import Controls from './components/Controls';
+import ControlsMind from './components/ControlsMind';
+import Training from './components/Training';
 
 // Player
 export default class PlayerBlink extends React.Component {
@@ -13,7 +14,8 @@ export default class PlayerBlink extends React.Component {
         super(props);
         console.log(props);
         this.state = {
-            playStatus: 'play',
+            playpauseToggle: 'play',
+            trainingToggle: false,
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
@@ -21,27 +23,64 @@ export default class PlayerBlink extends React.Component {
         };
 
         this.clickCommand = this.clickCommand.bind(this);
-        this.flashCommand = this.flashCommand.bind(this);
         this.execCommand = this.execCommand.bind(this);
+        this.trainingInit = this.trainingInit.bind(this);
+        this.trainingFinished = this.trainingFinished.bind(this);
+        this.trainCommand = this.trainCommand.bind(this);
 
-
-        subscribeToCmds(
-            this.flashCommand,
+        subscribeToMindCmds(
             this.execCommand,
-            this.execCommand
         );
 
-       // this.generateCommands();
     };
 
+    //init training session
+    trainingInit = () => {
+        if (!this.state.trainingToggle) {
+            this.setState({trainingToggle: true});
+            //pause audio
+            let audio = document.getElementById('audio');
+            this.pause(audio);
+            let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
+            trainIcon.style.color = "lightblue";
 
-    flashCommand = (data) => {
-         this.setState({ currentCmd: data.command });
-         this.blinkCommandButton(data.command);
+            //TODO: train each command (for now just playpause)
+            this.trainCommand('playpause');
+
+            setTimeout(function () {
+                this.trainingFinished();
+            }.bind(this), 3000);  //10 sec. for testing, 60 sec. aka 60000 for production
+
+        } else {
+            alert("Training already running. Wait until finished and restart if desired.");
+        }
     }
 
+    //show training finished
+    trainingFinished() {
+        this.setState({trainingToggle: false});
+        let cmdIcons = document.getElementsByClassName('fa');
+        for (var i = 0; i < cmdIcons.length; i++) {
+            cmdIcons[i].style.color = "#1c456e";
+        }
+        let infotext = document.getElementById('infotext');
+        infotext.innerText = "Training finished. Have fun.";
+    }
+
+    //training of command x
+    trainCommand(command) {
+        //show info and start highligthing command to train
+        let infotext = document.getElementById('infotext');
+        //TODO: alter text based on command to train
+        infotext.innerText = "Concentrate on playing and think of leaning or going forward.";
+        let cmdIcon = document.getElementById('playpause').getElementsByClassName('fa')[0];
+        cmdIcon.style.color = "#ffffff";
+        sendTrainingCmd(command);
+    }
+
+
     execCommand = () => {
-        console.log("exec: "+this.state.currentCmd);
+        console.log("exec: " + this.state.currentCmd);
         this.clickCommand(this.state.currentCmd);
         let elem = document.getElementById(this.state.currentCmd).getElementsByClassName('fa')[0];
         elem.style.color = "green";
@@ -49,7 +88,7 @@ export default class PlayerBlink extends React.Component {
 
     //Set the color of the command to white for X seconds
     blinkCommandButton(command) {
-        if(null!==command){
+        if (null !== command) {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
             setTimeout(function () {
@@ -61,12 +100,6 @@ export default class PlayerBlink extends React.Component {
     clickCommand = (state) => {
         let audio = document.getElementById('audio');
         switch (state) {
-            case "play":
-                this.play(audio);
-                break;
-            case "pause":
-                this.pause(audio);
-                break;
             case "next":
                 this.next(audio);
                 break;
@@ -79,13 +112,20 @@ export default class PlayerBlink extends React.Component {
             case "voldown":
                 this.voldown(audio);
                 break;
+            case "playpause":
+                if (this.state.playpauseToggle === 'play') {
+                    this.play(audio);
+                } else if (this.state.playpauseToggle === 'pause') {
+                    this.pause(audio);
+                }
+                break;
             default:
                 //this should never happen
-                console.log("Error: clickCommand had unknown state")
+                console.log("Error: clickCommand had unknown state " + typeof state);
                 break;
         }
 
-    }
+    };
 
     updateTime(timestamp) {
         timestamp = Math.floor(timestamp);
@@ -114,7 +154,7 @@ export default class PlayerBlink extends React.Component {
             let percent = (currentTime / duration) * 100 + '%';
             that.updateScrubber(percent);
             that.updateTime(currentTime);
-        }, 200);
+        }, 100);
         this.setState({playpauseToggle: 'pause'});
     }
 
@@ -184,7 +224,8 @@ export default class PlayerBlink extends React.Component {
                     </div>
 
                 </div>
-                <Controls clickCommand={this.clickCommand}/>
+                <ControlsMind playpauseToggle={this.state.playpauseToggle} clickCommand={this.clickCommand}/>
+                <Training trainingInit={this.trainingInit}/>
             </div>
 
         )

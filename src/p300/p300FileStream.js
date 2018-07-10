@@ -3,7 +3,7 @@
 const openData = require('./../functions/openData');
 const p300 = require('./p300');
 
-var data = openData.loadJSON("../../test/data/p300_job_06-07-18/data-2018-7-6-14-32-40.json");
+var data = openData.loadJSON("../../test/data/p300_exp_3/data-2018-7-6-14-32-40.json");
 let counter = 0;
 
 

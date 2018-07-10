@@ -12,10 +12,23 @@ function subscribeToCmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd) {
   socket.on('message', console.log.bind(console));
 }
 
+function subscribeToMindCmds(callbackExecCmd, callbackTrainingCmd) {
+  socket.on('docommand', docommand => callbackExecCmd(docommand));
+
+  socket.on('error', console.error.bind(console));
+  socket.on('message', console.log.bind(console));
+}
+
 function sendP300Cmd(command,timestamp) {
     //send flashed command and timestamp to server
     socket.emit('P300command', { command: command, time: timestamp });
     //console.log("sending P300commands: "+command+" "+timestamp);
 }
 
-export { subscribeToCmds, sendP300Cmd };
+function sendTrainingCmd(command) {
+    //send init training for command x
+    socket.emit('training', { command: command });
+    console.log("sending training command from player: "+command);
+}
+
+export { subscribeToCmds, subscribeToMindCmds, sendP300Cmd , sendTrainingCmd};

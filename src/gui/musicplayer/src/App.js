@@ -6,6 +6,7 @@ import mp3File_happyrock from './music/bensound-happyrock.mp3';
 import mp3File_violinspider from './music/Marco_Trovatello_-_06_-_Violin_Spider.mp3';
 import PlayerBlink from './PlayerBlink';
 import PlayerP300 from './PlayerP300';
+import PlayerMind from './PlayerMind';
 import './App.css';
 
 class App extends Component {
@@ -21,7 +22,8 @@ class App extends Component {
                     <h5 className="App-title">bci Music Player</h5>
                 </header>
                 {/*<PlayerBlink tracks={this.props.tracks}/>*/}
-                <PlayerP300 tracks={this.props.tracks}/>
+                {/*<PlayerP300 tracks={this.props.tracks}/>*/}
+                <PlayerMind tracks={this.props.tracks}/>
             </div>
         );
     }
