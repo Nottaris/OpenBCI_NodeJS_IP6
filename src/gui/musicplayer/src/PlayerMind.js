@@ -1,6 +1,6 @@
 import React from 'react';
 import './Player.css';
-import {subscribeToCmds} from './api';
+import {subscribeToMindCmds, sendTrainingCmd} from './api';
 import TrackInformation from './components/TrackInformation';
 import Scrubber from './components/Scrubber';
 import Timestamps from './components/Timestamps';
@@ -23,33 +23,30 @@ export default class PlayerBlink extends React.Component {
         };
 
         this.clickCommand = this.clickCommand.bind(this);
-        this.flashCommand = this.flashCommand.bind(this);
         this.execCommand = this.execCommand.bind(this);
-        this.trainingCommand = this.trainingCommand.bind(this);
+        this.trainingInit = this.trainingInit.bind(this);
         this.trainingFinished = this.trainingFinished.bind(this);
+        this.trainCommand = this.trainCommand.bind(this);
 
-        subscribeToCmds(
-            this.flashCommand,
+        subscribeToMindCmds(
             this.execCommand,
-            this.execCommand
         );
 
     };
 
     //init training session
-    trainingCommand = () => {
+    trainingInit = () => {
         if (!this.state.trainingToggle) {
             this.setState({trainingToggle: true});
             //pause audio
             let audio = document.getElementById('audio');
             this.pause(audio);
-            //show info and start highliting command to train
-            let infotext = document.getElementById('infotext');
-            infotext.innerText = "Concentrate on playing and think of leaning or going forward.";
             let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
             trainIcon.style.color = "lightblue";
-            let cmdIcon = document.getElementById('playpause').getElementsByClassName('fa')[0];
-            cmdIcon.style.color = "#ffffff";
+
+            //TODO: train each command (for now just playpause)
+            this.trainCommand('playpause');
+
             setTimeout(function () {
                 this.trainingFinished();
             }.bind(this), 3000);  //10 sec. for testing, 60 sec. aka 60000 for production
@@ -66,14 +63,21 @@ export default class PlayerBlink extends React.Component {
         for (var i = 0; i < cmdIcons.length; i++) {
             cmdIcons[i].style.color = "#1c456e";
         }
-        alert("Training finished. Have fun.");
+        let infotext = document.getElementById('infotext');
+        infotext.innerText = "Training finished. Have fun.";
     }
 
-
-    flashCommand = (data) => {
-        this.setState({currentCmd: data.command});
-        this.blinkCommandButton(data.command);
+    //training of command x
+    trainCommand(command) {
+        //show info and start highligthing command to train
+        let infotext = document.getElementById('infotext');
+        //TODO: alter text based on command to train
+        infotext.innerText = "Concentrate on playing and think of leaning or going forward.";
+        let cmdIcon = document.getElementById('playpause').getElementsByClassName('fa')[0];
+        cmdIcon.style.color = "#ffffff";
+        sendTrainingCmd(command);
     }
+
 
     execCommand = () => {
         console.log("exec: " + this.state.currentCmd);
@@ -221,7 +225,7 @@ export default class PlayerBlink extends React.Component {
 
                 </div>
                 <ControlsMind playpauseToggle={this.state.playpauseToggle} clickCommand={this.clickCommand}/>
-                <Training trainingCommand={this.trainingCommand}/>
+                <Training trainingInit={this.trainingInit}/>
             </div>
 
         )

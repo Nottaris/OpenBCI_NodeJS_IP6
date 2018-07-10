@@ -8,7 +8,7 @@ const mind = require('./mind');
 const server = require('../socket/server');
 
 var PythonShell = require('python-shell');
-
+var docommand = "nop";
 
 function detectMind(volts) {
 
@@ -39,10 +39,4 @@ function detectMind(volts) {
             server.doCmd(docommand);
         }
     });
-}
-
-
-function getCommand() {
-    //send doCommand to execute
-    server.doCmd(command);
 }

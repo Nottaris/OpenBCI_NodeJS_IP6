@@ -6,7 +6,8 @@ module.exports = {
     streamData,
     startSocketServer,
     closeSocketServer,
-    subscribeToCmds
+    subscribeToCmds,
+    subscribeToTrainingCmds
 }
 
 const http = require('http');
@@ -37,6 +38,13 @@ function startSocketServer() {
 function subscribeToCmds(callbackP300commandCmd) {
        io.on('connection', function (socket) {
            socket.on('P300command', P300command => callbackP300commandCmd(P300command));
+     });
+}
+
+
+function subscribeToTrainingCmds(callbackTrainingCmd) {
+       io.on('connection', function (socket) {
+           socket.on('training', trainingCmd => callbackTrainingCmd(trainingCmd));
      });
 }
 
