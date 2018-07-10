@@ -234,3 +234,10 @@ body {
     padding: 30px 60px;
     width: 33%;
 }
+
+/* Custom CSS for Mind */
+.infotext{
+    font-size: 12px;
+    font-family: "Roboto", sans-serif;
+    color: lightblue;
+}
