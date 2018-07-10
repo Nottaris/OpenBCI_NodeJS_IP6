@@ -14,70 +14,125 @@ module.exports = {
 
 
 const server = require('../socket/server');
-const detectP300 = require('./detectP300v3');
+const detectP300 = require('./detectP300v4');
 
 const defaultSettings = {
     channel: 1,             // number of channel ( from 1 to 8 ) 1 === OZ for p300
-    sampleRate: 250,             // 250Hz
+    sampleRate: 250,        // 250Hz
     slots: 112,             // data points per slot ( 450ms === 112 )
-    threshold: 1.8,             // deviation factor
+    threshold: 1.8,         // deviation factor
+    //ToDO: Set correct baselineLength
+    baselineLength: 50,    // baseline 3s = 750 samples
+    voltsMaxLength: 10000,  //max length of volts array
+    commands: ['playpause','next','prev','volup', 'voldown'],
     debug: true             // show console.log
 }
 
 let volts = [];
+let timestamps = [];
 let count = 0;
+let cycles = 3; //nr of cycles that will be analysed
 let settings = defaultSettings;
 var currentCommand; //cmd player is showing
 var currentTime; //time player showed cmd
+var counter = 0;
+var startIdx = 0;
+
+// timpestamp of each cmd
+var cmdTimestamps = {
+    playpause: [],
+    next: [],
+    prev: [],
+    volup: [],
+    voldown: []
+};
+
 
 server.startSocketServer();
 
 function getCmdTimefromPlayer(data) {
     currentCommand = data.command;
-    currentTime = data.time;
-    //console.log("from player: " + data.command + " " + data.time);
-};
+    currentTime = data.time.toString().slice(0, -1);
+
+    if (settings.baselineLength < volts.length && typeof currentCommand !== 'undefined') {
+
+        if (!enoughDataForP300(cmdTimestamps, settings.commands, cycles)) {
+            //Add current timestamp to cmd array
+            cmdTimestamps[currentCommand].push(currentTime);
+        } else {
+
+            let voltsForCycles = volts.slice(0); //clone
+            let timestampesForCycles = timestamps.slice(0);//clone
+
+            let compareCmd = []; //timestamps that will be analysed for p300 and remove them from cmdTimestamps Object
+            let firstTimestampe = []; //timestamps of first cycle
+
+            settings.commands.forEach(function (cmd, i) {
+                firstTimestampe.push(cmdTimestamps[cmd][0]);
+                compareCmd[i] = cmdTimestamps[cmd].splice(0, cycles);
+            });
+
+            //get smallest timestamp and use it as startIdx
+            let startTimestamp = firstTimestampe.sort()[0];
+            startIdx = getIdxForTimestamp(timestampesForCycles, startTimestamp);
+
+            if(startIdx>0) {
+                //get volts between startIdx and the end of volts array
+                voltsForCycles = voltsForCycles.slice(startIdx);
+                //get timestamp from startIdx until the end of timestamp array (buffer 10 samples)
+                timestampesForCycles = timestampesForCycles.slice(startIdx);
+
+                console.log("startIdx "+startIdx+" "+startTimestamp+" timestamp for cycle: "+timestampesForCycles[0]+" votls.length "+volts.length);
+
+                //Analayse data for P300
+                 detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
+            } else {
+                console.log("No index for timestamp was found " + startTimestamp);
+            }
+
+
+            //reset
+            counter = 0;
+            voltsForCycles = [];
+            timestampesForCycles = [];
+
+            //Add current timestamp to cmd array
+            cmdTimestamps[currentCommand].push(currentTime);
+        }
+         counter += 1;
+    } else {
+        process.stdout.write("waiting for baseline...\r");
+    }
+
+}
 
 server.subscribeToCmds(getCmdTimefromPlayer);
 
-
+// process data from openbci board
 function digestSamples(sample) {
+    //save timestamp foreach sample
+    timestamps.push(sample.timestamp.toString().slice(0, -1));
+    //save volts for each sampple
+    volts.push(Number(sample.channelData[settings.channel - 1]));
 
-    // fetch samples for slottime from requested channel
-    if (count < settings.slots) {
-        //save channel data and timestamp
-        volts.push({
-            time: sample.timestamp.toString().slice(0, -1),
-            sample: Number(sample.channelData[settings.channel - 1] * 1000000)
-        }); //microVolts
-
-        count++;
-    } else if (count >= settings.slots) {
-        //delete volts newer than command timestamp
-        corvolts = Object.create(volts);     //clone
-        timeforCommand = currentTime + 600;    //currentTime plus 600ms
-        timeindex = getSampleRow(timeforCommand);  //get index of currenttime / command
-        corvolts = corvolts.splice(timeindex, corvolts.length);     //cut of newer stuff
-        samples = volts.map(a => a.sample); //throw away timestamps
-
-        //send data to evaluate
-        if(typeof currentCommand != 'undefined'){
-             detectP300.getVEP(samples, currentCommand, currentTime);
-        }
-
-
-        // reset
-        volts = [];
-        count = 0;
+    // downsize volts and timestamp array
+    if (volts.length > settings.voltsMaxLength) {
+        volts = volts.slice(settings.voltsMaxLength * 0.75);
+        timestamps = timestamps.slice(settings.voltsMaxLength * 0.75);
     }
 }
 
 
-// find timestamp in samples array
-function getSampleRow(time) {
-    let voltsReverse = volts.reverse();
-    return voltsReverse.length - voltsReverse.findIndex(findIndexForTimestamp(time.toString().slice(0, -1))) - 1;
+// find timestamp idx in timestamp array
+function getIdxForTimestamp(timestamps, currentTime) {
+    return timestamps.findIndex(timestamp => timestamp === currentTime);
 }
+// // find timestamp idx in timestamp array
+// function getIdxForTimestamp(times, time) {
+//     let timesReverse = times;
+//     timesReverse.reverse();
+//     return timesReverse.length - timesReverse.findIndex(findIndexForTimestamp(time)) - 1;
+// }
 
 //find timestamp in sample that is equal to time from command
 function findIndexForTimestamp(time) {
@@ -86,6 +141,10 @@ function findIndexForTimestamp(time) {
     }
 }
 
+// check if for each cycles data are in every command
+function enoughDataForP300(cmdTimestamps, commands, compareCycles) {
+    return commands.filter(cmd => cmdTimestamps[cmd].length >= compareCycles).length === commands.length;
+}
 
 function getSettings() {
     return settings;
