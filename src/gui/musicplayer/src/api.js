@@ -1,7 +1,7 @@
 import openSocket from 'socket.io-client';
 const  socket = openSocket('http://localhost:3001');
 
-//******** socket.io to listen to commands from p300 *****
+//******** socket.io to listen to commands from node apps *****
 
 function subscribeToCmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd) {
   socket.on('command', command => callbackFlashCmd(command));
@@ -12,7 +12,7 @@ function subscribeToCmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd) {
   socket.on('message', console.log.bind(console));
 }
 
-function subscribeToMindCmds(callbackExecCmd, callbackTrainingCmd) {
+function subscribeToMindCmds(callbackExecCmd) {
   socket.on('docommand', docommand => callbackExecCmd(docommand));
 
   socket.on('error', console.error.bind(console));

@@ -1,20 +1,11 @@
-/**
- * This is an example from the readme.md
- * On windows you should run with PowerShell not git bash.
- * Install
- *   [nodejs](https://nodejs.org/en/)
- *
- * To run:
- *   change directory to this file `cd examples/debug`
- *   do `npm install`
- *   then `npm start`
- */
-
-const saveData = require('./../functions/saveData'); //to fix JsonFiles in cleanup
-const server = require('./../socket/server');
 module.exports = {
     start
 };
+
+
+const saveData = require('./../functions/saveData'); //to fix JsonFiles in cleanup
+const server = require('./../socket/server');
+
 
 function start(sampleFunction, boardSettings) {
     const debug = boardSettings.debug; // Pretty print any bytes in and out... it's amazing...

@@ -26,7 +26,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
 def main():
     # get trainingCmd as from read_in()
     trainingCmd = sys.stdin.read()
-
+    print(trainingCmd)
     #read file of trainingCmd
 
     #process data

@@ -1,3 +1,8 @@
+/**
+ * training of MindCmd from eeg signal
+ *
+ */
+
 module.exports = {
     trainMind: trainMind
 };
