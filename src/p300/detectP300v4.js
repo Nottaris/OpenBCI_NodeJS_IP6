@@ -10,94 +10,70 @@ const server = require('../socket/server');
 var PythonShell = require('python-shell');
 
 var settings;
-var counter = 0;
 var init = true;
-var slotsize = 112;
-var cycles = 5;
-
-//volts per cmd
-var volts5 = {
-        playpause: [],
-        next: [],
-        prev: [],
-        volup: [],
-        voldown: []
-    };
-//commands (as keys for collections)
-var commands = [
-    'playpause',
-    'next',
-    'prev',
-    'volup',
-    'voldown'
-];
-var nrOfCommands = commands.length;    // aka 5
 
 
-function detectP300(volts, cmdIdx) {
+function detectP300(volts, timestamps, cmdTimestamps) {
 
-    console.log("cmd 0: "+ cmdIdx[0]+" sampels length: " + volts.length);
-
-
-    //collect volt values sorted by cmd // 5 cycles * 112 slotsize = 560 samples
-    if(typeof volts5[command] !== "undefined"){
-         volts5[command].push(volts);
-         console.log(counter + "cmd: " + command + " volts5[command].length: " + volts5[command].length);
+    if (init) {
+        //get Settings only once
+        settings = p300.getSettings();
+        init = false;
     }
 
-    //if init is over (after 5 cycles aka counter 25) and 5 cycles are in of every command
-    if (!init) {
-        var each5Ready = each5Ready(commands,volts5);
+    console.log("cmd 0: " + timestamps.length + " volts length: " + volts.length + " " + cmdTimestamps[0]);
 
-        if (each5Ready) {
-            //limit data to last 5 cycles
-            var voltslast5 = Object.create(volts5);     //clone
-            commands.forEach(cmd => {
-                let len = voltslast5[cmd].length;
-                voltslast5[cmd].splice(0, len - cycles);   //cut out from start till end-cycles
-            });
+    //get get index for each timestamp
+    cmdIdx = [[], [], [], [], []];
+    cmdTimestamps.forEach((cmd, i) => {
+        cmd.forEach(currentTime => {
+            idx = getIdxForTimestamp(timestamps, currentTime);
+            if (idx > -1) {
+                cmdIdx[i].push(idx);
+            } else {
+                console.log("No index for timestamp was found " + currentTime.toString().slice(0, -1));
+                console.log(timestamps);
+            }
+
+        });
+    });
+
+    const options = {mode: 'json'};
+    let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300v4.py', options);
+    let data = {volts: volts, cmdIdx: cmdIdx};
+    console.log(data.cmdIdx);
+    // sends channel data to the Python script via stdin
+    // pyshell.send(data).end(function (err) {
+    //     if (err) {
+    //         console.log("pyshell send err: " + err)
+    //     }
+    // });
 
 
-            //merge volts in one array
-            var volts = [];
-            commands.forEach(cmd => {
-                volts = volts.concat(voltslast5[cmd]);
-            });
+    // received a message sent from the Python script (a simple "print" statement)
+    pyshell.stdout.on('data', function (data) {
+        // Remove all new lines
+        //docommand = data.replace(/\r?\n|\r/g, "");
+    });
 
-            //append Commands to Volts
-            var sendVoltsCmds = volts.concat(commands);
-
-            //send last 5 cycles and commands to python for filter and detect
-            let docommand = "nop"; //no operation detected so far
-            const options = {mode: 'text'};
-            let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300v3.py', options);
-            let data = JSON.stringify(sendVoltsCmds);
-
-            // sends channel data to the Python script via stdin
-            pyshell.send(data).end(function (err) {
-                if (err) {
-                    console.log("pyshell send err: " + err)
-                }
-            });
-
-            // received a message sent from the Python script (a simple "print" statement)
-            pyshell.stdout.on('data', function (data) {
-                // Remove all new lines
-                docommand = data.replace(/\r?\n|\r/g,"");
-            });
-
-            // end the input stream and allow the process to exit
-            pyshell.end(function (err) {
-                if (err) throw err;
-                //process python result, send cmd if detected
-                if (docommand !=="nop") {
-                    console.log("doCmd was not 'nop':" + docommand);
-                    //send doCommand to execute
-                    server.doCmd(docommand);
-                }
-            });
-
+    // end the input stream and allow the process to exit
+    pyshell.end(function (err) {
+        if (err) throw err;
+        //process python result, send cmd if detected
+        if (docommand !== "nop") {
+            console.log("doCmd was not 'nop':" + docommand);
+            //send doCommand to execute
+            // server.doCmd(docommand);
         }
+    });
 
-    }
+    //reset
+
+
 }
+
+// find timestamp idx in timestamp array
+function getIdxForTimestamp(timestamps, currentTime) {
+    return timestamps.findIndex(timestamp => timestamp === currentTime.toString().slice(0, -1));
+}
+
