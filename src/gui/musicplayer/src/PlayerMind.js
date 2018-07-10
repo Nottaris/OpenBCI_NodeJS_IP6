@@ -2,7 +2,6 @@ import React from 'react';
 import './Player.css';
 import {subscribeToMindCmds, sendTrainingCmd} from './api';
 import TrackInformation from './components/TrackInformation';
-import Scrubber from './components/Scrubber';
 import Timestamps from './components/Timestamps';
 import AudioVolume from './components/AudioVolume';
 import ControlsMind from './components/ControlsMind';
@@ -183,11 +182,6 @@ export default class PlayerBlink extends React.Component {
         this.setState({currentTime: timestamp});
     }
 
-    updateScrubber(percent) {
-        // Set scrubber width
-        let innerScrubber = document.querySelector('.Scrubber-Progress');
-        innerScrubber.style['width'] = percent;
-    }
 
     updateVolumeProgressBar(volume) {
         var elem = document.getElementById("ProgressVolume");
@@ -203,7 +197,6 @@ export default class PlayerBlink extends React.Component {
             let currentTime = audio.currentTime;
             // Calculate percent of song
             let percent = (currentTime / duration) * 100 + '%';
-            that.updateScrubber(percent);
             that.updateTime(currentTime);
         }, 100);
         this.setState({playpauseToggle: 'pause'});
@@ -280,7 +273,6 @@ export default class PlayerBlink extends React.Component {
                     </div>
                     <div className="PlayerInformation">
                         <TrackInformation tracks={this.props.tracks} state={this.state}/>
-                        <Scrubber/>
                     </div>
                     <div className="PlayerScrubber">
                         <Timestamps duration={this.props.tracks[this.state.trackNr].duration}
