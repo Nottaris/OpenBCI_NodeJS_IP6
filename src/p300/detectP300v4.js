@@ -11,7 +11,7 @@ var PythonShell = require('python-shell');
 
 var settings;
 var init = true;
-
+let docommand = "nop"; //no operation detected so far
 
 function detectP300(volts, timestamps, cmdTimestamps) {
 
@@ -27,45 +27,47 @@ function detectP300(volts, timestamps, cmdTimestamps) {
     cmdIdx = [[], [], [], [], []];
     cmdTimestamps.forEach((cmd, i) => {
         cmd.forEach(currentTime => {
-            idx = getIdxForTimestamp(timestamps, currentTime.toString().slice(0, -1));
+            idx = getIdxForTimestamp(timestamps, currentTime);
             if (idx > -1) {
                 cmdIdx[i].push(idx);
             } else {
-                console.log("No index for timestamp was found " + currentTime.toString().slice(0, -1));
+                console.log("No index for timestamp was found " + currentTime);
             }
 
         });
     });
     console.log(cmdTimestamps);
     console.log(cmdIdx);
-    // const options = {mode: 'json'};
-    // let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300v4.py', options);
-    // let data = {volts: volts, cmdIdx: cmdIdx};
-    // console.log(data.cmdIdx);
+
+    const options = {mode: 'json'};
+    let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300v4.py', options);
+    let data = {volts: volts, cmdIdx: cmdIdx};
+
     // sends channel data to the Python script via stdin
-    // pyshell.send(data).end(function (err) {
-    //     if (err) {
-    //         console.log("pyshell send err: " + err)
-    //     }
-    // });
+    pyshell.send(data).end(function (err) {
+        if (err) {
+            console.log("pyshell send err: " + err)
+        }
+    });
 
 
     // received a message sent from the Python script (a simple "print" statement)
-    // pyshell.stdout.on('data', function (data) {
-    //     // Remove all new lines
-    //     //docommand = data.replace(/\r?\n|\r/g, "");
-    // });
-    //
-    // // end the input stream and allow the process to exit
-    // pyshell.end(function (err) {
-    //     if (err) throw err;
-    //     //process python result, send cmd if detected
-    //     if (docommand !== "nop") {
-    //         console.log("doCmd was not 'nop':" + docommand);
-    //         //send doCommand to execute
-    //         // server.doCmd(docommand);
-    //     }
-    // });
+    pyshell.stdout.on('data', function (data) {
+        // Remove all new lines
+        console.log(data);
+        // docommand = data.replace(/\r?\n|\r/g, "");
+    });
+
+    // end the input stream and allow the process to exit
+    pyshell.end(function (err) {
+        if (err) throw err;
+        //process python result, send cmd if detected
+        // if (docommand !== "nop") {
+        //     console.log("doCmd was not 'nop':" + docommand);
+        //     //send doCommand to execute
+        //     // server.doCmd(docommand);
+        // }
+    });
 
     //reset
 
@@ -76,4 +78,3 @@ function detectP300(volts, timestamps, cmdTimestamps) {
 function getIdxForTimestamp(timestamps, currentTime) {
     return timestamps.findIndex(timestamp => timestamp === currentTime);
 }
-

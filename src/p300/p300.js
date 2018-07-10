@@ -37,7 +37,6 @@ var currentCommand; //cmd player is showing
 var currentTime; //time player showed cmd
 var counter = 0;
 var startIdx = 0;
-var endIdx = 0;
 
 // timpestamp of each cmd
 var cmdTimestamps = {
@@ -53,61 +52,59 @@ server.startSocketServer();
 
 function getCmdTimefromPlayer(data) {
     currentCommand = data.command;
-    currentTime = data.time;
-
+    currentTime = data.time.toString().slice(0, -1);
 
     if (settings.baselineLength < volts.length && typeof currentCommand !== 'undefined') {
-        //console.log("from player: " + data.command + " " + data.time+" "+volts.length+" "+getIdxForTimestamp(timestamps, currentTime));
+
         if (!enoughDataForP300(cmdTimestamps, settings.commands, cycles)) {
             //Add current timestamp to cmd array
             cmdTimestamps[currentCommand].push(currentTime);
-
         } else {
-            var compareCmd = [];
-            var firstTimestamps = [];
 
-            //save first timestampe as startidx
-            settings.commands.forEach(function (cmd) {
-                firstTimestamps.push(cmdTimestamps[cmd][0]);
-            });
+            let voltsForCycles = volts.slice(0); //clone
+            let timestampesForCycles = timestamps.slice(0);//clone
 
-            //get first timestamp
-            startTime = firstTimestamps.sort()[0];
-            startIdx = getIdxForTimestamp(timestamps, startTime.toString().slice(0, -1));
-            console.log("Search for P300 startIdx: " + startIdx + " " + currentTime);
+            let compareCmd = []; //timestamps that will be analysed for p300 and remove them from cmdTimestamps Object
+            let firstTimestampe = []; //timestamps of first cycle
 
-            //save timestamps that will be analysed for p300 and remove them from cmdTimestamps Object
             settings.commands.forEach(function (cmd, i) {
+                firstTimestampe.push(cmdTimestamps[cmd][0]);
                 compareCmd[i] = cmdTimestamps[cmd].splice(0, cycles);
             });
 
-            //get volts between startIdx and the end of volts array
-            voltsForCycles = volts.slice(startIdx - 1);
+            //get smallest timestamp and use it as startIdx
+            let startTimestamp = firstTimestampe.sort()[0];
+            startIdx = getIdxForTimestamp(timestampesForCycles, startTimestamp);
 
-            //get timestamp from startIdx until the end of timestamp array (buffer 10 samples)
-            timestampesForCycles = timestamps.slice(startIdx - 1);
+            if(startIdx>0) {
+                //get volts between startIdx and the end of volts array
+                voltsForCycles = voltsForCycles.slice(startIdx);
+                //get timestamp from startIdx until the end of timestamp array (buffer 10 samples)
+                timestampesForCycles = timestampesForCycles.slice(startIdx);
 
-            //Analayse data for P300
-            detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
+                console.log("startIdx "+startIdx+" "+startTimestamp+" timestamp for cycle: "+timestampesForCycles[0]+" votls.length "+volts.length);
 
-            // downsize volts and timestamp array
-            if (volts.length > settings.voltsMaxLength) {
-                volts = volts.slice(settings.voltsMaxLength * 0.75);
-                timestamps = timestamps.slice(settings.voltsMaxLength * 0.75);
+                //Analayse data for P300
+                 detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
+            } else {
+                console.log("No index for timestamp was found " + startTimestamp);
             }
 
-            //Add current timestamp to cmdTimestamp array
-            cmdTimestamps[currentCommand].push(currentTime);
 
             //reset
-            startTime = 0;
-            firstTimestamps = [];
+            counter = 0;
+            voltsForCycles = [];
+            timestampesForCycles = [];
+
+            //Add current timestamp to cmd array
+            cmdTimestamps[currentCommand].push(currentTime);
         }
+         counter += 1;
     } else {
         process.stdout.write("waiting for baseline...\r");
     }
 
-};
+}
 
 server.subscribeToCmds(getCmdTimefromPlayer);
 
@@ -117,13 +114,31 @@ function digestSamples(sample) {
     timestamps.push(sample.timestamp.toString().slice(0, -1));
     //save volts for each sampple
     volts.push(Number(sample.channelData[settings.channel - 1]));
-}
 
+    // downsize volts and timestamp array
+    if (volts.length > settings.voltsMaxLength) {
+        volts = volts.slice(settings.voltsMaxLength * 0.75);
+        timestamps = timestamps.slice(settings.voltsMaxLength * 0.75);
+    }
+}
 
 
 // find timestamp idx in timestamp array
 function getIdxForTimestamp(timestamps, currentTime) {
     return timestamps.findIndex(timestamp => timestamp === currentTime);
+}
+// // find timestamp idx in timestamp array
+// function getIdxForTimestamp(times, time) {
+//     let timesReverse = times;
+//     timesReverse.reverse();
+//     return timesReverse.length - timesReverse.findIndex(findIndexForTimestamp(time)) - 1;
+// }
+
+//find timestamp in sample that is equal to time from command
+function findIndexForTimestamp(time) {
+    return function (element) {
+        return time === element.time;
+    }
 }
 
 // check if for each cycles data are in every command
