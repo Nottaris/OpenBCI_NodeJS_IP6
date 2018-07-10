@@ -19,7 +19,14 @@ export default class PlayerBlink extends React.Component {
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
-            currentCmd: 'no'
+            currentCmd: 'no',
+            commands: [
+                'playpause',
+                'next',
+                'prev',
+                'volup',
+                'voldown'
+            ]
         };
 
         this.clickCommand = this.clickCommand.bind(this);
@@ -44,12 +51,19 @@ export default class PlayerBlink extends React.Component {
             let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
             trainIcon.style.color = "lightblue";
 
-            //TODO: train each command (for now just playpause)
-            this.trainCommand('playpause');
+            //train each command
+            let i = 0;
+            let interval = setInterval(function () {
+                if(i===5){
+                    this.trainingFinished();
+                    clearInterval(interval);
+                    return;
+                }else{
+                    this.trainCommand(this.state.commands[i]);
+                }
+                i++;
+            }.bind(this), 7000);  //7 sec. for dev, 65 sec. aka 65000 for production (a bit longer than record session)
 
-            setTimeout(function () {
-                this.trainingFinished();
-            }.bind(this), 3000);  //10 sec. for testing, 60 sec. aka 60000 for production
 
         } else {
             alert("Training already running. Wait until finished and restart if desired.");
@@ -73,7 +87,7 @@ export default class PlayerBlink extends React.Component {
         let infotext = document.getElementById('infotext');
         //TODO: alter text based on command to train
         infotext.innerText = "Concentrate on playing and think of leaning or going forward.";
-        let cmdIcon = document.getElementById('playpause').getElementsByClassName('fa')[0];
+        let cmdIcon = document.getElementById(command).getElementsByClassName('fa')[0];
         cmdIcon.style.color = "#ffffff";
         sendTrainingCmd(command);
     }

@@ -12,13 +12,15 @@ module.exports = {
 
 const server = require('../socket/server');
 const detectMind = require('./detectMind');
+const trainMind = require('./trainMind');
 const fs = require('fs');
 
 const defaultSettings = {
     sampleRate: 250,        // 250Hz
     slots: 112,             // data points per slot ( 450ms === 112 )
     debug: true,             // show console.log
-    trainingSampleSize: 250      // 1 minute = 1000ms = 250 samples
+    //TODO: set correct trainingSampleSize 15000 , 1500 (6sec.) is for dev
+    trainingSampleSize: 1500      // 1 minute = 60 sec. = 60000ms = 15000 samples
 }
 
 let volts = [];
@@ -57,7 +59,7 @@ function digestSamples(sample) {
             trainingOn = false;
             //save to file
             let record = JSON.stringify(volts);
-            fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, ()=>console.log("training file for "+trainingCmd+" written"));
+            fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, processTrainingsData(trainingCmd) );
         }
     } else {
         // live detection mode:
@@ -77,6 +79,14 @@ function digestSamples(sample) {
         }
     }
 }
+
+
+//init processing of trainings data in callback of file write
+function processTrainingsData(trainingCmd) {
+    console.log("training file for "+trainingCmd+" written");
+    trainMind.trainMind(trainingCmd);
+}
+
 
 //used by testing
 function reset() {
