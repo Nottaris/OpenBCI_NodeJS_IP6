@@ -13,9 +13,12 @@ export default class Training extends React.Component {
     render() {
         return (
             <div className="Controls">
-               <div className="row">
+                <div className="row">
                     <div onClick={() => this.trainingInit()} id="training" className="Button">
                         <i className='fa fa-fw fa-graduation-cap'></i>
+                        <div id="progress">
+                            <div id="progressBar"></div>
+                        </div>
                         <p id="infotext" className="infotext">Start training phase</p>
                     </div>
                 </div>

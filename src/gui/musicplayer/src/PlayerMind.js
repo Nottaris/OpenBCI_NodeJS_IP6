@@ -16,17 +16,18 @@ export default class PlayerBlink extends React.Component {
         this.state = {
             playpauseToggle: 'play',
             trainingToggle: false,
+            trainingTime: 7000,  //7 sec. for dev, 65 sec. aka 65000 for production (a bit longer than record session)
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
             currentCmd: 'no',
-            commands: [
-                'playpause',
-                'next',
-                'prev',
-                'volup',
-                'voldown'
-            ]
+            commands: {
+                'playpause': 'Concentrate on playing and think of leaning or going forward.',
+                'next': 'Concentrate on next and think of stretching your right arm.',
+                'prev': 'Concentrate on prev and think of stretching your left arm.',
+                'volup': 'Concentrate on volume up and think of screaming with your mouth wide open.',
+                'voldown': 'Concentrate on volume down and think of lowering you head.'
+            }
         };
 
         this.clickCommand = this.clickCommand.bind(this);
@@ -34,6 +35,8 @@ export default class PlayerBlink extends React.Component {
         this.trainingInit = this.trainingInit.bind(this);
         this.trainingFinished = this.trainingFinished.bind(this);
         this.trainCommand = this.trainCommand.bind(this);
+        this.move = this.move.bind(this);
+        this.toggleButtonsByTrainingToggle = this.toggleButtonsByTrainingToggle.bind(this);
 
         subscribeToMindCmds(
             this.execCommand,
@@ -45,50 +48,84 @@ export default class PlayerBlink extends React.Component {
     trainingInit = () => {
         if (!this.state.trainingToggle) {
             this.setState({trainingToggle: true});
+            this.toggleButtonsByTrainingToggle();
             //pause audio
             let audio = document.getElementById('audio');
             this.pause(audio);
             let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
             trainIcon.style.color = "lightblue";
-
+            let infotext = document.getElementById('infotext');
+            infotext.innerText = "Sit relaxed and concentrate on the highlighted command. Training will start soon.";
             //train each command
             let i = 0;
             let interval = setInterval(function () {
-                if(i===5){
+                if (i === 5) {
                     this.trainingFinished();
                     clearInterval(interval);
-                    return;
-                }else{
-                    this.trainCommand(this.state.commands[i]);
+                } else {
+                    this.trainCommand(Object.keys(this.state.commands)[i]);
                 }
                 i++;
-            }.bind(this), 7000);  //7 sec. for dev, 65 sec. aka 65000 for production (a bit longer than record session)
-
-
-        } else {
-            alert("Training already running. Wait until finished and restart if desired.");
+            }.bind(this), this.state.trainingTime);
         }
     }
 
     //show training finished
     trainingFinished() {
         this.setState({trainingToggle: false});
-        let cmdIcons = document.getElementsByClassName('fa');
-        for (var i = 0; i < cmdIcons.length; i++) {
-            cmdIcons[i].style.color = "#1c456e";
+        setTimeout(function () {
+            let cmdIcons = document.getElementsByClassName('cmd');
+            for (var i = 0; i < cmdIcons.length; i++) {
+                cmdIcons[i].style.color = "#1c456e";
+            }
+            let infotext = document.getElementById('infotext');
+            infotext.innerText = "Training finished. Have fun.";
+            this.toggleButtonsByTrainingToggle();
+        }, 100);
+    }
+
+    toggleButtonsByTrainingToggle() {
+        let buttons = document.getElementsByClassName('Button');
+        if(this.state.trainingToggle === true){
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].setAttribute('style', 'pointer-events: none;');
+            }
+        }else{
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].setAttribute('style', 'pointer-events: all;');
+            }
         }
-        let infotext = document.getElementById('infotext');
-        infotext.innerText = "Training finished. Have fun.";
+
+    }
+
+    //show training finished
+    trainingFinished() {
+        this.setState({trainingToggle: false});
+        setTimeout(function () {
+            let cmdIcons = document.getElementsByClassName('cmd');
+            for (var i = 0; i < cmdIcons.length; i++) {
+                cmdIcons[i].style.color = "#1c456e";
+            }
+            let infotext = document.getElementById('infotext');
+            infotext.innerText = "Training finished. Have fun.";
+        }, 100);
     }
 
     //training of command x
     trainCommand(command) {
         //show info and start highligthing command to train
         let infotext = document.getElementById('infotext');
-        //TODO: alter text based on command to train
-        infotext.innerText = "Concentrate on playing and think of leaning or going forward.";
+        infotext.innerText = this.state.commands[command];
+        //reset all icons to default color
+        let cmdIcons = document.getElementsByClassName('cmd');
+        for (var i = 0; i < cmdIcons.length; i++) {
+            cmdIcons[i].style.color = "#1c456e";
+        }
+        //highlight current training cmd icon
         let cmdIcon = document.getElementById(command).getElementsByClassName('fa')[0];
         cmdIcon.style.color = "#ffffff";
+        //start progressBar
+        this.move();
         sendTrainingCmd(command);
     }
 
@@ -214,6 +251,23 @@ export default class PlayerBlink extends React.Component {
     // Help function: Modulo operation with negative numbers
     mod(a, n) {
         return a - (n * Math.floor(a / n));
+    }
+
+    //progress bar training time
+    move() {
+        var elem = document.getElementById("progressBar");
+        var width = 0;
+        var id = setInterval(frame, this.state.trainingTime / 100); // 1% of training time
+
+        function frame() {
+            if (width >= 100) {
+                elem.style.width = 0 + '%';
+                clearInterval(id);
+            } else {
+                width++;
+                elem.style.width = width + '%';
+            }
+        }
     }
 
     render() {
