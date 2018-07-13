@@ -31,13 +31,16 @@ def main():
     volts = datainput['volts']
 
     # create a numpy array
-    data = np.array(volts)
+    # data = np.array(volts)
+    print(cmdIdx)
+    print(volts)
     #
     # detect P300
-    # cmd = detectP300(data, cmdIdx)
+    cmd = detectP300(volts, cmdIdx)
 
     # send docommand back to node
-    # print(cmd)
+    print(cmd)
+
 
 
 def detectP300(data, cmdIdx):
@@ -46,13 +49,21 @@ def detectP300(data, cmdIdx):
     fs = 250.0
     lowcut = 0.1
     highcut = 15.0
-    order = 2
+    order = 4
     threshold = 10
-    # cmdCount = cmdIdx.length
-    # cycles = cmdIdx[0].length
-    # print("cmdCount "+str(cmdCount))
-    # print("cycles "+str(cycles))
-
+    slotSize = 120
+    cmdCount = len(cmdIdx)
+    cycles = len(cmdIdx[0])
+    print("cmdCount "+str(cmdCount))
+    print("cycles "+str(cycles))
+    print(cmdIdx[0][0])
+     ##  collect volt for each cmd
+    dataP300 =[[],[],[],[],[]]
+    for i in range(cmdCount):
+        for j in range(cycles):
+            # print(data[cmdIdx[i][j]:cmdIdx[i][j]+120])
+            dataP300[i].push(data[cmdIdx[i][j]:(cmdIdx[i][j]+120)])
+            print(str(i)+" j:"+str(cmdIdx[i][j])+" "+str(print(dataP300[i][1:10])))
 
     # ## FILTER DATA
     # # double data before filter and cut of first half afterwards
@@ -88,7 +99,7 @@ def detectP300(data, cmdIdx):
     #     mean = np.mean(dataP300[idx])
     #     if (max>mean*threshold):
     #         return commands[idx]
-    # return "nop"
+    return "nop"
 
 
 def filterData(data, lowcut, highcut, fs, order):

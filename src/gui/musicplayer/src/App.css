@@ -19,7 +19,7 @@ body {
     height: 38px;
     padding: 20px 0px 0px 0px;
     color: black;
-    width: 240px;
+    width: 340px;
     text-align: center;
     margin: 0 auto;
     display: table;
@@ -37,4 +37,23 @@ body {
     font-weight: normal;
     display: table-cell;
     vertical-align: middle
+}
+
+.App .selectPlayer {
+    display: inline-block;
+    background: transparent;
+    color: #FFF;
+    border: 0px;
+    outline: 0px;
+    display: table-cell;
+    font-size: 1em;
+    width: 80px;
+}
+
+.App .selectPlayer option {
+    background: #000;
+    color: #FFF;
+    border: 0px;
+    outline: 0px;
+    width: 100px;
 }

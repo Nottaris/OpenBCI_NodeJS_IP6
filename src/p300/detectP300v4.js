@@ -38,10 +38,9 @@ function detectP300(volts, timestamps, cmdTimestamps) {
     });
     console.log(cmdTimestamps);
     console.log(cmdIdx);
-
-    const options = {mode: 'json'};
+    const options = {mode: 'text'};
     let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300v4.py', options);
-    let data = {volts: volts, cmdIdx: cmdIdx};
+    let data = JSON.stringify({volts: volts, cmdIdx: cmdIdx});
 
     // sends channel data to the Python script via stdin
     pyshell.send(data).end(function (err) {

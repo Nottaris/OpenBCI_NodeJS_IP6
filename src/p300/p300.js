@@ -10,7 +10,7 @@ module.exports = {
     getSettings,
     setSettings,
     reset
-}
+};
 
 
 const server = require('../socket/server');
@@ -21,25 +21,26 @@ const defaultSettings = {
     sampleRate: 250,        // 250Hz
     slots: 112,             // data points per slot ( 450ms === 112 )
     threshold: 1.8,         // deviation factor
-    //ToDO: Set correct baselineLength
-    baselineLength: 50,    // baseline 3s = 750 samples
-    voltsMaxLength: 10000,  //max length of volts array
+    //ToDo: Set correct baselineLength
+    baselineLength: 10,    // baseline 3s = 750 samples
+    voltsMaxLength: 20000,  //max length of volts array
+    cycles: 2,              //nr of cycles that will be analysed
     commands: ['playpause','next','prev','volup', 'voldown'],
     debug: true             // show console.log
-}
+};
 
 let volts = [];
 let timestamps = [];
 let count = 0;
-let cycles = 3; //nr of cycles that will be analysed
-let settings = defaultSettings;
-var currentCommand; //cmd player is showing
-var currentTime; //time player showed cmd
-var counter = 0;
-var startIdx = 0;
 
+let settings = defaultSettings;
+let currentCommand; //cmd player is showing
+let currentTime; //time player showed cmd
+let counter = 0;
+let startIdx = 0;
+let once = true;
 // timpestamp of each cmd
-var cmdTimestamps = {
+let cmdTimestamps = {
     playpause: [],
     next: [],
     prev: [],
@@ -53,10 +54,10 @@ server.startSocketServer();
 function getCmdTimefromPlayer(data) {
     currentCommand = data.command;
     currentTime = data.time.toString().slice(0, -1);
+    //ToDo: Remove once, only for testing
+    if (once && settings.baselineLength < volts.length && typeof currentCommand !== 'undefined') {
 
-    if (settings.baselineLength < volts.length && typeof currentCommand !== 'undefined') {
-
-        if (!enoughDataForP300(cmdTimestamps, settings.commands, cycles)) {
+        if (!enoughDataForP300(cmdTimestamps, settings.commands, settings.cycles)) {
             //Add current timestamp to cmd array
             cmdTimestamps[currentCommand].push(currentTime);
         } else {
@@ -64,12 +65,12 @@ function getCmdTimefromPlayer(data) {
             let voltsForCycles = volts.slice(0); //clone
             let timestampesForCycles = timestamps.slice(0);//clone
 
-            let compareCmd = []; //timestamps that will be analysed for p300 and remove them from cmdTimestamps Object
+            let compareCmd = []; //timestamps that will be analysed for p300 and removed them from cmdTimestamps Object
             let firstTimestampe = []; //timestamps of first cycle
 
             settings.commands.forEach(function (cmd, i) {
                 firstTimestampe.push(cmdTimestamps[cmd][0]);
-                compareCmd[i] = cmdTimestamps[cmd].splice(0, cycles);
+                compareCmd[i] = cmdTimestamps[cmd].splice(0, settings.cycles);
             });
 
             //get smallest timestamp and use it as startIdx
@@ -85,9 +86,12 @@ function getCmdTimefromPlayer(data) {
                 console.log("startIdx "+startIdx+" "+startTimestamp+" timestamp for cycle: "+timestampesForCycles[0]+" votls.length "+volts.length);
 
                 //Analayse data for P300
-                 detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
+                detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
+                once = false
+
+
             } else {
-                console.log("No index for timestamp was found " + startTimestamp);
+                console.log("!!! No index for startIdx timestamp was found " + startTimestamp+": timestampArray:"+timestampesForCycles[0]);
             }
 
 
@@ -117,8 +121,8 @@ function digestSamples(sample) {
 
     // downsize volts and timestamp array
     if (volts.length > settings.voltsMaxLength) {
-        volts = volts.slice(settings.voltsMaxLength * 0.75);
-        timestamps = timestamps.slice(settings.voltsMaxLength * 0.75);
+        volts = volts.slice(settings.voltsMaxLength * 0.6);
+        timestamps = timestamps.slice(settings.voltsMaxLength * 0.6);
     }
 }
 
