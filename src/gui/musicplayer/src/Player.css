@@ -103,33 +103,7 @@ body {
     opacity: 0.5;
 }
 
-.Player .Scrubber {
-    position: absolute;
-    top: 0;
-    left: 100px;
-    width: 85%;
-    height: 100px;
-    opacity: 0.2;
-    transition: opacity 0.25s ease;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
 
-.Player .Scrubber .Scrubber-Progress {
-    background: -moz-linear-gradient(top, rgba(255, 71, 0, 0) 0%, #ff4700 100%);
-    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 71, 0, 0)), color-stop(100%, #ff4700));
-    background: -webkit-linear-gradient(top, rgba(255, 71, 0, 0) 0%, #ff4700 100%);
-    background: -o-linear-gradient(top, rgba(255, 71, 0, 0) 0%, #ff4700 100%);
-    background: -ms-linear-gradient(top, rgba(255, 71, 0, 0) 0%, #ff4700 100%);
-    background: linear-gradient(to bottom, rgba(255, 71, 0, 0) 0%, #ff4700 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ff4800", endColorstr="#ff4800", GradientType=0);
-    height: 100%;
-    width: 0%;
-    transition: width 0.25s ease;
-    pointer-events: none;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
 
 .Player .Timestamps {
     padding: 10px 0;
@@ -160,7 +134,7 @@ body {
 .Player .AudioProgressBar #ProgressVolume {
     width: 50%;
     height: 10px;
-    background-color: #292dff;
+    background-color: #1c739d;
 }
 
 .Player .Controls {
@@ -217,23 +191,6 @@ body {
     color: #000;
 }
 
-/*Custom CSS for P300*/
-.P300 .Controls {
-    max-width: 100%;
-    min-height: 100%;
-}
-
-.P300 .Controls .row {
-    margin: 0 auto;
-    display: table;
-    max-width: 1200px;
-}
-
-.P300 .Controls .Button {
-    width: 200px;
-    height: 200px;
-}
-
 /* Custom CSS for Blink */
 .Blink .Controls {
     border-spacing: 25px;
@@ -252,6 +209,24 @@ body {
     padding: 30px 60px;
     width: 33%;
 }
+
+/*Custom CSS for P300*/
+.P300 .Controls {
+    max-width: 100%;
+    min-height: 100%;
+}
+
+.P300 .Controls .row {
+    margin: 0 auto;
+    display: table;
+    max-width: 1200px;
+}
+
+.P300 .Controls .Button {
+    width: 200px;
+    height: 200px;
+}
+
 
 /* Custom CSS for Mind */
 .infotext {
