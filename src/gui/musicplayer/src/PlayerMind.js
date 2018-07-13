@@ -44,6 +44,13 @@ export default class PlayerBlink extends React.Component {
 
     };
 
+     componentWillUnmount() {
+        if (this.state.playpauseToggle === 'play') {
+            let audio = document.getElementById('audio');
+            this.pause(audio);
+        }
+    }
+
     //init training session
     trainingInit = () => {
         if (!this.state.trainingToggle) {
