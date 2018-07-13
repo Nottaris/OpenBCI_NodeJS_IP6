@@ -30,7 +30,7 @@ function trainMind(trainingCmd) {
         if (success === 'true') {
             console.log("training of " + trainingCmd + " was successful");
         } else {
-            console.log("training of " + trainingCmd + " was not successful");
+            console.log("training of " + trainingCmd + " was not successful. received: " + success);
         }
     });
 

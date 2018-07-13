@@ -60,7 +60,8 @@ function digestSamples(sample) {
             // reset
             trainingOn = false;
             //save to file
-            let record = JSON.stringify(volts);
+            let values = volts.map(v => v.channelData);
+            let record = JSON.stringify(values);
             fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, processTrainingsData(trainingCmd) );
         }
     } else {
