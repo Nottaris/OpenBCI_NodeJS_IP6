@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import logo from './logo.png';
+import logo from './img/logo.png';
 import mp3File_summer from './music/bensound-summer.mp3';
 import mp3File_anewbeginning from './music/bensound-anewbeginning.mp3';
 import mp3File_happyrock from './music/bensound-happyrock.mp3';
@@ -39,12 +39,15 @@ class App extends Component {
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h5 className="App-title">bci Music Player
-                        <select className="selectPlayer" onChange={this.changePlayer} value={this.state.value}>
+                        <span className="selectPlayer">
+                            <select onChange={this.changePlayer} value={this.state.value}>
                             <option value="PlayerBlink">Blink</option>
                             <option value="PlayerP300">P300</option>
                             <option value="PlayerMind">Mind</option>
-                        </select>
+                            </select>
+                        </span>
                     </h5>
+
                 </header>
 
 
