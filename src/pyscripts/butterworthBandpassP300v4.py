@@ -21,10 +21,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     return y
 
 
-
 def main():
-
-
     # get data as an array from read_in()
     datainput = json.loads(sys.stdin.read())
     cmdIdx = datainput['cmdIdx']
@@ -40,9 +37,7 @@ def main():
     print(cmd)
 
 
-
 def detectP300(data, cmdIdx):
-
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 0.1
@@ -53,28 +48,27 @@ def detectP300(data, cmdIdx):
     cmdCount = len(cmdIdx)
     cycles = len(cmdIdx[0])
 
-
     # ## FILTER DATA
     # double data before filter and cut of first half afterwards
     doubledata = np.concatenate([data, data])
     doubledataFilterd = filterData(doubledata, lowcut, highcut, fs, order)
-    dataBP = doubledataFilterd[int(len(doubledataFilterd)/2):]
+    dataBP = doubledataFilterd[int(len(doubledataFilterd) / 2):]
 
     # ## SPLIT VOLTS DATA IN COMMAND EPOCHES
-     ##  collect volt for each cmd in dataP300[CMD][CYCLE][VOLTS]
-    dataP300 =[[],[],[],[],[]]
+    ##  collect volt for each cmd in dataP300[CMD][CYCLE][VOLTS]
+    dataP300 = [[], [], [], [], []]
     for i in range(cmdCount):
         for j in range(cycles):
-            dataP300[i].append(dataBP[cmdIdx[i][j]:(cmdIdx[i][j]+slotSize)])
+            dataP300[i].append(dataBP[cmdIdx[i][j]:(cmdIdx[i][j] + slotSize)])
 
     # AVERAGE CYCLES
     # calculate avg data for each cmd
-    dataP300Avg =[[],[],[],[],[]]
+    dataP300Avg = [[], [], [], [], []]
     for i in range(cmdCount):
-        dataP300Avg[i] =  np.average(dataP300[i], axis=0)
+        dataP300Avg[i] = np.average(dataP300[i], axis=0)
 
         for j in range(cycles):
-            plt.figure(10+i)
+            plt.figure(10 + i)
             plt.title(' P300 Cycle: %d Cmd: %s ' % (j, i))
             plt.plot(dataP300[i][j] * 1000000, color='b')
 
@@ -96,12 +90,10 @@ def detectP300(data, cmdIdx):
     #     plt.plot(dataP300Sum[i] * 1000000, color='r')
     # plt.show()
 
-    return getCmdMaxAmplitude(dataP300Avg,cmdCount,threshold)
+    return getCmdMaxAmplitude(dataP300Avg, cmdCount, threshold)
 
 
-
-
-def getCmdMaxAmplitude(dataP300, cmdCount,threshold):
+def getCmdMaxAmplitude(dataP300, cmdCount, threshold):
     # ONLY ANALYSE DATA BETWEEN 200ms(50) and 400ms(100) AFTER CMD
     for i in range(cmdCount):
         dataP300[i] = dataP300[i][50:100]
@@ -116,9 +108,10 @@ def getCmdMaxAmplitude(dataP300, cmdCount,threshold):
         idx = diff.index(maxdiff)
         max = np.max(dataP300[idx])
         mean = np.mean(dataP300[idx])
-        if (max>mean*threshold):
+        if (max > mean * threshold):
             return idx
     return "nop"
+
 
 def filterData(data, lowcut, highcut, fs, order):
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)

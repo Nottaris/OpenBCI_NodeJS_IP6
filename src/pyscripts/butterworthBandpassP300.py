@@ -17,25 +17,25 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     y = lfilter(b, a, data)
     return y
 
+
 def main():
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 1
     highcut = 16.0
     order = 2
-    slotSize = 125 #0.5s
+    slotSize = 125  # 0.5s
 
     # get our data as an array from read_in() and creat np array
     datainput = sys.stdin.read()
     data = np.array(json.loads(datainput))
 
     # filter and plot data
-    filterData(data[:,0], lowcut, highcut, fs, order, slotSize)
+    filterData(data[:, 0], lowcut, highcut, fs, order, slotSize)
 
 
-
-def filterData(data,lowcut,highcut,fs,order,slotSize):
-    #filter data with butter bandpass
+def filterData(data, lowcut, highcut, fs, order, slotSize):
+    # filter data with butter bandpass
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
 
     avgData = [filterdData[0]]
@@ -45,7 +45,7 @@ def filterData(data,lowcut,highcut,fs,order,slotSize):
 
     # Calculate mean value for slots
     for sample in filterdData:
-        if(count < slotSize):
+        if (count < slotSize):
             tempData.append(sample)
             count += 1
         else:
@@ -56,8 +56,7 @@ def filterData(data,lowcut,highcut,fs,order,slotSize):
             count = 0
             tempData = []
         # subtract baseline from data
-        subBaseline.append(sample-np.mean(filterdData))
-
+        subBaseline.append(sample - np.mean(filterdData))
 
     plot(filterdData, avgData, subBaseline, lowcut, highcut, 0, order)
     plt.show()
@@ -74,7 +73,8 @@ def filterData(data,lowcut,highcut,fs,order,slotSize):
     # for f in filterdData:
     #     print(f)
 
-def plot(filteredData, avgData, subBaslineData, lowcut, highcut, channel,order):
+
+def plot(filteredData, avgData, subBaslineData, lowcut, highcut, channel, order):
     # Plot original and filtered data
     plt.figure(channel)
     plt.subplot(311)
@@ -101,6 +101,7 @@ def plot(filteredData, avgData, subBaslineData, lowcut, highcut, channel,order):
     plt.grid(True)
     plt.legend(loc='upper right')
 
-#start process
+
+# start process
 if __name__ == '__main__':
     main()

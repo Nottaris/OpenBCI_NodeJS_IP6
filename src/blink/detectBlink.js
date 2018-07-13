@@ -37,7 +37,7 @@ function detectBlinkOld(baseline, currentMedian) {
         settings = blink.getSettings();
 
         //show Baseline
-        if(settings.debug) {
+        if (settings.debug) {
             console.log("=================Baseline=================");
             console.log("  Baseline size:\t" + baseline.length);
             console.log("  Baseline median:\t" + mathFunctions.getMedian(baseline).toFixed(2));
@@ -53,26 +53,26 @@ function detectBlinkOld(baseline, currentMedian) {
     }
 
     //if current value is bigger then  median - standardDeviation * threshold  it is a blink
-    if (Number(baselineMedian - standardDeviation * settings.threshold) > currentMedian && skip == 0 ) {
-        if(settings.debug){
-            console.log("BLINK: \t value: "+currentMedian.toFixed(2)+"\t at "+new Date());
+    if (Number(baselineMedian - standardDeviation * settings.threshold) > currentMedian && skip == 0) {
+        if (settings.debug) {
+            console.log("BLINK: \t value: " + currentMedian.toFixed(2) + "\t at " + new Date());
         }
-       blink.setBlinkcount();
+        blink.setBlinkcount();
 
-       //send doCommand to execute
-       server.doBlinkCmd();
+        //send doCommand to execute
+        server.doBlinkCmd();
 
-       skip = settings.slots*5;
+        skip = settings.slots * 5;
     }
 
-    if(skip > 0) {
+    if (skip > 0) {
         skip--;
     }
 
 }
 
-function startFlashCmd(){
-    setInterval(function(){
+function startFlashCmd() {
+    setInterval(function () {
         //send next command to flash on player
         setNextCommand();
         server.sendCmd(currentCommand);

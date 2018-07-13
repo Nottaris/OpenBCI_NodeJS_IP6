@@ -133,9 +133,9 @@ function detectP300(volts, command, time) {
             // end the input stream and allow the process to exit
             pyshell.end(function (err) {
                 if (err) throw err;
-                 //process python result, send cmd if detected
-                if(docommand !== "nop"){
-                    console.log("doCmd was not 'nop':"+docommand);
+                //process python result, send cmd if detected
+                if (docommand !== "nop") {
+                    console.log("doCmd was not 'nop':" + docommand);
                     //send doCommand to execute
                     server.doCmd(docommand);
                 }

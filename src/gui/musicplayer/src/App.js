@@ -14,22 +14,27 @@ class App extends Component {
         super(props);
         this.state = {
             selectedPlayer: ["PlayerBlink"],
-            playerTypes:  ["PlayerP300", "PlayerMind","PlayerBlink"]
+            playerTypes: ["PlayerP300", "PlayerMind", "PlayerBlink"]
         }
         this.showPlayer = this.getPlayerCompoonent(this.state.selectedPlayer)
         this.changePlayer = this.changePlayer.bind(this);
     }
+
     changePlayer(event) {
-         this.setState({selectedPlayer: event.target.value});
-         this.showPlayer = this.getPlayerCompoonent(event.target.value)
-     }
-     getPlayerCompoonent(player) {
+        this.setState({selectedPlayer: event.target.value});
+        this.showPlayer = this.getPlayerCompoonent(event.target.value)
+    }
+
+    getPlayerCompoonent(player) {
         switch (player) {
-            case "PlayerP300": return <PlayerP300 tracks={this.props.tracks}/>;
-            case "PlayerMind": return  <PlayerMind tracks={this.props.tracks}/>;
-            default: return <PlayerBlink tracks={this.props.tracks}/>;
-          }
-     }
+            case "PlayerP300":
+                return <PlayerP300 tracks={this.props.tracks}/>;
+            case "PlayerMind":
+                return <PlayerMind tracks={this.props.tracks}/>;
+            default:
+                return <PlayerBlink tracks={this.props.tracks}/>;
+        }
+    }
 
     render() {
 
@@ -51,7 +56,7 @@ class App extends Component {
                 </header>
 
 
-                  {this.showPlayer}
+                {this.showPlayer}
             </div>
         );
     }

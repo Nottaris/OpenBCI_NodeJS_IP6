@@ -116,19 +116,19 @@ def main():
     detectP300(data, cmdRow, cycle, focus, focusCmd)
 
 
-def detectP300(data,cmdRow,cycle,focus,focusCmd):
-    print("----- Cycle "+str(cycle)+" focused command "+str(focusCmd)+" correct pos"+str(focus)+" -----")
+def detectP300(data, cmdRow, cycle, focus, focusCmd):
+    print("----- Cycle " + str(cycle) + " focused command " + str(focusCmd) + " correct pos" + str(focus) + " -----")
 
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 0.1
     highcut = 15.0
     order = 4
-    slotSize = 125 #0.5s
+    slotSize = 125  # 0.5s
     cmdCount = 5
 
     ## FILTER DATA
-    #allDataFilterd = data    // if no bandpass desired
+    # allDataFilterd = data    // if no bandpass desired
     allDataFilterd = filterData(data, lowcut, highcut, fs, order)
 
     ## NORMALIZE DATA
@@ -157,19 +157,17 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
     data300SubBaseline = []
     for i in range(cmdCount):
         ## SUBTRACT BASELINE MEAN
-         dataP300.append(allDataFilterd[cmdRow[i]:cmdRow[i]+slotSize])
-         # filteredData = filterData(data[start-125*4:end], lowcut, highcut, fs, order)
-         # dataP300.append(filteredData[125*4:])
-         #dataP300.append(allDataFilterd[start:end])
-
-
+        dataP300.append(allDataFilterd[cmdRow[i]:cmdRow[i] + slotSize])
+        # filteredData = filterData(data[start-125*4:end], lowcut, highcut, fs, order)
+        # dataP300.append(filteredData[125*4:])
+    # dataP300.append(allDataFilterd[start:end])
 
     ## SUBTRACT BASELINE MEAN ( equally ajust height )
     dataP300Baseline = []
     for i in range(cmdCount):
-         mean = np.mean(dataP300[i])
-         dataP300Baseline.append(dataP300[i]-mean)
-    #Overwrite dataP300 array
+        mean = np.mean(dataP300[i])
+        dataP300Baseline.append(dataP300[i] - mean)
+    # Overwrite dataP300 array
     dataP300 = dataP300Baseline
 
     ## SUBTRACT BASELINE for each datapoint from period before
@@ -177,11 +175,11 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
     #     dataP300[i] = dataP300[i] - dataP300[i - 1]
 
     ## Decibel Conversion - Reference = 1mV = 1e-3   for each epoch
-    #for i in range(6):
+    # for i in range(6):
     #    dataP300[i] = list(map(lambda x: (10 * np.log10(abs(x * 1000) / 1e-3)), dataP300[i]))
 
     # ONLY ANALYSE DATA BETWEEN 250ms(62) and 450ms(120) AFTER CMD
-    #for i in range(6):
+    # for i in range(6):
     #    dataP300[i] = dataP300[i][62:120]
 
     ## CALCULATE AMPLITUDE # ONLY ANALYSE DATA BETWEEN 200ms(50) and 400ms(100) AFTER CMD
@@ -191,27 +189,27 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
         max = np.max(dataP300[i][50:100])
         mean = np.mean(dataP300[i][50:100])
         std = np.mean(dataP300[i][50:100])
-        print("max: "+str(max)+" mean "+str(mean)+" std "+str(std))
-    #get max index
+        print("max: " + str(max) + " mean " + str(mean) + " std " + str(std))
+    # get max index
     idx = diff.index(np.max(diff))
 
     max = np.max(dataP300[idx])
     mean = np.mean(dataP300[idx])
     if (True):
-         if (idx == focus):
+        if (idx == focus):
             print(str(idx) + " CORRECT P300 detection")
-         else:
+        else:
             print(str(idx) + " wrong P300 detection. Correct would be cmd " + str(focus))
 
     stringDiff = ''.join(str(diff))
-    print("diff values: "+stringDiff)
+    print("diff values: " + stringDiff)
     print("mean: " + str(np.mean(diff)))
-    print("Max: "+str(np.max(diff)))
+    print("Max: " + str(np.max(diff)))
     idx = diff.index(np.max(diff))  # get index to match cmd 0-5
-    if(idx == focus):
-         print(str(idx)+" CORRECT P300 detection")
+    if (idx == focus):
+        print(str(idx) + " CORRECT P300 detection")
     else:
-         print(str(idx)+" wrong P300 detection. Correct would be cmd "+str(focus))
+        print(str(idx) + " wrong P300 detection. Correct would be cmd " + str(focus))
 
     ## PLOT DATA
 
@@ -221,15 +219,15 @@ def detectP300(data,cmdRow,cycle,focus,focusCmd):
     plt.figure(1)
 
     # Plot commands
-    commands = ["next","voldown","play","prev","volup"]
+    commands = ["next", "voldown", "play", "prev", "volup"]
     for i in range(cmdCount):
-        if(i == focus):
-            plot(dataP300[i], cycle, focusCmd, i+1, 'r', commands[i])
+        if (i == focus):
+            plot(dataP300[i], cycle, focusCmd, i + 1, 'r', commands[i])
             print("Max: " + str(np.max(dataP300[i][60:80])))
             print("mean: " + str(np.mean(dataP300[i])))
-            #plot(dataP300Baseline[i], lowcut, highcut, cycle, focusCmd, 1, 'b')
+            # plot(dataP300Baseline[i], lowcut, highcut, cycle, focusCmd, 1, 'b')
         else:
-            plot(dataP300[i], cycle, ("cmd %s"%(i+1)), i+1, 'b', commands[i])
+            plot(dataP300[i], cycle, ("cmd %s" % (i + 1)), i + 1, 'b', commands[i])
 
     plt.show()
 
@@ -246,12 +244,13 @@ def filterData(data, lowcut, highcut, fs, order):
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
     return filterdData
 
-def plot(filteredData, cycle,title,cmd,color,row):
+
+def plot(filteredData, cycle, title, cmd, color, row):
     # Plot original and filtered data
-    nr = 320+cmd
+    nr = 320 + cmd
     plt.subplot(nr)
     plt.title(' P300 Cycle: %d Cmd: %s ' % (cycle, row))
-    plt.plot(filteredData*1000000, label=title, color=color)
+    plt.plot(filteredData * 1000000, label=title, color=color)
     axes = plt.gca()
     axes.set_ylim([-35, 35])
     plt.ylabel('microVolts')
@@ -259,11 +258,13 @@ def plot(filteredData, cycle,title,cmd,color,row):
     # plt.legend(loc='best', bbox_to_anchor=(1, 0.5))
     # plt.grid(True)
 
+
 def plotCycle(data, lowcut, highcut, cycle):
     plt.figure(cycle)
     plt.title(' P300 Cmd: %d Cycle (%d - %d Hz)' % (cycle, lowcut, highcut))
     plt.plot(data, 'b')
     axes = plt.gca()
+
 
 def plotCmd(data, lowcut, highcut, cmd):
     plt.figure(0)
@@ -271,6 +272,7 @@ def plotCmd(data, lowcut, highcut, cmd):
     plt.plot(data, 'b')
     axes = plt.gca()
 
-#start process
+
+# start process
 if __name__ == '__main__':
     main()

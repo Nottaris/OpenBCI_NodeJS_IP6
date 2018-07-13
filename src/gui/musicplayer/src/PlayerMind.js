@@ -79,13 +79,13 @@ export default class PlayerBlink extends React.Component {
 
     //show training finished
     trainingFinished() {
-            let cmdIcons = document.getElementsByClassName('cmd');
-            for (var i = 0; i < cmdIcons.length; i++) {
-                cmdIcons[i].style.color = "#1c456e";
-            }
-            let infotext = document.getElementById('infotext');
-            infotext.innerText = "Training finished. Have fun.";
-            this.toggleButtonsOnTraining(false);
+        let cmdIcons = document.getElementsByClassName('cmd');
+        for (var i = 0; i < cmdIcons.length; i++) {
+            cmdIcons[i].style.color = "#1c456e";
+        }
+        let infotext = document.getElementById('infotext');
+        infotext.innerText = "Training finished. Have fun.";
+        this.toggleButtonsOnTraining(false);
     }
 
     //show training pause
@@ -101,11 +101,11 @@ export default class PlayerBlink extends React.Component {
     toggleButtonsOnTraining(disable) {
         let buttons = document.getElementsByClassName('Button');
         if (disable) {
-            for (var i = 0; i < buttons.length; i++) {
+            for (let i = 0; i < buttons.length; i++) {
                 buttons[i].setAttribute('style', 'pointer-events: none;');
             }
         } else {
-            for (var i = 0; i < buttons.length; i++) {
+            for (let i = 0; i < buttons.length; i++) {
                 buttons[i].setAttribute('style', 'pointer-events: all;');
             }
         }
@@ -219,11 +219,9 @@ export default class PlayerBlink extends React.Component {
         audio.play();
         audio.volume = this.state.audioVolume;
         let that = this;
-        let duration = that.props.tracks[this.state.trackNr].duration;
         setInterval(function () {
             let currentTime = audio.currentTime;
             // Calculate percent of song
-            let percent = (currentTime / duration) * 100 + '%';
             that.updateTime(currentTime);
         }, 100);
         this.setState({playpauseToggle: 'pause'});

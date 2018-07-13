@@ -17,6 +17,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     y = lfilter(b, a, data)
     return y
 
+
 def main():
     # Sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
@@ -30,7 +31,7 @@ def main():
 
     # filter data
     for i in range(0, 8):
-        filterdData = butter_bandpass_filter(data[:,i], lowcut, highcut, fs, order=6)
+        filterdData = butter_bandpass_filter(data[:, i], lowcut, highcut, fs, order=6)
         plot(data[:, i], filterdData, lowcut, highcut, i)
 
     # show plots
@@ -40,11 +41,12 @@ def main():
     for f in filterdData:
         print(f)
 
+
 def plot(data, filteredData, lowcut, highcut, channel):
     # Plot original and filtered data
     plt.figure(channel)
     plt.subplot(211)
-    plt.title('Channel %s - No Filter' %(channel+1))
+    plt.title('Channel %s - No Filter' % (channel + 1))
     plt.plot(data, label="Original Data")
     plt.ylabel('microVolts')
     plt.xlabel('Samples')
@@ -52,7 +54,7 @@ def plot(data, filteredData, lowcut, highcut, channel):
     plt.grid(True)
 
     plt.subplot(212)
-    plt.title('Channel %s - Bandpass Filter %d - %d Hz' % (channel+1, lowcut, highcut))
+    plt.title('Channel %s - Bandpass Filter %d - %d Hz' % (channel + 1, lowcut, highcut))
     plt.plot(filteredData, label="Filterd Data", color='r')
     plt.ylabel('microVolts')
     plt.xlabel('Samples')
@@ -60,8 +62,6 @@ def plot(data, filteredData, lowcut, highcut, channel):
     plt.legend(loc='upper right')
 
 
-
-
-#start process
+# start process
 if __name__ == '__main__':
     main()

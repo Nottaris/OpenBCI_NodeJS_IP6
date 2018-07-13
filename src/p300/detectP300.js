@@ -29,13 +29,13 @@ var baselineVolts = [];
 
 function detectP300(volts, command) {
 
-    if(subBase){
+    if (subBase) {
         //add new values to baselineBuffer
         baselineVolts.concat(volts);
         //if baselineBuffer is larger than 12 times volts slot:
         //purge old values from baselineBuffer (remove first (oldest) slot)
         //calculate median and subtract it from current volts
-        if (baselineVolts.length > volts.length*13) {
+        if (baselineVolts.length > volts.length * 13) {
             baselineVolts.splice(0, volts.length);
             //subtract baselineMedian from each value in current slot
             let baselineMedian = mathFunctions.getMedian(baselineVolts);
@@ -45,18 +45,18 @@ function detectP300(volts, command) {
 
     //skip init phase after first values are in
     if (init) {
-        if(counter===0){
+        if (counter === 0) {
             //get Settings only once
             settings = p300.getSettings();
             third = Math.floor(Number(volts.length / 3));
         }
         //on last command coming in set init to false (counter = 5)
-        if(counter===nrOfCommands-1){
+        if (counter === nrOfCommands - 1) {
             init = false;
         }
     }
 
-    if(filter) {
+    if (filter) {
 
         var voltsFiltered = [];
         const options = {mode: 'text'};
@@ -64,38 +64,38 @@ function detectP300(volts, command) {
         let data = JSON.stringify(volts);
 
         // sends channel data to the Python script via stdin
-        pyshell.send(data).end(function(err){
-            if (err){
-                console.log("pyshell send err: "+err)
+        pyshell.send(data).end(function (err) {
+            if (err) {
+                console.log("pyshell send err: " + err)
             }
         });
 
         // received a message sent from the Python script (a simple "print" statement)
         pyshell.stdout.on('data', function (data) {
-             //get filtered data back
-             let rawdata = data.split(' ');
-             for (let i = 0; i < rawdata.length; i++) {
-                 if(rawdata[i].length>3 && !isNaN(rawdata[i])){
+            //get filtered data back
+            let rawdata = data.split(' ');
+            for (let i = 0; i < rawdata.length; i++) {
+                if (rawdata[i].length > 3 && !isNaN(rawdata[i])) {
                     voltsFiltered.push(Number(rawdata[i]));
-                 }
-             }
+                }
+            }
         });
 
         // end the input stream and allow the process to exit
         pyshell.end(function (err) {
-          if (err) throw err;
-          processP300(voltsFiltered, command);
-          voltsFiltered = [];
+            if (err) throw err;
+            processP300(voltsFiltered, command);
+            voltsFiltered = [];
         });
 
-    }else{
+    } else {
         //not filtered
         processP300(volts, command);
     }
 }
 
-function processP300(voltsF, command){
-    if(voltsF.length>0){
+function processP300(voltsF, command) {
+    if (voltsF.length > 0) {
 
         // volts is 600ms; for min use 200-600ms "L2"; for max use 400-600ms "L1"
         let voltsL1 = voltsF.slice(third * 2);
@@ -111,14 +111,13 @@ function processP300(voltsF, command){
         counter++;
 
         //after all vppx are newly set again evaluate getCommand()
-        if (!init  &&  (counter % nrOfCommands === 0) ) {
-           counter = 0;
-           getCommand();
+        if (!init && (counter % nrOfCommands === 0)) {
+            counter = 0;
+            getCommand();
         }
     }
 
 }
-
 
 
 function getCommand() {
@@ -133,9 +132,9 @@ function getCommand() {
 
         if (settings.debug) {
             console.log("command: " + command +
-                        "\t median: " + median +
-                        "\t maxVppx: " + maxVppx +
-                        "\t vppx[maxVppx]: " + Object.keys(vppx).find(key => vppx[key] === maxVppx));
+                "\t median: " + median +
+                "\t maxVppx: " + maxVppx +
+                "\t vppx[maxVppx]: " + Object.keys(vppx).find(key => vppx[key] === maxVppx));
         }
         console.log("p300: \t value: " + maxVppx.toFixed(2) + " on command: " + command + "\t at " + new Date());
 

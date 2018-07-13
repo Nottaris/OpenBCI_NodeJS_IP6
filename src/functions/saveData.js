@@ -1,6 +1,6 @@
 /**
  * export (save) data from eeg signal to a json file
- * 
+ *
  * sample ===
  *       { accelData: [ 0, 0, 0 ],
  *       channelData:
@@ -35,25 +35,26 @@ const fs = require('fs');
 
 const openData = require('./../functions/openData');
 
-const boardSettings  = {
+const boardSettings = {
     verbose: true,                                                  //  Print out useful debugging events
     debug: false,                                                   //  Print out a raw dump of bytes sent and received
     simulate: false,                                                // Full functionality, just mock data. Must attach Daisy module by setting
-    channelsOff: [false,false,false,false,false,false,false,false],  // power down unused channel 1 - 8
+    channelsOff: [false, false, false, false, false, false, false, false],  // power down unused channel 1 - 8
     control: "save"                                                 // Control type
 }
 
 let stream;
 
-if(process.argv[2] === 'start'){
+if (process.argv[2] === 'start') {
     start();
-};
+}
+;
 
 function start() {
     console.log(start);
     // connect to the board and process samples with sampleFunction
     let sampleFunction = saveData;
-    openBoard.start(sampleFunction,boardSettings);
+    openBoard.start(sampleFunction, boardSettings);
 
     //get date in format for file name like "data-2018-4-6-21-13-08.json"
     options = {
@@ -65,7 +66,7 @@ function start() {
     datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
     formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
 
-    stream = fs.createWriteStream("data/data-" + formatDate + ".json", { flags: 'a' });
+    stream = fs.createWriteStream("data/data-" + formatDate + ".json", {flags: 'a'});
 }
 
 
@@ -82,11 +83,11 @@ function fixJsonFile() {
     var path = "./data/";
     var files = fs.readdirSync(path);
     var newestfile = getNewestFile();
-    var pathToFile = path+newestfile;
+    var pathToFile = path + newestfile;
     var content = fs.readFileSync(pathToFile, 'utf8');
     var contentCut = content.substring(0, content.length - 2); //remove last ,\n
-    var fixed = '['+contentCut+']';
-    fs.writeFileSync(pathToFile,fixed,'utf8');
+    var fixed = '[' + contentCut + ']';
+    fs.writeFileSync(pathToFile, fixed, 'utf8');
 }
 
 //get latest file from ./data/
@@ -96,23 +97,23 @@ function getNewestFile() {
     var path = "./data/";
     var files = fs.readdirSync(path);
     var out = [];
-    files.forEach(function(file) {
-        var stats = fs.statSync(path + "/" +file);
-        if(stats.isFile()) {
-            out.push({"file":file, "mtime": stats.mtime.getTime()});
+    files.forEach(function (file) {
+        var stats = fs.statSync(path + "/" + file);
+        if (stats.isFile()) {
+            out.push({"file": file, "mtime": stats.mtime.getTime()});
         }
     });
-    out.sort(function(a,b) {
+    out.sort(function (a, b) {
         return b.mtime - a.mtime;
     })
-    return (out.length>0) ? out[0].file : "";
+    return (out.length > 0) ? out[0].file : "";
 }
 
 function getChannelDatafromJSON() {
     const fs = require('fs');
-    let stream = fs.createWriteStream("data/dataChannelfromJSON.txt", { flags: 'a' });
+    let stream = fs.createWriteStream("data/dataChannelfromJSON.txt", {flags: 'a'});
     let data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
-    data.forEach(function(d){
+    data.forEach(function (d) {
         stream.write(d.channelData[0] + ",\n");
     });
 }

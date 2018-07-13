@@ -1,13 +1,13 @@
 h1,
-text{
-  font-family: Arial, Helvetica, sans-serif;
+text {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .axis {
     font-size: 10px;
 }
 
-.line{
+.line {
     fill: none;
     stroke: blue;
     shape-rendering: crispEdges;
@@ -17,18 +17,18 @@ text{
     stroke: lightgrey;
     stroke-opacity: 0.7;
     shape-rendering: crispEdges;
-  }
-  
-  .grid path {
-    stroke-width: 0;
-  }
+}
 
-aside{
-  margin-top: 70px;
+.grid path {
+    stroke-width: 0;
+}
+
+aside {
+    margin-top: 70px;
     float: left;
 }
 
-  .numberCircle {
+.numberCircle {
     border-radius: 50%;
     width: 30px;
     height: 30px;
@@ -39,37 +39,44 @@ aside{
     color: #666;
     text-align: center;
     font: 24px Arial, sans-serif;
-  }
+}
 
-  .c1{
+.c1 {
     color: grey;
     border-color: grey;
-  }
-  .c2{
+}
+
+.c2 {
     color: purple;
     border-color: purple;
-   }
-  .c3{
+}
+
+.c3 {
     color: blue;
     border-color: blue;
-   }
-  .c4{
+}
+
+.c4 {
     color: green;
     border-color: green;
-  }
-  .c5{
+}
+
+.c5 {
     color: rgb(250, 196, 61);
     border-color: rgb(250, 196, 61);
-  }
-  .c6{
+}
+
+.c6 {
     color: orange;
     border-color: orange;
-  }
-  .c7{
+}
+
+.c7 {
     color: red;
     border-color: red;
-  }
-  .c8{
+}
+
+.c8 {
     color: rgb(148, 47, 47);
     border-color: rgb(148, 47, 47);
-  }
+}

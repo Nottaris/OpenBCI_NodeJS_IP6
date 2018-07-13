@@ -29,9 +29,7 @@ def main():
     # Get channel data
 
 
-
 def detectMind(data1, data2, data3, cmdRow, cycle, focus, focusCmd):
-
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 0.1
@@ -51,20 +49,19 @@ def detectMind(data1, data2, data3, cmdRow, cycle, focus, focusCmd):
     allDataFilterd = filterData(allData, lowcut, highcut, fs, order)
 
 
-
-
-
 def getChannelData(data, channel):
     channelData = []
     for val in data:
         channelData.append(val["channelData"][channel])
     return channelData
 
+
 def filterData(data, lowcut, highcut, fs, order):
     # filter data with butter bandpass
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
     return filterdData
 
-#start process
+
+# start process
 if __name__ == '__main__':
     main()

@@ -29,7 +29,7 @@ def main():
 
     # load json
     with open('../../test/data/p300_job_06-07-18/data-2018-7-6-14-35-01.json') as f:
-         dataJson = json.load(f)
+        dataJson = json.load(f)
     # Get channel data
     data1 = getChannelData(dataJson, 0)
     data2 = getChannelData(dataJson, 3)
@@ -215,21 +215,23 @@ def compareMaxWithStd(data, cmdCount, foundP300):
 
     return foundP300
 
+
 def plotCycle(data, lowcut, highcut, cycle, color):
     plt.figure(cycle)
     plt.title(' P300 Cmd: %d Cycle (%d - %d Hz)' % (cycle, lowcut, highcut))
-    plt.plot(data*1000000, color=color)
+    plt.plot(data * 1000000, color=color)
     plt.ylabel('uV')
     plt.xlabel('Samples 250/s')
     axes = plt.gca()
 
-def detectP300MultiChannels(data, data3,data5, cmdRowFocus, cmdRowNoFocus):
+
+def detectP300MultiChannels(data, data3, data5, cmdRowFocus, cmdRowNoFocus):
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 0.1
     highcut = 15.0
     order = 4
-    slotSize = 125 #0.5s
+    slotSize = 125  # 0.5s
     cycleCount = 9
 
     allDataFilterd1 = filterData(data, lowcut, highcut, fs, order)
@@ -246,76 +248,77 @@ def detectP300MultiChannels(data, data3,data5, cmdRowFocus, cmdRowNoFocus):
 
     for i in range(cycleCount):
         ## SUBTRACT BASELINE MEAN
-        dataP300_Ch1.append(allDataFilterd1[cmdRowFocus[i]:cmdRowFocus[i]+slotSize])
+        dataP300_Ch1.append(allDataFilterd1[cmdRowFocus[i]:cmdRowFocus[i] + slotSize])
         dataP300_Ch3.append(allDataFilterd3[cmdRowFocus[i]:cmdRowFocus[i] + slotSize])
         dataP300_Ch5.append(allDataFilterd5[cmdRowFocus[i]:cmdRowFocus[i] + slotSize])
-        dataP300_Ch1NoFocus.append(allDataFilterd1[cmdRowNoFocus[i]:cmdRowNoFocus[i]+slotSize])
+        dataP300_Ch1NoFocus.append(allDataFilterd1[cmdRowNoFocus[i]:cmdRowNoFocus[i] + slotSize])
         dataP300_Ch3NoFocus.append(allDataFilterd3[cmdRowNoFocus[i]:cmdRowNoFocus[i] + slotSize])
         dataP300_Ch5NoFocus.append(allDataFilterd5[cmdRowNoFocus[i]:cmdRowNoFocus[i] + slotSize])
 
-    #SUBSTRACT BASELINE
-    dataP300_Ch1 = substractBaselineMean(dataP300_Ch1,cycleCount)
-    dataP300_Ch3 = substractBaselineMean(dataP300_Ch3,cycleCount)
-    dataP300_Ch5 = substractBaselineMean(dataP300_Ch5,cycleCount)
-    dataP300_Ch1NoFocus = substractBaselineMean(dataP300_Ch1NoFocus,cycleCount)
-    dataP300_Ch3NoFocus = substractBaselineMean(dataP300_Ch3NoFocus,cycleCount)
-    dataP300_Ch5NoFocus = substractBaselineMean(dataP300_Ch5NoFocus,cycleCount)
+    # SUBSTRACT BASELINE
+    dataP300_Ch1 = substractBaselineMean(dataP300_Ch1, cycleCount)
+    dataP300_Ch3 = substractBaselineMean(dataP300_Ch3, cycleCount)
+    dataP300_Ch5 = substractBaselineMean(dataP300_Ch5, cycleCount)
+    dataP300_Ch1NoFocus = substractBaselineMean(dataP300_Ch1NoFocus, cycleCount)
+    dataP300_Ch3NoFocus = substractBaselineMean(dataP300_Ch3NoFocus, cycleCount)
+    dataP300_Ch5NoFocus = substractBaselineMean(dataP300_Ch5NoFocus, cycleCount)
 
     # Plot cycle
     dataP300Cycle = np.array(dataP300_Ch1).flatten()
     print(dataP300_Ch1)
     plt.figure(1)
-    for i in range(3,cycleCount):
-        plotChannel(dataP300_Ch1[i]*1000000, lowcut, highcut, "voldown", 1, i+1,'r')
+    for i in range(3, cycleCount):
+        plotChannel(dataP300_Ch1[i] * 1000000, lowcut, highcut, "voldown", 1, i + 1, 'r')
     plt.figure(2)
-    for i in range(3,cycleCount):
-        plotChannel(dataP300_Ch1NoFocus[i]*1000000, lowcut, highcut, "prev", 1, i+1,'b')
+    for i in range(3, cycleCount):
+        plotChannel(dataP300_Ch1NoFocus[i] * 1000000, lowcut, highcut, "prev", 1, i + 1, 'b')
     plt.figure(3)
-    for i in range(3,cycleCount):
-        plotChannel(dataP300_Ch3[i]*1000000, lowcut, highcut, "voldown", 3, i+1,'r')
+    for i in range(3, cycleCount):
+        plotChannel(dataP300_Ch3[i] * 1000000, lowcut, highcut, "voldown", 3, i + 1, 'r')
     plt.figure(4)
-    for i in range(3,cycleCount):
-        plotChannel(dataP300_Ch3NoFocus[i]*1000000, lowcut, highcut, "prev", 1, i+1,'b')
+    for i in range(3, cycleCount):
+        plotChannel(dataP300_Ch3NoFocus[i] * 1000000, lowcut, highcut, "prev", 1, i + 1, 'b')
 
     plt.figure(5)
-    for i in range(3,cycleCount):
-        plotChannel(dataP300_Ch5[i]*1000000, lowcut, highcut, "voldown", 5, i+1,'r')
+    for i in range(3, cycleCount):
+        plotChannel(dataP300_Ch5[i] * 1000000, lowcut, highcut, "voldown", 5, i + 1, 'r')
     plt.figure(6)
-    for i in range(3,cycleCount):
-        plotChannel(dataP300_Ch5NoFocus[i]*1000000, lowcut, highcut, "prev", 1, i+1,'b')
-
+    for i in range(3, cycleCount):
+        plotChannel(dataP300_Ch5NoFocus[i] * 1000000, lowcut, highcut, "prev", 1, i + 1, 'b')
 
     plt.show()
 
-def substractBaselineMean(dataP300,cycleCount):
 
+def substractBaselineMean(dataP300, cycleCount):
     # SUBTRACT BASELINE MEAN ( equally ajust height )
     dataP300Baseline = []
     for i in range(cycleCount):
-         mean = np.mean(dataP300[i])
-         dataP300Baseline.append(dataP300[i]-mean)
+        mean = np.mean(dataP300[i])
+        dataP300Baseline.append(dataP300[i] - mean)
     return dataP300Baseline
 
-def substractBaselineMeanFromEpocheAndEpocheBefore(dataP300,cycleCount):
 
+def substractBaselineMeanFromEpocheAndEpocheBefore(dataP300, cycleCount):
     # SUBTRACT BASELINE MEAN ( equally ajust height )
     dataP300Baseline = []
     dataP300Mean = []
     for i in range(cycleCount):
-         dataP300Mean.append(dataP300[i - 1])
-         dataP300Mean.append(dataP300[i])
-         mean = np.mean(dataP300Mean)
-         dataP300Baseline.append(dataP300[i]-mean)
+        dataP300Mean.append(dataP300[i - 1])
+        dataP300Mean.append(dataP300[i])
+        mean = np.mean(dataP300Mean)
+        dataP300Baseline.append(dataP300[i] - mean)
     return dataP300Baseline
 
-def substractBaselineFromEpocheBefore(dataP300,cycleCount):
+
+def substractBaselineFromEpocheBefore(dataP300, cycleCount):
     dataP300Baseline = []
     ## SUBTRACT BASELINE for each datapoint from period before
     dataP300Baseline = []
     for i in range(cycleCount):
-         mean = np.mean(dataP300[i-1])
-         dataP300Baseline.append(dataP300[i]-mean)
+        mean = np.mean(dataP300[i - 1])
+        dataP300Baseline.append(dataP300[i] - mean)
     return dataP300Baseline
+
 
 def getChannelData(data, channel):
     channelData = []
@@ -329,22 +332,24 @@ def filterData(data, lowcut, highcut, fs, order):
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
     return filterdData
 
-def plotChannel(data, lowcut, highcut, cmd, channel, subplotNr,color):
-    nr = 320+subplotNr-3
+
+def plotChannel(data, lowcut, highcut, cmd, channel, subplotNr, color):
+    nr = 320 + subplotNr - 3
     plt.subplot(nr)
-    plt.title('Ch: %d Cycle: %d  (%s, %d - %d Hz)' % (channel, subplotNr,cmd,lowcut, highcut))
+    plt.title('Ch: %d Cycle: %d  (%s, %d - %d Hz)' % (channel, subplotNr, cmd, lowcut, highcut))
     plt.plot(data, color=color)
     plt.ylabel('uV')
     plt.xlabel('Samples 250/s')
     axes = plt.gca()
     # axes.set_ylim([-20, 20])
 
-def plot(filteredData, cycle,title,cmd,color,row):
+
+def plot(filteredData, cycle, title, cmd, color, row):
     # Plot original and filtered data
-    nr = 320+cmd
+    nr = 320 + cmd
     plt.subplot(nr)
     plt.title(' P300 Cycle: %d Cmd: %s ' % (cycle, row))
-    plt.plot(filteredData*1000000, label=title, color=color)
+    plt.plot(filteredData * 1000000, label=title, color=color)
     axes = plt.gca()
     # axes.set_ylim([-100, 100])
     plt.ylabel('microVolts')
@@ -352,6 +357,7 @@ def plot(filteredData, cycle,title,cmd,color,row):
     # plt.legend(loc='best', bbox_to_anchor=(1, 0.5))
     # plt.grid(True)
 
-#start process
+
+# start process
 if __name__ == '__main__':
     main()

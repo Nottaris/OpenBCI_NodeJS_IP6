@@ -25,7 +25,7 @@ const defaultSettings = {
     baselineLength: 10,    // baseline 3s = 750 samples
     voltsMaxLength: 20000,  //max length of volts array
     cycles: 2,              //nr of cycles that will be analysed
-    commands: ['playpause','next','prev','volup', 'voldown'],
+    commands: ['playpause', 'next', 'prev', 'volup', 'voldown'],
     debug: true             // show console.log
 };
 
@@ -77,19 +77,19 @@ function getCmdTimefromPlayer(data) {
             let startTimestamp = firstTimestampe.sort()[0];
             startIdx = getIdxForTimestamp(timestampesForCycles, startTimestamp);
 
-            if(startIdx>0) {
+            if (startIdx > 0) {
                 //get volts between startIdx and the end of volts array
                 voltsForCycles = voltsForCycles.slice(startIdx);
                 //get timestamp from startIdx until the end of timestamp array (buffer 10 samples)
                 timestampesForCycles = timestampesForCycles.slice(startIdx);
 
-                console.log("startIdx "+startIdx+" "+startTimestamp+" timestamp for cycle: "+timestampesForCycles[0]+" votls.length "+volts.length);
+                console.log("startIdx " + startIdx + " " + startTimestamp + " timestamp for cycle: " + timestampesForCycles[0] + " votls.length " + volts.length);
 
                 //Analayse data for P300
                 detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
 
             } else {
-                console.log("!!! No index for startIdx timestamp was found " + startTimestamp+": timestampArray:"+timestampesForCycles[0]);
+                console.log("!!! No index for startIdx timestamp was found " + startTimestamp + ": timestampArray:" + timestampesForCycles[0]);
             }
 
 
@@ -101,7 +101,7 @@ function getCmdTimefromPlayer(data) {
             //Add current timestamp to cmd array
             cmdTimestamps[currentCommand].push(currentTime);
         }
-         counter += 1;
+        counter += 1;
     } else {
         process.stdout.write("waiting for baseline...\r");
     }

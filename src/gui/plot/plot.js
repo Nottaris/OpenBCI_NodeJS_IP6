@@ -2,7 +2,7 @@
  * plot data
  */
 
-function start(){
+function start() {
 
     var http = require("http"),
         url = require("url"),
@@ -10,13 +10,13 @@ function start(){
         fs = require("fs"),
         port = 8888;
 
-    http.createServer(function(request, response) {
+    http.createServer(function (request, response) {
 
         var uri = url.parse(request.url).pathname
             , filename = path.join(process.cwd(), uri);
 
-        fs.exists(filename, function(exists) {
-            if(!exists) {
+        fs.exists(filename, function (exists) {
+            if (!exists) {
                 response.writeHead(404, {"Content-Type": "text/plain"});
                 response.write("404 Not Found\n");
                 response.end();
@@ -25,8 +25,8 @@ function start(){
 
             if (fs.statSync(filename).isDirectory()) filename += 'src/gui/plot/index.html';
 
-            fs.readFile(filename, "binary", function(err, file) {
-                if(err) {
+            fs.readFile(filename, "binary", function (err, file) {
+                if (err) {
                     response.writeHead(500, {"Content-Type": "text/plain"});
                     response.write(err + "\n");
                     response.end();

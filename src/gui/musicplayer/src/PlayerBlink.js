@@ -1,6 +1,6 @@
 import React from 'react';
 import './Player.css';
-import { subscribeToCmds } from './api';
+import {subscribeToCmds} from './api';
 import TrackInformation from './components/TrackInformation';
 import Timestamps from './components/Timestamps';
 import AudioVolume from './components/AudioVolume';
@@ -30,10 +30,10 @@ export default class PlayerBlink extends React.Component {
             this.execCommand
         );
 
-       // this.generateCommands();
+        // this.generateCommands();
     };
 
-     componentWillUnmount() {
+    componentWillUnmount() {
         if (this.state.playpauseToggle === 'play') {
             let audio = document.getElementById('audio');
             this.pause(audio);
@@ -42,12 +42,12 @@ export default class PlayerBlink extends React.Component {
 
 
     flashCommand = (data) => {
-         this.setState({ currentCmd: data.command });
-         this.blinkCommandButton(data.command);
+        this.setState({currentCmd: data.command});
+        this.blinkCommandButton(data.command);
     }
 
     execCommand = () => {
-        console.log("exec: "+this.state.currentCmd);
+        console.log("exec: " + this.state.currentCmd);
         this.clickCommand(this.state.currentCmd);
         let elem = document.getElementById(this.state.currentCmd).getElementsByClassName('fa')[0];
         elem.style.color = "green";
@@ -55,7 +55,7 @@ export default class PlayerBlink extends React.Component {
 
     //Set the color of the command to white for X seconds
     blinkCommandButton(command) {
-        if(null!==command){
+        if (null !== command) {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
             setTimeout(function () {
@@ -107,11 +107,9 @@ export default class PlayerBlink extends React.Component {
         audio.play();
         audio.volume = this.state.audioVolume;
         let that = this;
-        let duration = that.props.tracks[this.state.trackNr].duration;
         setInterval(function () {
             let currentTime = audio.currentTime;
             // Calculate percent of song
-            let percent = (currentTime / duration) * 100 + '%';
             that.updateTime(currentTime);
         }, 200);
         this.setState({playpauseToggle: 'pause'});

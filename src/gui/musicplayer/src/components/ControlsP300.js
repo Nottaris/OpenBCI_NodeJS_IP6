@@ -36,7 +36,7 @@ export default class Controls extends React.Component {
                     <div onClick={() => this.setCommand('next')} id="next" className="Button">
                         <i className='P300 fa fa-fw fa-forward'></i>
                     </div>
-                    <div  id="noCmd5" className="Button"></div>
+                    <div id="noCmd5" className="Button"></div>
                 </div>
             </div>
             //   <div className="Controls">

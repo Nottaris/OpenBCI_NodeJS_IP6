@@ -37,21 +37,21 @@ def main():
     trainingCmd = str(input.strip())
     # filepath = '/Users/mjair/Documents/GitHub/OpenBCI_NodeJS_IP6/data/mind/training-playpause.json'
     cwd = os.getcwd()
-    filepath = ''.join([cwd,'/data/mind/training-',trainingCmd,'.json'])
+    filepath = ''.join([cwd, '/data/mind/training-', trainingCmd, '.json'])
     path = filepath.replace('"', '')
-    #read file of trainingCmd
+    # read file of trainingCmd
     with open(path) as f:
         data = json.load(f)
     traindata = np.array(data)
-    #process data
+    # process data
     trainmind(traindata)
 
     # send success back to node
     # TODO: uncomment / implement success boolean return
     # print('true')
 
-def trainmind(traindata):
 
+def trainmind(traindata):
     ch1 = traindata[:, 0]
     ch2 = traindata[:, 1]
     ch3 = traindata[:, 2]
@@ -78,6 +78,6 @@ def trainmind(traindata):
     ch8f = filterData(ch8, lowcut, highcut, fs, order)
 
 
-#start process
+# start process
 if __name__ == '__main__':
     main()

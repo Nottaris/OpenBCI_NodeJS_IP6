@@ -6,21 +6,20 @@ const openData = require('./../functions/openData');
 var PythonShell = require('python-shell');
 
 
-
 var data = openData.loadJSON("../../test/data/data-2018-6-18-17-32-24.json");
 
 var pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300.py');
 
 // received a message sent from the Python script (a simple "print" statement)
 pyshell.stdout.on('data', function (value) {
-     console.log(value);
-     //TODO: send filtered value to detectBlink
-     //blink.getBlinks(value);
+    console.log(value);
+    //TODO: send filtered value to detectBlink
+    //blink.getBlinks(value);
 });
 
 // sends channel data to the Python script via stdin
-let jsonData=[];
-data.forEach(function(sample) {
+let jsonData = [];
+data.forEach(function (sample) {
     jsonData.push(sample.channelData);
 })
 
@@ -29,8 +28,8 @@ pyshell.send(JSON.stringify(jsonData));
 
 // end the input stream and allow the process to exit
 pyshell.end(function (err) {
-  if (err) throw err;
-  console.log('finished');
+    if (err) throw err;
+    console.log('finished');
 });
 
 
