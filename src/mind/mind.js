@@ -26,67 +26,65 @@ const defaultSettings = {
 }
 
 let volts = [];
+let trainvolts = [];
 let count = 0;
 let settings = defaultSettings;
 let trainingCmd = "none";
-let trainingOn = false;
+let slotsize = 1750;
 
 server.startSocketServer();
 
 function getTrainingCmd(data) {
     console.log("mind got training cmd from player: " + data.command);
     //reset
-    volts = [];
-    count = 0;
     trainingCmd = data.command;
-    trainingOn = true;
+    //slotsize = data.slotsize;
+    saveTrainingData();
 };
 
 server.subscribeToTrainingCmds(getTrainingCmd);
 
 
 function digestSamples(sample) {
-    //if trainingOn collect samples for trainingtime and save to file
-    if (trainingOn) {
-        // training mode:
-        // fetch samples for slottime from all channels
-        if (count < settings.trainingSampleSize) {
-            //save channel data
-            volts.push({
-                channelData: sample.channelData
-            });
-            count++;
-        } else {
-            // reset
-            trainingOn = false;
-            //save to file
-            let values = volts.map(v => v.channelData);
-            let record = JSON.stringify(values);
-            fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, processTrainingsData(trainingCmd) );
-        }
+    // live detection mode:
+    // fetch samples for slottime from all channels
+    if (count < settings.slots) {
+        //save channel data
+        volts.push({
+            channelData: sample.channelData
+        });
+        trainvolts.push({
+            channelData: sample.channelData
+        });
+        count++;
     } else {
-        // live detection mode:
-        // fetch samples for slottime from all channels
-        if (count < settings.slots) {
-            //save channel data
-            volts.push({
-                channelData: sample.channelData
-            });
-            count++;
-        } else {
-            //send data to evaluate
-            detectMind.detectMind(volts);
-            // reset
-            volts = [];
-            count = 0;
-        }
+        //send data to evaluate
+        detectMind.detectMind(volts);
+        // reset
+        volts = [];
+        count = 0;
     }
+    // downsize trainvolts
+    if (trainvolts.length > 200000) {
+        trainvolts = trainvolts.slice(200000 * 0.5);
+    }
+}
+
+//if trainingOn collect samples for trainingtime and save to file
+function saveTrainingData() {
+    // get latest samples for slottime from all channels
+    sendvolts = trainvolts.slice(-slotsize);
+    console.log(sendvolts.length);
+    //save to file
+    let values = sendvolts.map(v => v.channelData);
+    let record = JSON.stringify(values);
+    fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, processTrainingsData(trainingCmd));
 }
 
 
 //init processing of trainings data in callback of file write
 function processTrainingsData(trainingCmd) {
-    console.log("training file for "+trainingCmd+" written");
+    console.log("training file for " + trainingCmd + " written");
     trainMind.trainMind(trainingCmd);
 }
 
