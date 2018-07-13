@@ -5,6 +5,8 @@ from scipy.sparse.linalg import spsolve
 from scipy.stats import norm
 from tempfile import TemporaryFile
 import json, sys, numpy as np, matplotlib.pyplot as plt
+from pprint import pprint
+import os
 
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
@@ -23,50 +25,58 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     return y
 
 
-def main():
-    # get trainingCmd as from read_in()
-    trainingCmd = sys.stdin.read()
-    print(trainingCmd)
-    #read file of trainingCmd
-
-    #process data
-
-    # send success back to node
-    print('true')
-
-def trainmind():
-
-    # Define sample rate and desired cutoff frequencies (in Hz).
-    fs = 250.0
-    lowcut = 0.1
-    highcut = 15.0
-    order = 4
-    slotSize = 125  # 0.5s
-
-    allData = []
-    for i in range(len(data1)):
-        allData.append(np.mean([data2[i], data3[i]]))
-
-    ## FILTER DATA
-    allDataFilterd1 = filterData(data1, lowcut, highcut, fs, order)
-    allDataFilterd2 = filterData(data2, lowcut, highcut, fs, order)
-    allDataFilterd3 = filterData(data3, lowcut, highcut, fs, order)
-    allDataFilterd = filterData(allData, lowcut, highcut, fs, order)
-
-
-
-
-
-def getChannelData(data, channel):
-    channelData = []
-    for val in data:
-        channelData.append(val["channelData"][channel])
-    return channelData
-
 def filterData(data, lowcut, highcut, fs, order):
     # filter data with butter bandpass
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
     return filterdData
+
+
+def main():
+    # get trainingCmd as from read_in()
+    input = sys.stdin.read()
+    trainingCmd = str(input.strip())
+    # filepath = '/Users/mjair/Documents/GitHub/OpenBCI_NodeJS_IP6/data/mind/training-playpause.json'
+    cwd = os.getcwd()
+    filepath = ''.join([cwd,'/data/mind/training-',trainingCmd,'.json'])
+    path = filepath.replace('"', '')
+    #read file of trainingCmd
+    with open(path) as f:
+        data = json.load(f)
+    traindata = np.array(data)
+    #process data
+    trainmind(traindata)
+
+    # send success back to node
+    # TODO: uncomment / implement success boolean return
+    # print('true')
+
+def trainmind(traindata):
+
+    ch1 = traindata[:, 0]
+    ch2 = traindata[:, 1]
+    ch3 = traindata[:, 2]
+    ch4 = traindata[:, 3]
+    ch5 = traindata[:, 4]
+    ch6 = traindata[:, 5]
+    ch7 = traindata[:, 6]
+    ch8 = traindata[:, 7]
+
+    # Define sample rate and desired cutoff frequencies (in Hz).
+    fs = 250.0
+    lowcut = 0.1
+    highcut = 30.0
+    order = 4
+
+    ## FILTER DATA
+    ch1f = filterData(ch1, lowcut, highcut, fs, order)
+    ch2f = filterData(ch2, lowcut, highcut, fs, order)
+    ch3f = filterData(ch3, lowcut, highcut, fs, order)
+    ch4f = filterData(ch4, lowcut, highcut, fs, order)
+    ch5f = filterData(ch5, lowcut, highcut, fs, order)
+    ch6f = filterData(ch6, lowcut, highcut, fs, order)
+    ch7f = filterData(ch7, lowcut, highcut, fs, order)
+    ch8f = filterData(ch8, lowcut, highcut, fs, order)
+
 
 #start process
 if __name__ == '__main__':

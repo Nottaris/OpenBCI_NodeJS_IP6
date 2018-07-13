@@ -39,7 +39,7 @@ class App extends Component {
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h5 className="App-title">bci Music Player
-                        <select class="selectPlayer" onChange={this.changePlayer} value={this.state.value}>
+                        <select className="selectPlayer" onChange={this.changePlayer} value={this.state.value}>
                             <option value="PlayerBlink">Blink</option>
                             <option value="PlayerP300">P300</option>
                             <option value="PlayerMind">Mind</option>

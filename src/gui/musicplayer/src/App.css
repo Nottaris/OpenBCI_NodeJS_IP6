@@ -40,6 +40,7 @@ body {
 }
 
 .App .selectPlayer {
+    -moz-appearance: none;
     display: inline-block;
     background: transparent;
     color: #FFF;
@@ -56,4 +57,5 @@ body {
     border: 0px;
     outline: 0px;
     width: 100px;
+    font-size: 0.8em;
 }
