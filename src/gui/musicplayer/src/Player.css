@@ -1,4 +1,5 @@
 @import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700';
+
 body {
     align-items: center;
     background: #0c1318;
@@ -15,7 +16,7 @@ body {
     box-shadow: 0 5px 10px -5px #121212;
     height: 100%;
     width: 100%;
-    margin-top:40px;
+    margin-top: 40px;
     background: #000;
 }
 
@@ -25,22 +26,26 @@ body {
     margin: 0 auto;
     position: relative;
 }
+
 .Player .cell {
     display: table-cell;
     width: 33%;
 }
+
 .Player .PlayerCover {
     display: table-cell;
     width: 20%;
     vertical-align: top;
     background: #182530;
 }
+
 .Player .PlayerInformation {
     display: table-cell;
     width: 60%;
     padding: 10px;
     background: #182530;
 }
+
 .Player .PlayerScrubber {
     display: table-cell;
     width: 20%;
@@ -48,6 +53,7 @@ body {
     padding: 10px 0;
     background: #182530;
 }
+
 .Player .Background {
     width: 150%;
     height: 150%;
@@ -59,6 +65,7 @@ body {
     opacity: 0.2;
     filter: blur(10px);
 }
+
 .Player .Title {
     width: 300px;
     margin: 50px auto;
@@ -67,6 +74,7 @@ body {
     letter-spacing: 0.1em;
     position: relative;
 }
+
 .Player .Artwork {
     width: 100px;
     height: 100px;
@@ -83,15 +91,18 @@ body {
     margin-bottom: 10px;
     font-weight: 300;
 }
+
 .Player .TrackInformation .Artist {
     font-size: 16px;
     margin-bottom: 5px;
     font-weight: 500;
 }
+
 .Player .TrackInformation .Album {
     font-size: 12px;
     opacity: 0.5;
 }
+
 .Player .Scrubber {
     position: absolute;
     top: 0;
@@ -103,6 +114,7 @@ body {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+
 .Player .Scrubber .Scrubber-Progress {
     background: -moz-linear-gradient(top, rgba(255, 71, 0, 0) 0%, #ff4700 100%);
     background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 71, 0, 0)), color-stop(100%, #ff4700));
@@ -118,15 +130,18 @@ body {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+
 .Player .Timestamps {
     padding: 10px 0;
     font-size: 16px;
     font-weight: 500;
 }
+
 .Player .AudioProgress {
     padding: 10px 0;
     display: table;
 }
+
 .Player .AudioProgress .Icon {
     display: table-cell;
 }
@@ -135,13 +150,14 @@ body {
     display: table-cell;
     width: 100%;
 }
-.Player .AudioProgressBar .ProgressBackground{
+
+.Player .AudioProgressBar .ProgressBackground {
     margin: 0 11px;
     background-color: #999999;
     vertical-align: middle;
 }
 
-.Player .AudioProgressBar #ProgressVolume{
+.Player .AudioProgressBar #ProgressVolume {
     width: 50%;
     height: 10px;
     background-color: #292dff;
@@ -149,7 +165,7 @@ body {
 
 .Player .Controls {
     display: table;
-    border-spacing:10px;
+    border-spacing: 10px;
     width: 100%;
     align-items: center;
     justify-content: center;
@@ -167,9 +183,10 @@ body {
     min-height: 500px;
 }
 
-.Player .Controls tbody     {
-    min-width:33%;
+.Player .Controls tbody {
+    min-width: 33%;
 }
+
 .Player .Controls .Button {
     display: table-cell;
     align-items: center;
@@ -180,7 +197,8 @@ body {
     cursor: pointer;
     width: 100%;
 }
-.Player .Controls .Button:hover  .fa{
+
+.Player .Controls .Button:hover .fa {
     transform: scale(0.98);
     color: #FFF;
 }
@@ -189,7 +207,8 @@ body {
     color: #FFF;
 
 }
-.Player .Controls .Button  {
+
+.Player .Controls .Button {
     color: #1c456e;
     font-size: 80px;
 }
@@ -198,14 +217,13 @@ body {
     color: #000;
 }
 
-
 /*Custom CSS for P300*/
 .P300 .Controls {
     max-width: 100%;
     min-height: 100%;
 }
 
-.P300 .Controls .row{
+.P300 .Controls .row {
     margin: 0 auto;
     display: table;
     max-width: 1200px;
@@ -224,20 +242,33 @@ body {
     padding-top: 50px;
 }
 
-.Blink .Controls .row{
+.Blink .Controls .row {
     margin: 0 auto;
     display: table;
     max-width: 1200px;
 }
 
-.Blink  .Controls .Button {
+.Blink .Controls .Button {
     padding: 30px 60px;
     width: 33%;
 }
 
 /* Custom CSS for Mind */
-.infotext{
+.infotext {
     font-size: 12px;
     font-family: "Roboto", sans-serif;
     color: lightblue;
+}
+
+#progress {
+    width: 100%;
+    border-radius: 5px;
+    background-color: #1c456e;
+}
+
+#progressBar {
+    width: 0%;
+    height: 5px;
+    border-radius: 5px;
+    background-color: lightblue;
 }

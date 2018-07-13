@@ -2,7 +2,6 @@ import React from 'react';
 import './Player.css';
 import {subscribeToMindCmds, sendTrainingCmd} from './api';
 import TrackInformation from './components/TrackInformation';
-import Scrubber from './components/Scrubber';
 import Timestamps from './components/Timestamps';
 import AudioVolume from './components/AudioVolume';
 import ControlsMind from './components/ControlsMind';
@@ -16,10 +15,18 @@ export default class PlayerBlink extends React.Component {
         this.state = {
             playpauseToggle: 'play',
             trainingToggle: false,
+            trainingTime: 7000,  //14 sec. for dev, 65 sec. aka 65000 for production (a bit longer than record session)
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
-            currentCmd: 'no'
+            currentCmd: 'no',
+            commands: {
+                'volup': 'Concentrate on volume up and think of screaming with your mouth wide open.',
+                'playpause': 'Concentrate on playing and think of leaning or going forward.',
+                'next': 'Concentrate on next and think of stretching your right arm.',
+                'prev': 'Concentrate on prev and think of stretching your left arm.',
+                'voldown': 'Concentrate on volume down and think of lowering you head.'
+            }
         };
 
         this.clickCommand = this.clickCommand.bind(this);
@@ -27,6 +34,9 @@ export default class PlayerBlink extends React.Component {
         this.trainingInit = this.trainingInit.bind(this);
         this.trainingFinished = this.trainingFinished.bind(this);
         this.trainCommand = this.trainCommand.bind(this);
+        this.move = this.move.bind(this);
+        this.toggleButtonsOnTraining = this.toggleButtonsOnTraining.bind(this);
+        this.trainingPause = this.trainingPause.bind(this);
 
         subscribeToMindCmds(
             this.execCommand,
@@ -38,44 +48,86 @@ export default class PlayerBlink extends React.Component {
     trainingInit = () => {
         if (!this.state.trainingToggle) {
             this.setState({trainingToggle: true});
+            this.toggleButtonsOnTraining(true);
             //pause audio
             let audio = document.getElementById('audio');
             this.pause(audio);
             let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
             trainIcon.style.color = "lightblue";
-
-            //TODO: train each command (for now just playpause)
-            this.trainCommand('playpause');
-
-            setTimeout(function () {
-                this.trainingFinished();
-            }.bind(this), 3000);  //10 sec. for testing, 60 sec. aka 60000 for production
-
-        } else {
-            alert("Training already running. Wait until finished and restart if desired.");
+            let infotext = document.getElementById('infotext');
+            infotext.innerText = "Sit relaxed and concentrate on the highlighted command. Training will start soon.";
+            //train each command
+            let i = 0;
+            const commands = Object.keys(this.state.commands);
+            let interval = setInterval(function () {
+                if (i === 5) {
+                    this.trainingFinished();
+                    clearInterval(interval);
+                } else {
+                    this.trainCommand(commands[i]);
+                }
+                i++;
+            }.bind(this), this.state.trainingTime+2000);
         }
     }
 
     //show training finished
     trainingFinished() {
-        this.setState({trainingToggle: false});
-        let cmdIcons = document.getElementsByClassName('fa');
-        for (var i = 0; i < cmdIcons.length; i++) {
-            cmdIcons[i].style.color = "#1c456e";
+        setTimeout(function () {
+            this.setState({trainingToggle: false});
+            let cmdIcons = document.getElementsByClassName('cmd');
+            for (var i = 0; i < cmdIcons.length; i++) {
+                cmdIcons[i].style.color = "#1c456e";
+            }
+            let infotext = document.getElementById('infotext');
+            infotext.innerText = "Training finished. Have fun.";
+            this.toggleButtonsOnTraining(false);
+        }.bind(this), 500);
+    }
+
+    //show training pause
+    trainingPause() {
+        setTimeout(function () {
+            let cmdIcons = document.getElementsByClassName('cmd');
+            for (var i = 0; i < cmdIcons.length; i++) {
+                cmdIcons[i].style.color = "#1c456e";
+            }
+            let infotext = document.getElementById('infotext');
+            infotext.innerText = "...hold on - the next command to focus is coming!";
+        }.bind(this), this.state.trainingTime);
+    }
+
+    toggleButtonsOnTraining(disable) {
+        let buttons = document.getElementsByClassName('Button');
+        if(disable){
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].setAttribute('style', 'pointer-events: none;');
+            }
+        }else{
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].setAttribute('style', 'pointer-events: all;');
+            }
         }
-        let infotext = document.getElementById('infotext');
-        infotext.innerText = "Training finished. Have fun.";
+
     }
 
     //training of command x
     trainCommand(command) {
         //show info and start highligthing command to train
         let infotext = document.getElementById('infotext');
-        //TODO: alter text based on command to train
-        infotext.innerText = "Concentrate on playing and think of leaning or going forward.";
-        let cmdIcon = document.getElementById('playpause').getElementsByClassName('fa')[0];
+        infotext.innerText = this.state.commands[command];
+        //reset all icons to default color
+        let cmdIcons = document.getElementsByClassName('cmd');
+        for (var i = 0; i < cmdIcons.length; i++) {
+            cmdIcons[i].style.color = "#1c456e";
+        }
+        //highlight current training cmd icon
+        let cmdIcon = document.getElementById(command).getElementsByClassName('fa')[0];
         cmdIcon.style.color = "#ffffff";
+        //start progressBar
+        this.move();
         sendTrainingCmd(command);
+        this.trainingPause(); //will start after training time
     }
 
 
@@ -132,11 +184,6 @@ export default class PlayerBlink extends React.Component {
         this.setState({currentTime: timestamp});
     }
 
-    updateScrubber(percent) {
-        // Set scrubber width
-        let innerScrubber = document.querySelector('.Scrubber-Progress');
-        innerScrubber.style['width'] = percent;
-    }
 
     updateVolumeProgressBar(volume) {
         var elem = document.getElementById("ProgressVolume");
@@ -152,7 +199,6 @@ export default class PlayerBlink extends React.Component {
             let currentTime = audio.currentTime;
             // Calculate percent of song
             let percent = (currentTime / duration) * 100 + '%';
-            that.updateScrubber(percent);
             that.updateTime(currentTime);
         }, 100);
         this.setState({playpauseToggle: 'pause'});
@@ -202,6 +248,23 @@ export default class PlayerBlink extends React.Component {
         return a - (n * Math.floor(a / n));
     }
 
+    //progress bar training time
+    move() {
+        var elem = document.getElementById("progressBar");
+        var width = 0;
+        var id = setInterval(frame, this.state.trainingTime / 100); // 1% of training time
+
+        function frame() {
+            if (width >= 100) {
+                elem.style.width = 0 + '%';
+                clearInterval(id);
+            } else {
+                width++;
+                elem.style.width = width + '%';
+            }
+        }
+    }
+
     render() {
         return (
             <div className="Player Blink">
@@ -212,7 +275,6 @@ export default class PlayerBlink extends React.Component {
                     </div>
                     <div className="PlayerInformation">
                         <TrackInformation tracks={this.props.tracks} state={this.state}/>
-                        <Scrubber/>
                     </div>
                     <div className="PlayerScrubber">
                         <Timestamps duration={this.props.tracks[this.state.trackNr].duration}

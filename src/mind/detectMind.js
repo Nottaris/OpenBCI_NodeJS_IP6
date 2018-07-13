@@ -1,3 +1,8 @@
+/**
+ * process eeg volts from mind control to python
+ *
+ */
+
 module.exports = {
     detectMind: detectMind
 };

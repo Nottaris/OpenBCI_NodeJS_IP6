@@ -1,5 +1,5 @@
 /**
- * extract MindCmd from eeg signal
+ * use mind to control musicplayer
  *
  */
 
@@ -7,18 +7,22 @@ module.exports = {
     getMind: function (sample) {
         digestSamples(sample);
     },
+    getSettings,
+    setSettings,
     reset
 }
 
 const server = require('../socket/server');
 const detectMind = require('./detectMind');
+const trainMind = require('./trainMind');
 const fs = require('fs');
 
+//TODO: set correct trainingSampleSize 15000 ; 1500 samples = 6sec. is for dev
 const defaultSettings = {
     sampleRate: 250,        // 250Hz
     slots: 112,             // data points per slot ( 450ms === 112 )
     debug: true,             // show console.log
-    trainingSampleSize: 250      // 1 minute = 1000ms = 250 samples
+    trainingSampleSize: 20      // 1 minute = 60 sec. = 60000ms = 15000 samples
 }
 
 let volts = [];
@@ -57,7 +61,7 @@ function digestSamples(sample) {
             trainingOn = false;
             //save to file
             let record = JSON.stringify(volts);
-            fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, ()=>console.log("training file for "+trainingCmd+" written"));
+            fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, processTrainingsData(trainingCmd) );
         }
     } else {
         // live detection mode:
@@ -78,7 +82,23 @@ function digestSamples(sample) {
     }
 }
 
+
+//init processing of trainings data in callback of file write
+function processTrainingsData(trainingCmd) {
+    console.log("training file for "+trainingCmd+" written");
+    trainMind.trainMind(trainingCmd);
+}
+
 //used by testing
+
+function getSettings() {
+    return settings;
+}
+
+function setSettings(newSettings) {
+    settings = newSettings;
+}
+
 function reset() {
     settings = defaultSettings;
     count = 0;
