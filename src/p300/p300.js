@@ -38,7 +38,7 @@ let currentCommand; //cmd player is showing
 let currentTime; //time player showed cmd
 let counter = 0;
 let startIdx = 0;
-let once = true;
+
 // timpestamp of each cmd
 let cmdTimestamps = {
     playpause: [],
@@ -54,8 +54,8 @@ server.startSocketServer();
 function getCmdTimefromPlayer(data) {
     currentCommand = data.command;
     currentTime = data.time.toString().slice(0, -1);
-    //ToDo: Remove once, only for testing
-    if (once && settings.baselineLength < volts.length && typeof currentCommand !== 'undefined') {
+
+    if (settings.baselineLength < volts.length && typeof currentCommand !== 'undefined') {
 
         if (!enoughDataForP300(cmdTimestamps, settings.commands, settings.cycles)) {
             //Add current timestamp to cmd array
@@ -87,8 +87,6 @@ function getCmdTimefromPlayer(data) {
 
                 //Analayse data for P300
                 detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
-                once = false
-
 
             } else {
                 console.log("!!! No index for startIdx timestamp was found " + startTimestamp+": timestampArray:"+timestampesForCycles[0]);
@@ -131,12 +129,7 @@ function digestSamples(sample) {
 function getIdxForTimestamp(timestamps, currentTime) {
     return timestamps.findIndex(timestamp => timestamp === currentTime);
 }
-// // find timestamp idx in timestamp array
-// function getIdxForTimestamp(times, time) {
-//     let timesReverse = times;
-//     timesReverse.reverse();
-//     return timesReverse.length - timesReverse.findIndex(findIndexForTimestamp(time)) - 1;
-// }
+
 
 //find timestamp in sample that is equal to time from command
 function findIndexForTimestamp(time) {
@@ -147,7 +140,7 @@ function findIndexForTimestamp(time) {
 
 // check if for each cycles data are in every command
 function enoughDataForP300(cmdTimestamps, commands, compareCycles) {
-    return commands.filter(cmd => cmdTimestamps[cmd].length >= compareCycles).length === commands.length;
+    return commands.filter(cmd => cmdTimestamps[cmd].length > compareCycles).length === commands.length;
 }
 
 function getSettings() {

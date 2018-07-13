@@ -21,7 +21,7 @@ function detectP300(volts, timestamps, cmdTimestamps) {
         init = false;
     }
 
-    console.log("cmd 0: " + timestamps.length + " volts length: " + volts.length + " " + cmdTimestamps[0]);
+    // console.log("cmd 0: " + timestamps.length + " volts length: " + volts.length + " " + cmdTimestamps[0]);
 
     //get get index for each timestamp
     cmdIdx = [[], [], [], [], []];
@@ -36,8 +36,8 @@ function detectP300(volts, timestamps, cmdTimestamps) {
 
         });
     });
-    console.log(cmdTimestamps);
-    console.log(cmdIdx);
+    // console.log(cmdTimestamps);
+    // console.log(cmdIdx);
     const options = {mode: 'text'};
     let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300v4.py', options);
     let data = JSON.stringify({volts: volts, cmdIdx: cmdIdx});
@@ -54,18 +54,18 @@ function detectP300(volts, timestamps, cmdTimestamps) {
     pyshell.stdout.on('data', function (data) {
         // Remove all new lines
         console.log(data);
-        // docommand = data.replace(/\r?\n|\r/g, "");
+        docommand = data.replace(/\r?\n|\r/g, "");
     });
 
     // end the input stream and allow the process to exit
     pyshell.end(function (err) {
         if (err) throw err;
         //process python result, send cmd if detected
-        // if (docommand !== "nop") {
-        //     console.log("doCmd was not 'nop':" + docommand);
-        //     //send doCommand to execute
-        //     // server.doCmd(docommand);
-        // }
+        if (docommand !== "nop") {
+            console.log("doCmd was: " + settings.commands[docommand]);
+            //send doCommand to execute
+            // server.doCmd(docommand);
+        }
     });
 
     //reset

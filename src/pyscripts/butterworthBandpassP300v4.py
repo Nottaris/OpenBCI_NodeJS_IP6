@@ -1,7 +1,7 @@
 from typing import List, Any
 
 from scipy.signal import butter, lfilter
-import json, sys, numpy as np
+import json, sys, numpy as np, matplotlib.pyplot as plt
 
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
@@ -31,12 +31,10 @@ def main():
     volts = datainput['volts']
 
     # create a numpy array
-    # data = np.array(volts)
-    print(cmdIdx)
-    print(volts)
+    data = np.array(volts)
     #
     # detect P300
-    cmd = detectP300(volts, cmdIdx)
+    cmd = detectP300(data, cmdIdx)
 
     # send docommand back to node
     print(cmd)
@@ -54,53 +52,73 @@ def detectP300(data, cmdIdx):
     slotSize = 120
     cmdCount = len(cmdIdx)
     cycles = len(cmdIdx[0])
-    print("cmdCount "+str(cmdCount))
-    print("cycles "+str(cycles))
-    print(cmdIdx[0][0])
-     ##  collect volt for each cmd
+
+
+    # ## FILTER DATA
+    # double data before filter and cut of first half afterwards
+    doubledata = np.concatenate([data, data])
+    doubledataFilterd = filterData(doubledata, lowcut, highcut, fs, order)
+    dataBP = doubledataFilterd[int(len(doubledataFilterd)/2):]
+
+    # ## SPLIT VOLTS DATA IN COMMAND EPOCHES
+     ##  collect volt for each cmd in dataP300[CMD][CYCLE][VOLTS]
     dataP300 =[[],[],[],[],[]]
     for i in range(cmdCount):
         for j in range(cycles):
-            # print(data[cmdIdx[i][j]:cmdIdx[i][j]+120])
-            dataP300[i].push(data[cmdIdx[i][j]:(cmdIdx[i][j]+120)])
-            print(str(i)+" j:"+str(cmdIdx[i][j])+" "+str(print(dataP300[i][1:10])))
+            dataP300[i].append(dataBP[cmdIdx[i][j]:(cmdIdx[i][j]+slotSize)])
 
-    # ## FILTER DATA
-    # # double data before filter and cut of first half afterwards
-    # doubledata = np.concatenate([data, data])
-    # doubledataFilterd = filterData(doubledata, lowcut, highcut, fs, order)
-    # dataBP = doubledataFilterd[int(len(doubledataFilterd)/2):]
-    #
-    # ## SPLIT DATA IN COMMAND EPOCHES
-    # dataP300 = np.array_split(dataBP, cmdCount)
-    #
-    # ## SPLIT DATA IN CYCLES
-    # #for i in range(cmdCount):
-    # #    dataP300[i] = np.array_split(dataP300[i], cycleCount)
-    #
-    # # AVERAGE 5 CYCLES   or Sum ???
+    # AVERAGE CYCLES
+    # calculate avg data for each cmd
+    dataP300Avg =[[],[],[],[],[]]
+    for i in range(cmdCount):
+        dataP300Avg[i] =  np.average(dataP300[i], axis=0)
+
+        for j in range(cycles):
+            plt.figure(10+i)
+            plt.title(' P300 Cycle: %d Cmd: %s ' % (j, i))
+            plt.plot(dataP300[i][j] * 1000000, color='b')
+
+        plt.figure(10 + i)
+        plt.plot(dataP300Avg[i] * 1000000, color='r')
+    # plt.show()
+
+    # SUM CYCLES
+    ## calc sum for each cmd over cycles
+    # dataP300Sum =[[],[],[],[],[]]
     # for i in range(cmdCount):
-    #     dataP300[i] = np.average(dataP300[i], axis=0)
-    #     #dataP300[i] = np.sum(dataP300[i], axis=0)
-    #
-    # # ONLY ANALYSE DATA BETWEEN 320ms(70) and 450ms(111) AFTER CMD
-    # for i in range(cmdCount):
-    #     dataP300[i] = dataP300[i][70:111]
-    #
-    # ## CALCULATE AMPLITUDE
-    # diff = []
-    # for i in range(cmdCount):
-    #     diff.append(np.max(dataP300[i]) - np.min(dataP300[i]))
-    # # get index of max diff
-    # maxdiff = np.max(diff)
-    # if (not np.isnan(float(maxdiff))):
-    #     idx = diff.index(maxdiff)
-    #     max = np.max(dataP300[idx])
-    #     mean = np.mean(dataP300[idx])
-    #     if (max>mean*threshold):
-    #         return commands[idx]
+    #     dataP300Sum[i] =  dataP300[i][0]
+    #     for j in range(cycles):
+    #         plt.figure(10+i)
+    #         plt.title(' P300 Cycle: %d Cmd: %s ' % (j, i))
+    #         plt.plot(dataP300[i][j] * 1000000, color='b')
+    #         dataP300Sum[i] = np.sum( np.array([dataP300Sum[i], dataP300[i][j]]), axis=0 )
+    #     plt.figure(10 + i)
+    #     plt.plot(dataP300Sum[i] * 1000000, color='r')
+    # plt.show()
+
+    return getCmdMaxAmplitude(dataP300Avg,cmdCount,threshold)
+
+
+
+
+def getCmdMaxAmplitude(dataP300, cmdCount,threshold):
+    # ONLY ANALYSE DATA BETWEEN 200ms(50) and 400ms(100) AFTER CMD
+    for i in range(cmdCount):
+        dataP300[i] = dataP300[i][50:100]
+
+    ## CALCULATE AMPLITUDE
+    diff = []
+    for i in range(cmdCount):
+        diff.append(np.max(dataP300[i]) - np.min(dataP300[i]))
+    # get index of max diff
+    maxdiff = np.max(diff)
+    if (not np.isnan(float(maxdiff))):
+        idx = diff.index(maxdiff)
+        max = np.max(dataP300[idx])
+        mean = np.mean(dataP300[idx])
+        if (max>mean*threshold):
+            return idx
     return "nop"
-
 
 def filterData(data, lowcut, highcut, fs, order):
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
