@@ -56,18 +56,26 @@ export default class PlayerBlink extends React.Component {
             trainIcon.style.color = "lightblue";
             let infotext = document.getElementById('infotext');
             infotext.innerText = "Sit relaxed and concentrate on the highlighted command. Training will start soon.";
+
+            //for testing only one cmd:
+            this.trainCommand('playpause');
+            setTimeout(function () {
+                 this.trainingFinished();
+            }.bind(this), 7000);
+
+
             //train each command
-            let i = 0;
-            const commands = Object.keys(this.state.commands);
-            let interval = setInterval(function () {
-                if (i === 5) {
-                    this.trainingFinished();
-                    clearInterval(interval);
-                } else {
-                    this.trainCommand(commands[i]);
-                }
-                i++;
-            }.bind(this), this.state.trainingTime+2000);
+            //let i = 0;
+            //const commands = Object.keys(this.state.commands);
+            //let interval = setInterval(function () {
+            //    if (i === 5) {
+            //        this.trainingFinished();
+            //        clearInterval(interval);
+            //    } else {
+            //        this.trainCommand(commands[i]);
+            //    }
+            //    i++;
+            //}.bind(this), this.state.trainingTime+2000);
         }
     }
 
@@ -93,7 +101,7 @@ export default class PlayerBlink extends React.Component {
                 cmdIcons[i].style.color = "#1c456e";
             }
             let infotext = document.getElementById('infotext');
-            infotext.innerText = "...hold on - the next command to focus is coming!";
+            infotext.innerText = "...hold on - the next command is coming!";
         }.bind(this), this.state.trainingTime);
     }
 
@@ -136,6 +144,9 @@ export default class PlayerBlink extends React.Component {
         this.clickCommand(this.state.currentCmd);
         let elem = document.getElementById(this.state.currentCmd).getElementsByClassName('fa')[0];
         elem.style.color = "green";
+         setTimeout(function () {
+                elem.style.color = "#1c456e";
+            }, 250);
     }
 
     //Set the color of the command to white for X seconds
