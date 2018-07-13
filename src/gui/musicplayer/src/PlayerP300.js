@@ -41,11 +41,13 @@ export default class P300 extends React.Component {
         this.generateCommands();
     }
 
-
+    componentWillUnmount() {
+        clearInterval(this. blinkInterval);
+    }
     generateCommands() {
         var commandIdx = 0;
 
-        setInterval(function () {
+        this.blinkInterval = setInterval(function () {
             this.flashCommandButton(this.state.commands[commandIdx]);
             if (commandIdx < this.state.commands.length - 1) {
                 commandIdx++;

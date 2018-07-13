@@ -12,18 +12,43 @@ import './App.css';
 class App extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            selectedPlayer: ["PlayerBlink"],
+            playerTypes:  ["PlayerP300", "PlayerMind","PlayerBlink"]
+        }
+        this.showPlayer = this.getPlayerCompoonent(this.state.selectedPlayer)
+        this.changePlayer = this.changePlayer.bind(this);
     }
+    changePlayer(event) {
+         this.setState({selectedPlayer: event.target.value});
+         this.showPlayer = this.getPlayerCompoonent(event.target.value)
+     }
+     getPlayerCompoonent(player) {
+        switch (player) {
+            case "PlayerP300": return <PlayerP300 tracks={this.props.tracks}/>;
+            case "PlayerMind": return  <PlayerMind tracks={this.props.tracks}/>;
+            default: return <PlayerBlink tracks={this.props.tracks}/>;
+          }
+     }
 
     render() {
+
+
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
-                    <h5 className="App-title">bci Music Player</h5>
+                    <h5 className="App-title">bci Music Player
+                        <select class="selectPlayer" onChange={this.changePlayer} value={this.state.value}>
+                            <option value="PlayerBlink">Blink</option>
+                            <option value="PlayerP300">P300</option>
+                            <option value="PlayerMind">Mind</option>
+                        </select>
+                    </h5>
                 </header>
-                {/*<PlayerBlink tracks={this.props.tracks}/>*/}
-                {/*<PlayerP300 tracks={this.props.tracks}/>*/}
-                <PlayerMind tracks={this.props.tracks}/>
+
+
+                  {this.showPlayer}
             </div>
         );
     }
