@@ -5,6 +5,8 @@ from scipy.sparse.linalg import spsolve
 from scipy.stats import norm
 from tempfile import TemporaryFile
 import json, sys, numpy as np, matplotlib.pyplot as plt
+from pprint import pprint
+import os
 
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
@@ -25,9 +27,17 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
 
 def main():
     # get trainingCmd as from read_in()
-    trainingCmd = sys.stdin.read()
-    print(trainingCmd)
+    input = sys.stdin.read()
+    trainingCmd = str(input.strip())
+    # filepath = '/Users/mjair/Documents/GitHub/OpenBCI_NodeJS_IP6/data/mind/training-playpause.json'
+    cwd = os.getcwd()
+    filepath = ''.join([cwd,'/data/mind/training-',trainingCmd,'.json'])
+    path = filepath.replace('"', '')
     #read file of trainingCmd
+    with open(path) as f:
+        data = json.load(f)
+    #pprint(data)
+    traindata = np.array(data)
 
     #process data
 
