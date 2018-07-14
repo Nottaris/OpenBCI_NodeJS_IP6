@@ -28,75 +28,102 @@ def main():
     channel = 0  # channel 0-7
 
     # load json
-    with open('../../test/data/p300_job_06-07-18/data-2018-7-6-14-35-01.json') as f:
+    with open('../../test/data/p300_exp_3/data-2018-7-6-14-32-40.json') as f:
         dataJson = json.load(f)
     # Get channel data
     data1 = getChannelData(dataJson, 0)
     data2 = getChannelData(dataJson, 3)
     data3 = getChannelData(dataJson, 5)
-    # #VolDown
-    # cmdRowFocus=[4561,5124,5687,6250,6813,7376,7937,8502,9065]
-    # #prev
-    # cmdRowNoFocus=[4786,5349,5912,6475,7038,7602,8165,8728,9291]
-    # detectP300MultiChannels(data, data3,data5, cmdRowFocus, cmdRowNoFocus)
-
-    # commands data/data-2018-7-6-14-35-01.json
+    # commands data/data-2018-7-6-14-32-40.json
     # command order: next,voldown,playpause,prev,volup
-    # 1 cycles focus onvoldown
+    # 1 cycles focus onplaypause
     cycle = 1
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [4459, 4561, 4674, 4786, 4899]
-    # timestamps: [1530880525942,1530880526352,1530880526806,1530880527253,1530880527703,1530880528152]
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [5470, 5540, 5652, 5765, 5878, 5991]
+    # timestamps: [1530880386457,1530880386734,1530880387184,1530880387633,1530880388083,1530880388533]
     # commands: ["next","voldown","playpause","prev","volup"]
     detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
-    # 2 cycles focus onvoldown
+    # 2 cycles focus onplaypause
     cycle = 2
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [5012, 5124, 5237, 5349, 5462]
-    # timestamps: [1530880528602,1530880529052,1530880529503,1530880529954,1530880530403,1530880530854]
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [6103, 6216, 6328, 6441, 6554, 6666]
+    # timestamps: [1530880388983,1530880389434,1530880389883,1530880390334,1530880390783,1530880391233]
     # commands: ["next","voldown","playpause","prev","volup"]
     detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
-    # 3 cycles focus onvoldown
+    # 3 cycles focus onplaypause
     cycle = 3
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [5575, 5687, 5800, 5912, 6025]
-    # timestamps: [1530880531303,1530880531752,1530880532202,1530880532653,1530880533103,1530880533553]
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [6779, 6891, 7004, 7117, 7229, 7342]
+    # timestamps: [1530880391683,1530880392134,1530880392584,1530880393033,1530880393482,1530880393934]
     # commands: ["next","voldown","playpause","prev","volup"]
     detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
-    # 4 cycles focus onvoldown
+    # 4 cycles focus onplaypause
     cycle = 4
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [6138, 6250, 6363, 6475, 6588]
-    # timestamps: [1530880534004,1530880534454,1530880534904,1530880535352,1530880535811,1530880536252]
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [7454, 7567, 7680, 7792, 7905, 8017]
+    # timestamps: [1530880394385,1530880394834,1530880395284,1530880395733,1530880396183,1530880396633]
     # commands: ["next","voldown","playpause","prev","volup"]
     detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
-    # 5 cycles focus onvoldown
+    # 5 cycles focus onplaypause
     cycle = 5
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [6701, 6813, 6928, 7038, 7151]
-    # timestamps: [1530880536703,1530880537153,1530880537603,1530880538053,1530880538504,1530880538954]
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [8130, 8243, 8355, 8468, 8581, 8693]
+    # timestamps: [1530880397082,1530880397533,1530880397982,1530880398434,1530880398883,1530880399334]
     # commands: ["next","voldown","playpause","prev","volup"]
     detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
-    # 6 cycles focus onvoldown
+    # 6 cycles focus onplaypause
     cycle = 6
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [7264, 7376, 7489, 7602, 7714]
-    # timestamps: [1530880539403,1530880539853,1530880540302,1530880540753,1530880541203,1530880541653]
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [8806, 8918, 9031, 9144, 9256, 9369]
+    # timestamps: [1530880399782,1530880400233,1530880400682,1530880401133,1530880401584,1530880402033]
     # commands: ["next","voldown","playpause","prev","volup"]
     detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
-    # 7 cycles focus onvoldown
+    # 7 cycles focus onplaypause
     cycle = 7
-    focus = 1
-    focusCmd = "voldown"
-    cmdRow = [7827, 7937, 8052, 8165, 8277]
-    # timestamps: [1530880542103,1530880542554,1530880543004,1530880543452,1530880543904,1530880544352]
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [9481, 9594, 9707, 9819, 9932, 10044]
+    # timestamps: [1530880402483,1530880402932,1530880403385,1530880403834,1530880404283,1530880404734]
     # commands: ["next","voldown","playpause","prev","volup"]
+    detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
+    # 8 cycles focus onplaypause
+    cycle = 8
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [10157, 10270, 10382, 10495, 10608, 10720]
+    # timestamps: [1530880405183,1530880405634,1530880406083,1530880406534,1530880406984,1530880407432]
+    # commands: ["next","voldown","playpause","prev","volup"]
+    detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
+    # 9 cycles focus onplaypause
+    cycle = 9
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [10833, 10944, 11058, 11171, 11283, 11396]
+    # timestamps: [1530880407884,1530880408333,1530880408783,1530880409234,1530880409684,1530880410133]
+    # commands: ["next","voldown","playpause","prev","volup"]
+    detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
+    # 10 cycles focus onplaypause
+    cycle = 10
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [11508, 11621, 11734, 11846, 11959, 12071]
+    # timestamps: [1530880410584,1530880411032,1530880411484,1530880411934,1530880412383,1530880412833]
+    # commands: ["next","voldown","playpause","prev","volup"]
+    detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
+    # 11 cycles focus onplaypause
+    cycle = 11
+    focus = 2
+    focusCmd = "playpause"
+    cmdRow = [12184, 12297, 12409, 12522, 12634, 12747]
+    # timestamps: [1530880413284,1530880413732,1530880414183,1530880414633,1530880415083,1530880415534]
+    # commands: ["next","voldown","playpause","prev","volup"]
+    detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd)
 
 
 def detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd):
@@ -110,6 +137,7 @@ def detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd):
     slotSize = 125  # 0.5s
     cmdCount = 5
     allData = []
+    commands = ["next", "voldown", "playpause", "prev", "volup"]
     for i in range(len(data1)):
         allData.append(np.mean([data2[i], data3[i]]))
 
@@ -145,43 +173,43 @@ def detectP300(data1, data2, data3, cmdRow, cycle, focus, focusCmd):
         dataP300Baseline_3.append(dataP300_3[i] - mean_3)
         mean_4 = np.mean(dataP300all[i])
         dataP300Baseline_4.append(dataP300all[i] - mean_4)
-    # Overwrite dataP300 array
 
+    # Overwrite dataP300 array
     dataP300 = dataP300Baseline
     dataP300_2 = dataP300Baseline_2
     dataP300_3 = dataP300Baseline_3
     dataP300all = dataP300Baseline_4
 
-    ## CALCULATE AMPLITUDE # ONLY ANALYSE DATA BETWEEN 200ms(50) and 400ms(100) AFTER CMD
-    # for i in range(cmdCount):
-    #     if (foundP300[i] > 0 and abs(foundP300[i] - foundP300_2[i]) < 2):
-    #         print("!! Found amplitude in both channels for cmd: " + str(i) + " diff:" + str(
-    #             foundP300[i] - foundP300_2[i]))
-
-    diffMaxMin = getMaxMinDiff(dataP300, cmdCount)
-    idx = diffMaxMin.index(np.max(diffMaxMin))
-    print("Dataset 1: " + str(idx) + " cmd with biggest diff min/max")
-    diffMaxMin = getMaxMinDiff(dataP300_2, cmdCount)
-    idx2 = diffMaxMin.index(np.max(diffMaxMin))
-    print("Dataset 2: " + str(idx2) + " cmd with biggest diff min/max")
+    # diffMaxMin = getMaxMinDiff(dataP300, cmdCount)
+    # idx = diffMaxMin.index(np.max(diffMaxMin))
+    # print("Dataset 1: " + str(idx) + " cmd with biggest diff min/max")
+    # diffMaxMin = getMaxMinDiff(dataP300_2, cmdCount)
+    # idx2 = diffMaxMin.index(np.max(diffMaxMin))
+    # print("Dataset 2: " + str(idx2) + " cmd with biggest diff min/max")
 
     plt.figure(1)
     dataP300Cycle = np.array(dataP300).flatten()
-    plotCycle(dataP300Cycle, lowcut, highcut, cycle, 'y')
+    plotCycle(dataP300Cycle, lowcut, highcut, cycle, 'b',"Oz")
     dataP300Cycle_2 = np.array(dataP300_2).flatten()
-    plotCycle(dataP300Cycle_2, lowcut, highcut, cycle, 'g')
+    plotCycle(dataP300Cycle_2, lowcut, highcut, cycle, 'b',"O1")
     plt.figure(2)
     dataP300Cycle_3 = np.array(dataP300_3).flatten()
-    plotCycle(dataP300Cycle_3, lowcut, highcut, cycle, 'b')
+    plotCycle(dataP300Cycle_3, lowcut, highcut, cycle, 'b',"O2")
     dataP300Cycle_all = np.array(dataP300all).flatten()
-    plotCycle(dataP300Cycle_all, lowcut, highcut, cycle, 'r')
+    plotCycle(dataP300Cycle_all, lowcut, highcut, cycle, 'r',"Avg")
     # Plot commands
     plt.figure(3)
     for i in range(cmdCount):
         if (i == focus):
-            plot(dataP300all[i], cycle, focusCmd, i + 1, 'r', cmdRow[i])
+            plotChannels(dataP300all[i], cycle, focusCmd, 'r', commands[i], "avg",i)
+            plotChannels(dataP300[i], cycle, focusCmd, 'b', commands[i], "Oz",i)
+            plotChannels(dataP300_2[i], cycle, focusCmd, 'b', commands[i], "O1",i )
+            plotChannels(dataP300_3[i], cycle, focusCmd, 'b', commands[i], "O2",i)
         else:
-            plot(dataP300all[i], cycle, ("cmd %s" % (i + 1)), i + 1, 'b', cmdRow[i])
+            plotChannels(dataP300all[i], cycle, focusCmd, 'r', commands[i], "avg",i)
+            plotChannels(dataP300[i], cycle, focusCmd, 'b', commands[i], "Oz",i)
+            plotChannels(dataP300_2[i], cycle, focusCmd, 'b', commands[i], "O1",i )
+            plotChannels(dataP300_3[i], cycle, focusCmd, 'b', commands[i], "O2",i)
 
     # plt.figure(4)
     # for i in range(cmdCount):
@@ -215,11 +243,24 @@ def compareMaxWithStd(data, cmdCount, foundP300):
 
     return foundP300
 
+def plotChannels(data, cycle, focusCmd, color, cmd, channel, nr):
+    plt.figure(nr+1)
+    # Plot original and filtered data
+    plt.title(' Compare Channels Cycle: %d Cmd: %s ' % (cycle, cmd))
+    plt.plot(data * 1000000, label=channel, color=color)
+    axes = plt.gca()
+    # axes.set_ylim([-100, 100])
+    plt.ylabel('microVolts')
+    plt.xlabel('Samples 250/s')
+    plt.legend(loc='best', bbox_to_anchor=(1, 0.5))
+    # plt.grid(True)
 
-def plotCycle(data, lowcut, highcut, cycle, color):
+
+def plotCycle(data, lowcut, highcut, cycle, color, channel):
     plt.figure(cycle)
-    plt.title(' P300 Cmd: %d Cycle (%d - %d Hz)' % (cycle, lowcut, highcut))
-    plt.plot(data * 1000000, color=color)
+    plt.title('Compare Channels Cycle: %d (%d - %d Hz)' % (cycle, lowcut, highcut))
+    plt.plot(data * 1000000, label=channel, color=color)
+    plt.legend(loc='best', bbox_to_anchor=(1, 0.5))
     plt.ylabel('uV')
     plt.xlabel('Samples 250/s')
     axes = plt.gca()
