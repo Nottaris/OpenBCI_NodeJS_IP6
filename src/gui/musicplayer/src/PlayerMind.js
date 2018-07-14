@@ -14,18 +14,17 @@ export default class PlayerBlink extends React.Component {
         console.log(props);
         this.state = {
             playpauseToggle: 'play',
-            trainingToggle: false,
             trainingTime: 7000,  //7 sec. for dev, 65 sec. aka 65000 for production (a bit longer than record session)
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
             currentCmd: 'no',
             commands: {
-                'volup': 'Concentrate on volume up and think of screaming with your mouth wide open.',
-                'playpause': 'Concentrate on playing and think of leaning or going forward.',
-                'next': 'Concentrate on next and think of stretching your right arm.',
-                'prev': 'Concentrate on prev and think of stretching your left arm.',
-                'voldown': 'Concentrate on volume down and think of lowering you head.'
+                'volup': 'Focus on volume up and think of screaming with your mouth wide open.',
+                'playpause': 'Focus on playing and think of leaning or going forward.',
+                'next': 'Focus on next and think of stretching your right arm.',
+                'prev': 'Focus on prev and think of stretching your left arm.',
+                'voldown': 'Focus on volume down and think of lowering you head.'
             }
         };
 
@@ -34,6 +33,7 @@ export default class PlayerBlink extends React.Component {
         this.trainingInit = this.trainingInit.bind(this);
         this.trainingFinished = this.trainingFinished.bind(this);
         this.trainCommand = this.trainCommand.bind(this);
+        this.showtrainCommand = this.showtrainCommand.bind(this);
         this.move = this.move.bind(this);
         this.toggleButtonsOnTraining = this.toggleButtonsOnTraining.bind(this);
         this.trainingPause = this.trainingPause.bind(this);
@@ -44,7 +44,7 @@ export default class PlayerBlink extends React.Component {
 
     };
 
-     componentWillUnmount() {
+    componentWillUnmount() {
         if (this.state.playpauseToggle === 'play') {
             let audio = document.getElementById('audio');
             this.pause(audio);
@@ -53,75 +53,66 @@ export default class PlayerBlink extends React.Component {
 
     //init training session
     trainingInit = () => {
-        if (!this.state.trainingToggle) {
-            this.setState({trainingToggle: true});
-            this.toggleButtonsOnTraining(true);
-            //pause audio
-            let audio = document.getElementById('audio');
-            this.pause(audio);
-            let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
-            trainIcon.style.color = "lightblue";
-            let infotext = document.getElementById('infotext');
-            infotext.innerText = "Sit relaxed and concentrate on the highlighted command. Training will start soon.";
+        this.toggleButtonsOnTraining(true);
+        //pause audio
+        let audio = document.getElementById('audio');
+        this.pause(audio);
+        let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
+        trainIcon.style.color = "lightblue";
+        let infotext = document.getElementById('infotext');
+        infotext.innerText = "Training will start soon. Relax and focus on the highlighted command.";
 
-
-
-
-            //train each command
-            let i = 4;
-            const commands = Object.keys(this.state.commands);
-            let interval = setInterval(function () {
-                if (i === 5) {
-                    this.trainingFinished();
-                    clearInterval(interval);
-                } else {
-                    this.trainCommand(commands[i]);
-                }
-                i++;
-            }.bind(this), this.state.trainingTime+2000);
-        }
+        //train each command
+        let i = 3;  //TODO: set i = 0 to loop all commands
+        const commands = Object.keys(this.state.commands);
+        let interval = setInterval(function () {
+            if (i === 5) {
+                this.trainingFinished();
+                clearInterval(interval);
+            } else {
+                this.showtrainCommand(commands[i]);
+            }
+            i++;
+        }.bind(this), this.state.trainingTime + 2000); //waits 2000ms longer than actual training time
     }
+
 
     //show training finished
     trainingFinished() {
-        setTimeout(function () {
-            this.setState({trainingToggle: false});
-            let cmdIcons = document.getElementsByClassName('cmd');
-            for (var i = 0; i < cmdIcons.length; i++) {
-                cmdIcons[i].style.color = "#1c456e";
-            }
-            let infotext = document.getElementById('infotext');
-            infotext.innerText = "Training finished. Have fun.";
-            this.toggleButtonsOnTraining(false);
-        }.bind(this), 500);
+        let cmdIcons = document.getElementsByClassName('cmd');
+        for (var i = 0; i < cmdIcons.length; i++) {
+            cmdIcons[i].style.color = "#1c456e";
+        }
+        let infotext = document.getElementById('infotext');
+        infotext.innerText = "Training finished. Have fun.";
+        this.toggleButtonsOnTraining(false);
     }
 
     //show training pause
     trainingPause() {
-            let cmdIcons = document.getElementsByClassName('cmd');
-            for (var i = 0; i < cmdIcons.length; i++) {
-                cmdIcons[i].style.color = "#1c456e";
-            }
-            let infotext = document.getElementById('infotext');
-            infotext.innerText = "...hold on - the next command is coming!";
+        let cmdIcons = document.getElementsByClassName('cmd');
+        for (var i = 0; i < cmdIcons.length; i++) {
+            cmdIcons[i].style.color = "#1c456e";
+        }
+        let infotext = document.getElementById('infotext');
+        infotext.innerText = "...hold on - the next command is coming!";
     }
 
     toggleButtonsOnTraining(disable) {
         let buttons = document.getElementsByClassName('Button');
-        if(disable){
-            for (var i = 0; i < buttons.length; i++) {
+        if (disable) {
+            for (let i = 0; i < buttons.length; i++) {
                 buttons[i].setAttribute('style', 'pointer-events: none;');
             }
-        }else{
-            for (var i = 0; i < buttons.length; i++) {
+        } else {
+            for (let i = 0; i < buttons.length; i++) {
                 buttons[i].setAttribute('style', 'pointer-events: all;');
             }
         }
-
     }
 
-    //training of command x
-    trainCommand(command) {
+    //show training of command x in gui
+    showtrainCommand(command) {
         //show info and start highligthing command to train
         let infotext = document.getElementById('infotext');
         infotext.innerText = this.state.commands[command];
@@ -133,13 +124,32 @@ export default class PlayerBlink extends React.Component {
         //highlight current training cmd icon
         let cmdIcon = document.getElementById(command).getElementsByClassName('fa')[0];
         cmdIcon.style.color = "#ffffff";
-        //start progressBar
-        this.move();
-        setTimeout(function () {
-            sendTrainingCmd(command);
-            this.trainingPause(); //will start after training time
-        }.bind(this), this.state.trainingTime+2000);
+        //start progressBar for cmd
+        this.move(command);
+    }
 
+    //progress bar training time and call trainCommand if time is passed
+    move(command) {
+        var elem = document.getElementById("progressBar");
+        var width = 0;
+        var id = setInterval(frame.bind(this), this.state.trainingTime / 100); // 1% of training time
+
+        function frame() {
+            if (width >= 100) {
+                elem.style.width = 0 + '%';
+                clearInterval(id);
+                this.trainCommand(command);
+            } else {
+                width++;
+                elem.style.width = width + '%';
+            }
+        }
+    }
+
+    //training of command x (init on server)
+    trainCommand(command) {
+        sendTrainingCmd(command);    //after training phase - server saves past data to file
+        this.trainingPause(); //gui: show training pause
     }
 
 
@@ -148,9 +158,9 @@ export default class PlayerBlink extends React.Component {
         this.clickCommand(this.state.currentCmd);
         let elem = document.getElementById(this.state.currentCmd).getElementsByClassName('fa')[0];
         elem.style.color = "green";
-         setTimeout(function () {
-                elem.style.color = "#1c456e";
-            }, 250);
+        setTimeout(function () {
+            elem.style.color = "#1c456e";
+        }, 250);
     }
 
     //Set the color of the command to white for X seconds
@@ -209,11 +219,9 @@ export default class PlayerBlink extends React.Component {
         audio.play();
         audio.volume = this.state.audioVolume;
         let that = this;
-        let duration = that.props.tracks[this.state.trackNr].duration;
         setInterval(function () {
             let currentTime = audio.currentTime;
             // Calculate percent of song
-            let percent = (currentTime / duration) * 100 + '%';
             that.updateTime(currentTime);
         }, 100);
         this.setState({playpauseToggle: 'pause'});
@@ -263,22 +271,6 @@ export default class PlayerBlink extends React.Component {
         return a - (n * Math.floor(a / n));
     }
 
-    //progress bar training time
-    move() {
-        var elem = document.getElementById("progressBar");
-        var width = 0;
-        var id = setInterval(frame, this.state.trainingTime / 100); // 1% of training time
-
-        function frame() {
-            if (width >= 100) {
-                elem.style.width = 0 + '%';
-                clearInterval(id);
-            } else {
-                width++;
-                elem.style.width = width + '%';
-            }
-        }
-    }
 
     render() {
         return (

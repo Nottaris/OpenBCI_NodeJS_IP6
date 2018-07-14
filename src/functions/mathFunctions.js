@@ -62,5 +62,5 @@ function getMinValue(array) {
 
 // Get deep copy of array
 function clone(array) {
-	return JSON.parse(JSON.stringify(array));
+    return JSON.parse(JSON.stringify(array));
 };

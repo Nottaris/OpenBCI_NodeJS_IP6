@@ -21,19 +21,16 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     return y
 
 
-
 def main():
-
-
     # get data as an array from read_in()
     datainput = sys.stdin.read()
 
     # create array
     input = json.loads(datainput)
 
-    #divide volts from commands
-    volts = input[:-5]      #everything except last 5 items should be volts
-    commands = input[-5:]   #last 5 items of array should be commands
+    # divide volts from commands
+    volts = input[:-5]  # everything except last 5 items should be volts
+    commands = input[-5:]  # last 5 items of array should be commands
 
     # create a numpy array
     data = np.array(volts)
@@ -45,9 +42,7 @@ def main():
     print(cmd)
 
 
-
 def detectP300(data, commands):
-
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 0.1
@@ -61,19 +56,19 @@ def detectP300(data, commands):
     # double data before filter and cut of first half afterwards
     doubledata = np.concatenate([data, data])
     doubledataFilterd = filterData(doubledata, lowcut, highcut, fs, order)
-    dataBP = doubledataFilterd[int(len(doubledataFilterd)/2):]
+    dataBP = doubledataFilterd[int(len(doubledataFilterd) / 2):]
 
     ## SPLIT DATA IN COMMAND EPOCHES
     dataP300 = np.array_split(dataBP, cmdCount)
 
     ## SPLIT DATA IN CYCLES
-    #for i in range(cmdCount):
+    # for i in range(cmdCount):
     #    dataP300[i] = np.array_split(dataP300[i], cycleCount)
 
     # AVERAGE 5 CYCLES   or Sum ???
     for i in range(cmdCount):
         dataP300[i] = np.average(dataP300[i], axis=0)
-        #dataP300[i] = np.sum(dataP300[i], axis=0)
+        # dataP300[i] = np.sum(dataP300[i], axis=0)
 
     # ONLY ANALYSE DATA BETWEEN 320ms(70) and 450ms(111) AFTER CMD
     for i in range(cmdCount):
@@ -89,11 +84,9 @@ def detectP300(data, commands):
         idx = diff.index(maxdiff)
         max = np.max(dataP300[idx])
         mean = np.mean(dataP300[idx])
-        if (max>mean*threshold):
+        if (max > mean * threshold):
             return commands[idx]
     return "nop"
-
-
 
 
 def filterData(data, lowcut, highcut, fs, order):

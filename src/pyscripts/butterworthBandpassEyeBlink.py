@@ -17,6 +17,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     y = lfilter(b, a, data)
     return y
 
+
 def main():
     # Sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
@@ -61,6 +62,6 @@ def main():
     plt.show()
 
 
-#start process
+# start process
 if __name__ == '__main__':
     main()

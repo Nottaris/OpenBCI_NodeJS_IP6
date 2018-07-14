@@ -17,12 +17,12 @@ var cycles = 5;
 
 //volts per cmd
 var volts5 = {
-        playpause: [],
-        next: [],
-        prev: [],
-        volup: [],
-        voldown: []
-    };
+    playpause: [],
+    next: [],
+    prev: [],
+    volup: [],
+    voldown: []
+};
 //commands (as keys for collections)
 var commands = [
     'playpause',
@@ -52,15 +52,15 @@ function detectP300(volts, command, time) {
 
 
     //collect volt values sorted by cmd // 5 cycles * 112 slotsize = 560 samples
-    if(typeof volts5[command] !== "undefined"){
-         volts5[command].push(volts);
-          console.log(counter + "cmd: " + command + " volts5[command].length: " + volts5[command].length);
+    if (typeof volts5[command] !== "undefined") {
+        volts5[command].push(volts);
+        console.log(counter + "cmd: " + command + " volts5[command].length: " + volts5[command].length);
     }
 
 
     //if init is over (after 5 cycles aka counter 25) and 5 cycles are in of every command
     if (!init) {
-        var each5Ready = each5Ready(commands,volts5);
+        var each5Ready = each5Ready(commands, volts5);
 
         if (each5Ready) {
             //limit data to last 5 cycles
@@ -96,14 +96,14 @@ function detectP300(volts, command, time) {
             // received a message sent from the Python script (a simple "print" statement)
             pyshell.stdout.on('data', function (data) {
                 // Remove all new lines
-                docommand = data.replace(/\r?\n|\r/g,"");
+                docommand = data.replace(/\r?\n|\r/g, "");
             });
 
             // end the input stream and allow the process to exit
             pyshell.end(function (err) {
                 if (err) throw err;
                 //process python result, send cmd if detected
-                if (docommand !=="nop") {
+                if (docommand !== "nop") {
                     console.log("doCmd was not 'nop':" + docommand);
                     //send doCommand to execute
                     server.doCmd(docommand);
@@ -114,7 +114,7 @@ function detectP300(volts, command, time) {
 
     }
 
-    function each5Ready(commands,volts5) {
+    function each5Ready(commands, volts5) {
         commands.forEach(cmd => {
             if (volts5[command].length < cycles * slotsize) {  // 5 cycles * 112 slotsize = 560 samples
                 return false;

@@ -62,10 +62,10 @@ function getCmdTimefromPlayer(data) {
         //print cycle
         if(counter%settings.cycles === 0) {
             cycle++;
-          //  console.log("cycle "+ cycle+" "+cmdTimestamps['playpause']);
-            settings.commands.forEach(function (cmd) {
-                 console.log("cycle "+ cycle+" cmd "+cmd+" "+cmdTimestamps[cmd]);
-            });
+            console.log("cycle "+ cycle+" "+cmdTimestamps['playpause']);
+          //   settings.commands.forEach(function (cmd) {
+          //        console.log("cycle "+ cycle+" cmd "+cmd+" "+cmdTimestamps[cmd]);
+          //   });
         }
         if (!enoughDataForP300(cmdTimestamps, settings.commands, settings.cycles)) {
             //Add current timestamp to cmd array
@@ -88,7 +88,7 @@ function getCmdTimefromPlayer(data) {
             let startTimestamp = firstTimestampe.sort()[0];
             startIdx = getIdxForTimestamp(timestampesForCycles, startTimestamp);
 
-            if(startIdx>0) {
+            if (startIdx > 0) {
                 //get volts between startIdx and the end of volts array
                 voltsForCycles = voltsForCycles.slice(startIdx);
 
@@ -103,7 +103,7 @@ function getCmdTimefromPlayer(data) {
 
 
             } else {
-                console.log("!!! No index for startIdx timestamp was found " + startTimestamp+": timestampArray:"+timestampesForCycles[0]);
+                console.log("!!! No index for startIdx timestamp was found " + startTimestamp + ": timestampArray:" + timestampesForCycles[0]);
             }
 
 
@@ -123,9 +123,9 @@ server.subscribeToCmds(getCmdTimefromPlayer);
 // process data from openbci board
 function digestSamples(sample) {
     if(volts.length<settings.baselineLength) {
-        process.stdout.write("wait...\r");
+        process.stdout.write("wait for baseline...\r");
     } else if(volts.length === settings.baselineLength) {
-        process.stdout.write("START PLAYER\n");
+        process.stdout.write("START PLAYER         \n");
     }
     //save timestamp foreach sample
     timestamps.push(sample.timestamp.toString().slice(0, -1));

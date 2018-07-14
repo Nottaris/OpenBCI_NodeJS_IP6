@@ -38,35 +38,35 @@ plotdata.forEach(function (d) {
 
 //---------setup plot-----------------------//
 // set the dimensions of the canvas
-var margin = { top: 60, right: 60, bottom: 60, left: 60 },
+var margin = {top: 60, right: 60, bottom: 60, left: 60},
     width = 1020 - margin.left - margin.right,
     height = 720 - margin.top - margin.bottom;
 
 // set the ranges/scales
 var minDate = plotdata[0].datetime;
 var size = Object.keys(plotdata).length;
-var maxDate = plotdata[size-1].datetime;
+var maxDate = plotdata[size - 1].datetime;
 
 //x Axis Scale by data[]_count
 var x = d3.scaleLinear()
-        .domain([0,size-1])
-        .range([0, width]);
+    .domain([0, size - 1])
+    .range([0, width]);
 
-var minCh2 = 10000;        
+var minCh2 = 10000;
 var maxCh2 = 0;
 plotdata.forEach(function (d) {
-    if(maxCh2<d.channel2){
-        maxCh2=d.channel2;
+    if (maxCh2 < d.channel2) {
+        maxCh2 = d.channel2;
     }
-    if(minCh2>d.channel2){
-        minCh2=d.channel2;
+    if (minCh2 > d.channel2) {
+        minCh2 = d.channel2;
     }
 });
 
 // y Axis Scale by Channel 2 values 2*min until 2*max
 var y = d3.scaleLinear()
-         .domain([8*minCh2,8*maxCh2])
-         .range([height, 0]);
+    .domain([8 * minCh2, 8 * maxCh2])
+    .range([height, 0]);
 
 // define the axis
 var xAxis = d3.axisBottom(x).ticks(10);
@@ -88,11 +88,11 @@ svg.append("g")
 svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left)
-    .attr("x",0 - (height / 2))
+    .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
     .text("Channels");
-    
+
 // x-axis
 svg.append("g")
     .attr("transform", "translate(0, " + height + ")")
@@ -100,45 +100,76 @@ svg.append("g")
 
 // x-axis Label
 svg.append("text")
-    .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom -5) + ")")
+    .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom - 5) + ")")
     .style("text-anchor", "middle")
     .text("Samples 250Hz");
 
 //-------------data----------//
-var height16 = height/16; //ajust lines from 0 middleline in y axis
+var height16 = height / 16; //ajust lines from 0 middleline in y axis
 // define the 1 line
 var valueline1 = d3.line()
-    .x(function(d, index) { return x(index); })
-    .y(function(d) { return y(d.channel1)-7*height16; });
+    .x(function (d, index) {
+        return x(index);
+    })
+    .y(function (d) {
+        return y(d.channel1) - 7 * height16;
+    });
 // define the 2nd line
 var valueline2 = d3.line()
-    .x(function(d, index) { return x(index); })
-    .y(function(d) { return y(d.channel2)-5*height16; });
+    .x(function (d, index) {
+        return x(index);
+    })
+    .y(function (d) {
+        return y(d.channel2) - 5 * height16;
+    });
 // define the 3nd line
 var valueline3 = d3.line()
-    .x(function(d, index) { return x(index); })
-    .y(function(d) { return y(d.channel3)-3*height16; });
+    .x(function (d, index) {
+        return x(index);
+    })
+    .y(function (d) {
+        return y(d.channel3) - 3 * height16;
+    });
 // define the 4nd line
 var valueline4 = d3.line()
-    .x(function(d, index) { return x(index); })
-    .y(function(d) { return y(d.channel4)-height16; });
+    .x(function (d, index) {
+        return x(index);
+    })
+    .y(function (d) {
+        return y(d.channel4) - height16;
+    });
 // define the 5nd line
 var valueline5 = d3.line()
-    .x(function(d, index) { return x(index); })
-    .y(function(d) { return y(d.channel5)+height16; });
+    .x(function (d, index) {
+        return x(index);
+    })
+    .y(function (d) {
+        return y(d.channel5) + height16;
+    });
 // define the 6nd line
 var valueline6 = d3.line()
-    .x(function(d, index) { return x(index); })
-    .y(function(d) { return y(d.channel6)+3*height16; });
+    .x(function (d, index) {
+        return x(index);
+    })
+    .y(function (d) {
+        return y(d.channel6) + 3 * height16;
+    });
 // define the 7nd line
 var valueline7 = d3.line()
-    .x(function(d, index) { return x(index); })
-    .y(function(d) { return y(d.channel7)+5*height16; });
+    .x(function (d, index) {
+        return x(index);
+    })
+    .y(function (d) {
+        return y(d.channel7) + 5 * height16;
+    });
 // define the 8nd line
 var valueline8 = d3.line()
-    .x(function(d, index) { return x(index); })
-    .y(function(d) { return y(d.channel8)+7*height16; });
-
+    .x(function (d, index) {
+        return x(index);
+    })
+    .y(function (d) {
+        return y(d.channel8) + 7 * height16;
+    });
 
 
 // Add the valueline path.
@@ -208,48 +239,48 @@ var path8 = svg.append("path")
 
 // add a title
 svg.append("text")
-.attr("x", (width / 2))				
-.attr("y", 0 - (margin.top / 2))
-.attr("text-anchor", "middle")	
-.style("font-size", "20px") 
-.text("EEG plot");
+    .attr("x", (width / 2))
+    .attr("y", 0 - (margin.top / 2))
+    .attr("text-anchor", "middle")
+    .style("font-size", "20px")
+    .text("EEG plot");
 
 // gridlines in x axis function
-function make_x_gridlines() {		
+function make_x_gridlines() {
     return d3.axisBottom(x)
         .ticks(10)
 }
 
 // gridlines in y axis function
-function make_y_gridlines() {		
+function make_y_gridlines() {
     return d3.axisLeft(y)
         .ticks(10)
 }
 
 // add the X gridlines
-svg.append("g")			
-.attr("class", "grid")
-.attr("transform", "translate(0," + height + ")")
-.call(make_x_gridlines()
-    .tickSize(-height)
-    .tickFormat("")
-)
+svg.append("g")
+    .attr("class", "grid")
+    .attr("transform", "translate(0," + height + ")")
+    .call(make_x_gridlines()
+        .tickSize(-height)
+        .tickFormat("")
+    )
 
 // add the Y gridlines
-svg.append("g")			
-.attr("class", "grid")
-.call(make_y_gridlines()
-    .tickSize(-width)
-    .tickFormat("")
-)
+svg.append("g")
+    .attr("class", "grid")
+    .call(make_y_gridlines()
+        .tickSize(-width)
+        .tickFormat("")
+    )
 
 //show or hide channels
-function toggleChannel(channel){
+function toggleChannel(channel) {
     // determine if current line is visible
-    let active = d3.select("path#"+channel).attr("active")==='true';
+    let active = d3.select("path#" + channel).attr("active") === 'true';
     let newOpacity = (active) ? 0 : 1;
     // hide or show the elements
-    d3.select("path#"+channel).style("opacity", newOpacity);
+    d3.select("path#" + channel).style("opacity", newOpacity);
     // update whether or not the elements are active
-    d3.select("path#"+channel).attr("active", !active);
+    d3.select("path#" + channel).attr("active", !active);
 }

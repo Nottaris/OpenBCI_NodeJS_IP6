@@ -1,6 +1,6 @@
 /**
  * import data from eeg signal csv of json file
- * 
+ *
  */
 // mymodule.js
 module.exports = {
@@ -16,7 +16,7 @@ const defaultJson = 'data/jsondata.json';
 
 //read csv
 function getFiledata(filename) {
-    if(filename==null){
+    if (filename == null) {
         filename = defaultFilename;
     }
     var str = fs.readFileSync(filename, 'utf8');
@@ -27,7 +27,7 @@ function getFiledata(filename) {
 
 //read json
 function loadJSON(filename) {
-    if(filename==null){
+    if (filename == null) {
         filename = defaultJson;
     }
     return require(filename);

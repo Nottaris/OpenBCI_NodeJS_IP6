@@ -127,33 +127,30 @@ def main():
     # # commands: ["next","voldown","playpause","prev","volup"]
     # detectP300(data, cmdRow, cycle, focus, focusCmd)
 
-
-    cmdRows = np.array([  [7117, 7229, 7342, 7454, 7567],
-                          [7680, 7792, 7905, 8017, 8130],
-                          [8243, 8355, 8468, 8581, 8693],
-                          [8806, 8918, 9031, 9144, 9256],
-                          [9369, 9481, 9594, 9707, 9819],
-                          [9932, 10044, 10157, 10270, 10382]])
+    cmdRows = np.array([[7117, 7229, 7342, 7454, 7567],
+                        [7680, 7792, 7905, 8017, 8130],
+                        [8243, 8355, 8468, 8581, 8693],
+                        [8806, 8918, 9031, 9144, 9256],
+                        [9369, 9481, 9594, 9707, 9819],
+                        [9932, 10044, 10157, 10270, 10382]])
 
     avgdata = [[], [], [], [], []]
 
-    for i in range(5):   # 0-4 = 5 cmds
-        for j in range(6):   # 0-5 = 6 cycles
-            #print("j, i: "+str(j)+" "+str(i))
-            #print(cmdRows[j][i])
+    for i in range(5):  # 0-4 = 5 cmds
+        for j in range(6):  # 0-5 = 6 cycles
+            # print("j, i: "+str(j)+" "+str(i))
+            # print(cmdRows[j][i])
             start = cmdRows[j][i]
-            end = start+112
+            end = start + 112
             selection = data[start:end]
             avgdata[i].append(selection)
 
     for i in range(5):  # 0-4 = 5 cmds
         avgdata[i] = np.average(avgdata[i], axis=0)
 
-
-    #detectP300(newAvgData, focus, focusCmd)
+    # detectP300(newAvgData, focus, focusCmd)
 
     detectP300(avgdata, 2, "playpause")
-
 
 
 def detectP300(data, focus, focusCmd):

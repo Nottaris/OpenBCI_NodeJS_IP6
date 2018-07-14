@@ -19,7 +19,7 @@ export default class P300 extends React.Component {
             currentCmd: 'no',
             colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
             //colors: ['#fff'],
-            commands: ["noCmd1","next","noCmd2", "voldown", "noCmd3","playpause", "noCmd4","prev", "noCmd5","volup","noCmd1","next","noCmd5", "voldown", "noCmd3","playpause", "noCmd2","prev", "noCmd4","volup"],
+            commands: ["noCmd1", "next", "noCmd2", "voldown", "noCmd3", "playpause", "noCmd4", "prev", "noCmd5", "volup", "noCmd1", "next", "noCmd5", "voldown", "noCmd3", "playpause", "noCmd2", "prev", "noCmd4", "volup"],
             cmdInterval: 300,
             flashCmdInterval: 125
         };
@@ -45,7 +45,7 @@ export default class P300 extends React.Component {
             let audio = document.getElementById('audio');
             this.pause(audio);
         }
-        clearInterval(this. blinkInterval);
+        clearInterval(this.blinkInterval);
     }
 
     generateCommands() {
@@ -66,9 +66,11 @@ export default class P300 extends React.Component {
         var shuffleCmds = this.state.commands.slice(10); //clone
         shuffleCmds = shuffleCmds.sort(function() { return 0.5 - Math.random() });
         setInterval(function () {
-            if(shuffleCmds.length < 1) {
+            if (shuffleCmds.length < 1) {
                 shuffleCmds = this.state.commands.slice(0); //clone
-                shuffleCmds = shuffleCmds.sort(function() { return 0.5 - Math.random() });
+                shuffleCmds = shuffleCmds.sort(function () {
+                    return 0.5 - Math.random()
+                });
             }
             this.flashCommandButton(shuffleCmds.pop());
             if (commandIdx < this.state.commands.length - 1) {
@@ -78,9 +80,10 @@ export default class P300 extends React.Component {
             }
         }.bind(this), this.state.cmdInterval);
     }
+
     execCommand = (data) => {
         this.clickCommand(data.docommand);
-        console.log("p300: "+data.docommand);
+        console.log("p300: " + data.docommand);
     };
 
     //Set the color of the command to white for X seconds
@@ -91,7 +94,7 @@ export default class P300 extends React.Component {
             elem.style.background = this.state.colors[Math.floor(Math.random() * this.state.colors.length)];
 
             //Send flashed command and timestamp to server
-            if(!command.startsWith("noCmd")){
+            if (!command.startsWith("noCmd")) {
                 let time = Date.now();
                 sendP300Cmd(command, time);
             }
@@ -122,13 +125,13 @@ export default class P300 extends React.Component {
             case "playpause":
                 if (this.state.playpauseToggle === 'play') {
                     this.play(audio);
-                } else if (this.state.playpauseToggle === 'pause'){
+                } else if (this.state.playpauseToggle === 'pause') {
                     this.pause(audio);
                 }
                 break;
             default:
                 //this should never happen
-                console.log("Error: clickCommand had unknown state "+typeof state);
+                console.log("Error: clickCommand had unknown state " + typeof state);
                 break;
         }
 
@@ -149,11 +152,9 @@ export default class P300 extends React.Component {
         audio.play();
         audio.volume = this.state.audioVolume;
         let that = this;
-        let duration = that.props.tracks[this.state.trackNr].duration;
         setInterval(function () {
             let currentTime = audio.currentTime;
             // Calculate percent of song
-            let percent = (currentTime / duration) * 100 + '%';
             that.updateTime(currentTime);
         }, 100);
         this.setState({playpauseToggle: 'pause'});

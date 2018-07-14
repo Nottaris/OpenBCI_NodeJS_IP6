@@ -21,19 +21,16 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     return y
 
 
-
 def main():
-
-
     # get data as an array from read_in()
     datainput = sys.stdin.read()
 
     # create array
     input = json.loads(datainput)
 
-    #divide volts from commands
-    volts = input[:-5]      #everything except last 5 items should be volts
-    commands = input[-5:]             #last 5 items of array should be commands
+    # divide volts from commands
+    volts = input[:-5]  # everything except last 5 items should be volts
+    commands = input[-5:]  # last 5 items of array should be commands
 
     # create a numpy array
     data = np.array(volts)
@@ -45,9 +42,7 @@ def main():
     print(cmd)
 
 
-
 def detectP300(data, commands):
-
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 0.1
@@ -63,7 +58,7 @@ def detectP300(data, commands):
     ## SPLIT DATA IN COMMAND EPOCHES
     dataP300 = []
     for i in range(cmdCount):
-        dataP300.append(allDataFilterd[i*slotSize:(i*slotSize)+slotSize])
+        dataP300.append(allDataFilterd[i * slotSize:(i * slotSize) + slotSize])
 
     # ONLY ANALYSE DATA BETWEEN 320ms(70) and 450ms(112) AFTER CMD
     dataP300Slots = []
@@ -80,12 +75,10 @@ def detectP300(data, commands):
     max = np.max(dataP300Slots[idx])
     mean = np.mean(dataP300Slots[idx])
 
-    if (max>mean*threshold):
+    if (max > mean * threshold):
         return commands[idx]
     else:
         return "nop"
-
-
 
 
 def filterData(data, lowcut, highcut, fs, order):
