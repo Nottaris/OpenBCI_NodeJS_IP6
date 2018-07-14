@@ -1,6 +1,6 @@
 import React from 'react';
 import './Player.css';
-import {subscribeToCmds, sendP300Cmd} from './api';
+import {subscribeToP300Cmds, sendP300Cmd} from './api';
 import TrackInformation from './components/TrackInformation';
 import Timestamps from './components/Timestamps';
 import AudioVolume from './components/AudioVolume';
@@ -20,7 +20,7 @@ export default class P300 extends React.Component {
             colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
             //colors: ['#fff'],
             commands: ["noCmd1", "next", "noCmd2", "voldown", "noCmd3", "playpause", "noCmd4", "prev", "noCmd5", "volup", "noCmd1", "next", "noCmd5", "voldown", "noCmd3", "playpause", "noCmd2", "prev", "noCmd4", "volup"],
-            cmdInterval: 300,
+            cmdInterval: 250,
             flashCmdInterval: 125
         };
 
@@ -28,7 +28,7 @@ export default class P300 extends React.Component {
         this.execCommand = this.execCommand.bind(this);
         this.generateCommands = this.generateCommands.bind(this);
 
-        subscribeToCmds(
+        subscribeToP300Cmds(
             this.flashCommand,
             this.execCommand,
             this.execCommand,

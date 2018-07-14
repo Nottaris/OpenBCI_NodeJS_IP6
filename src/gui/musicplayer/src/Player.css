@@ -217,7 +217,7 @@ body {
 }
 
 .P300 .Controls .row {
-    margin: 0 auto;
+    margin: 0 auto 40px;
     display: table;
     max-width: 1200px;
 }

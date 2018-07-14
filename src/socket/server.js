@@ -68,7 +68,7 @@ function doCmd(docommand) {
 }
 
 function doBlinkCmd() {
-    //emmit command event to execute after its detection
+    //emmit command event to execute after blink detection
     io.emit('blinkcommand', {blinkcommand: 'blink'});
     console.log("sent blinkcommand");
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import './Player.css';
-import {subscribeToCmds} from './api';
+import {subscribeToBlinkCmds} from './api';
 import TrackInformation from './components/TrackInformation';
 import Timestamps from './components/Timestamps';
 import AudioVolume from './components/AudioVolume';
@@ -24,13 +24,11 @@ export default class PlayerBlink extends React.Component {
         this.execCommand = this.execCommand.bind(this);
 
 
-        subscribeToCmds(
+        subscribeToBlinkCmds(
             this.flashCommand,
-            this.execCommand,
             this.execCommand
         );
 
-        // this.generateCommands();
     };
 
     componentWillUnmount() {
