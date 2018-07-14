@@ -63,7 +63,7 @@ export default class P300 extends React.Component {
 
     generateShuffleCommands() {
         var commandIdx = 0;
-        var shuffleCmds = this.state.commands.slice(0); //clone
+        var shuffleCmds = this.state.commands.slice(10); //clone
         shuffleCmds = shuffleCmds.sort(function() { return 0.5 - Math.random() });
         setInterval(function () {
             if(shuffleCmds.length < 1) {

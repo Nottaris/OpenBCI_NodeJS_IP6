@@ -40,27 +40,28 @@ body {
 }
 
 .selectPlayer {
-   display: inline;
-   background: url(img/arrow-down.png) no-repeat 96% 40%;
-   height: 29px;
-   overflow: hidden;
-   width: 100px;
-   background-color: #000;
+    display: inline;
+    background: url(img/arrow-down.png) no-repeat 96% 40%;
+    height: 29px;
+    overflow: hidden;
+    width: 100px;
+    background-color: #000;
 }
-
 
 .selectPlayer select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-   background: transparent;
-   font-size: 1em;
-   border: none;
-   color: #fff;
-   padding: 5px;
-   width: 80px;
+    background: transparent;
+    font-size: 1em;
+    border: none;
+    outline: none;
+    color: #fff;
+    padding: 5px;
+    width: 80px;
 }
 
 .selectPlayer select option {
     color: #000;
+    font-size: 1em;
 }
