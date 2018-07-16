@@ -77,6 +77,12 @@ def trainmind(traindata):
     ch7f = filterData(ch7, lowcut, highcut, fs, order)
     ch8f = filterData(ch8, lowcut, highcut, fs, order)
 
+    ## save to file for dev
+    f = open("file-ch1f.csv", "w")
+    f.write(ch1f)
+    f = open("file-ch2f.csv", "w")
+    f.write(ch2f)
+
 
 # start process
 if __name__ == '__main__':
