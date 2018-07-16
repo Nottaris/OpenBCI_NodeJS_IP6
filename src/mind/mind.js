@@ -21,8 +21,7 @@ const fs = require('fs');
 const defaultSettings = {
     sampleRate: 250,        // 250Hz
     slots: 112,             // data points per slot ( 450ms === 112 )
-    debug: true,             // show console.log
-    trainingSampleSize: 20      // 1 minute = 60 sec. = 60000ms = 15000 samples
+    debug: true             // show console.log
 }
 
 let volts = [];
@@ -30,7 +29,7 @@ let trainvolts = [];
 let count = 0;
 let settings = defaultSettings;
 let trainingCmd = "none";
-let slotsize = 1500;
+let slotsize = 1000;
 
 server.startSocketServer();
 
@@ -58,7 +57,7 @@ function digestSamples(sample) {
             channelData: sample.channelData
         });
         count++;
-        console.log("trainvolts.length: "+trainvolts.length);
+         process.stdout.write("trainvolts.length: "+trainvolts.length+"\r");
     } else {
         //send data to evaluate
         detectMind.detectMind(volts);

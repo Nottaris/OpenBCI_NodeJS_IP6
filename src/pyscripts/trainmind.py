@@ -4,7 +4,7 @@ from scipy.signal import butter, lfilter
 from scipy.sparse.linalg import spsolve
 from scipy.stats import norm
 from tempfile import TemporaryFile
-import json, sys, numpy as np, matplotlib.pyplot as plt
+import time, json, sys, numpy as np, matplotlib.pyplot as plt
 from pprint import pprint
 import os
 
@@ -26,9 +26,11 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
 
 
 def filterData(data, lowcut, highcut, fs, order):
-    # filter data with butter bandpass
-    filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
-    return filterdData
+    doubledata = np.concatenate([data, data])
+    doubledataFilterd = butter_bandpass_filter(doubledata, lowcut, highcut, fs, order)
+    dataBP0 = doubledataFilterd[int(len(doubledataFilterd)/2):]
+
+    return dataBP0
 
 
 def main():
@@ -42,6 +44,7 @@ def main():
     # read file of trainingCmd
     with open(path) as f:
         data = json.load(f)
+
     traindata = np.array(data)
     # process data
     trainmind(traindata)
@@ -63,9 +66,9 @@ def trainmind(traindata):
 
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
-    lowcut = 0.1
+    lowcut = 8
     highcut = 30.0
-    order = 4
+    order = 5
 
     ## FILTER DATA
     ch1f = filterData(ch1, lowcut, highcut, fs, order)
@@ -78,11 +81,13 @@ def trainmind(traindata):
     ch8f = filterData(ch8, lowcut, highcut, fs, order)
 
     ## save to file for dev
-    f = open("file-ch1f.csv", "w")
-    f.write(ch1f)
-    f = open("file-ch2f.csv", "w")
-    f.write(ch2f)
-
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    with open("data/mind/"+timestr+'_dataCh1.json', 'w') as outfile:
+        json.dump(ch1f.tolist(), outfile)
+    with open("data/mind/"+timestr+'_dataCh2.json', 'w') as outfile:
+        json.dump(ch2f.tolist(), outfile)
+    with open("data/mind/"+timestr+'_dataCh3.json', 'w') as outfile:
+        json.dump(ch3f.tolist(), outfile)
 
 # start process
 if __name__ == '__main__':

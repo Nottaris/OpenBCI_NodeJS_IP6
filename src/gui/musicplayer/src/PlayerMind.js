@@ -14,7 +14,7 @@ export default class PlayerBlink extends React.Component {
         console.log(props);
         this.state = {
             playpauseToggle: 'play',
-            trainingTime: 6000,  //6 sec. recording (pause will be added)
+            trainingTime: 4000,  //6 sec. recording (pause will be added)
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
@@ -73,7 +73,7 @@ export default class PlayerBlink extends React.Component {
                 this.showtrainCommand(commands[i]);
             }
             i++;
-        }.bind(this), this.state.trainingTime + 3000);  //training time plus pause
+        }.bind(this), this.state.trainingTime + 5000);  //training time plus pause
     }
 
 
