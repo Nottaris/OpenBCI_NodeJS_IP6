@@ -12,7 +12,7 @@ const boardSettings = {
     verbose: true,                                              //  Print out useful debugging events
     debug: false,                                               //  Print out a raw dump of bytes sent and received
     simulate: true,                                             // Full functionality, just mock data. Must attach Daisy module by setting
-    channelsOff: [true, true, true, true, false, true, true, true],    // power down unused channel 1 - 8
+    channelsOff: [false, false, false, false, false, false, false, false],    // power down unused channel 1 - 8
     control: "p300"                                             // Control type
 }
 

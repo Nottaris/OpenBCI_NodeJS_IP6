@@ -23,7 +23,7 @@ const defaultSettings = {
     threshold: 1.8,         // deviation factor
     //ToDo: Set correct baselineLength
     baselineLength: 500,    // baseline 3s = 750 samples
-    voltsMaxLength: 20000,  //max length of volts array
+    voltsMaxLength: 40000,  //max length of volts array
     cycles: 5,              //nr of cycles that will be analysed
     commands: ['playpause','next','prev','volup', 'voldown'],
     debug: true             // show console.log
@@ -130,7 +130,7 @@ function digestSamples(sample) {
     //save timestamp foreach sample
     timestamps.push(sample.timestamp.toString().slice(0, -1));
     //save volts for each sampple
-    volts.push(Number(sample.channelData[settings.channel - 1]));
+    volts.push(sample.channelData);
 
     // downsize volts and timestamp array
     if (volts.length > settings.voltsMaxLength) {
@@ -155,7 +155,7 @@ function findIndexForTimestamp(time) {
 
 // check if for each cycles data are in every command
 function enoughDataForP300(cmdTimestamps, commands, compareCycles) {
-    return commands.filter(cmd => cmdTimestamps[cmd].length >= compareCycles).length === commands.length;
+    return commands.filter(cmd => cmdTimestamps[cmd].length > compareCycles).length === commands.length;
 }
 
 function getSettings() {

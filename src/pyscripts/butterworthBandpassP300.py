@@ -32,34 +32,58 @@ def main():
 
     # create a numpy array
     data = np.array(volts)
+
+    # # cmd = detectP300(data, cmdIdx)
+
+    ## active channels
+    channels = [0,1,2] # 0-7 channels
+
     #
-    # detect P300
-    cmd = detectP300(data, cmdIdx)
+    cmdResult = []
+    # # Split channel Data
+    for channel in range(len(channels)):
+        dataChannel = []
+        baseLineChannel = []
+        for i in range(len(data)):
+            dataChannel.append(data[i][channel])
+        # detect P300 for each channel
+        cmd = detectP300(dataChannel, cmdIdx, channel)
+        cmdResult.append(cmd)
+
+
+
 
     # send docommand back to node
-    print(cmd)
+    # Todo: Retrn most common result in cmdResult
+    print(cmdResult)
 
 
 
-def detectP300(data, cmdIdx):
+def detectP300(data, cmdIdx, channel):
 
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 0.1
-    highcut = 15.0
+    highcut = 30.0
     order = 2
-    threshold = 5
+    threshold = 1
     slotSize = 120
     commands = ['playpause', 'next', 'prev', 'volup', 'voldown']
     cmdCount = len(cmdIdx)
     cycles = len(cmdIdx[0])
-    useAvg = False # Calc avg or sum
+    useAvg = True # True Calc avg, False Calc sum
 
     # ## FILTER DATA
     # double data before filter and cut of first half afterwards
     doubledata = np.concatenate([data, data])
     doubledataFilterd = filterData(doubledata, lowcut, highcut, fs, order)
     dataBP = doubledataFilterd[int(len(doubledataFilterd)/2):]
+
+
+    #Plot filterd data
+    plt.figure(1)
+    plt.title("filterd data")
+    plt.plot(dataBP * 1000000, color='r')
 
     # ## SPLIT VOLTS DATA IN COMMAND EPOCHES
      ##  collect volt for each cmd in dataP300[CMD][CYCLE][VOLTS]
@@ -68,6 +92,15 @@ def detectP300(data, cmdIdx):
         for j in range(cycles):
             dataP300[i].append(dataBP[cmdIdx[i][j]:(cmdIdx[i][j]+slotSize)])
 
+    ## SUBTRACT BASELINE MEAN ( equally ajust height )
+    dataP300Baseline = [[], [], [], [], []]
+    for i in range(cmdCount):
+        for j in range(cycles):
+            mean = np.mean(dataP300[i][j])
+            dataP300Baseline[i].append(dataP300[i][j] - mean)
+    # Overwrite dataP300 array
+    dataP300 = dataP300Baseline
+
     # AVERAGE CYCLES
     # calculate avg data for each cmd
     if(useAvg):
@@ -75,14 +108,15 @@ def detectP300(data, cmdIdx):
         for i in range(cmdCount):
             dataP300Avg[i] =  np.average(dataP300[i], axis=0)
 
-            for j in range(cycles):
-                plt.figure(10+i)
-                plt.title(' P300 Avg Cycles Cmd: %s ' % (commands[i]))
-                plt.plot(dataP300[i][j] * 1000000, color='b')
+            # for j in range(cycles):
+            #     plt.figure(10+i)
+            #     plt.title(' P300 Avg Cycles Cmd: %s ' % (commands[i], channel))
+            #     plt.plot(dataP300[i][j] * 1000000, color='b')
 
             plt.figure(10 + i)
+            plt.title(' P300 %d Avg Cycles Cmd: %s ' % (channel, commands[i]))
             plt.plot(dataP300Avg[i] * 1000000, color='r')
-        plt.show()
+        # plt.show()
         return getCmdMaxAmplitude(dataP300Avg, cmdCount, threshold)
     else:
         # SUM CYCLES
@@ -97,14 +131,14 @@ def detectP300(data, cmdIdx):
                 dataP300Sum[i] = np.sum( np.array([dataP300Sum[i], dataP300[i][j]]), axis=0 )
             plt.figure(20 + i)
             plt.plot(dataP300Sum[i] * 1000000, color='r')
-        plt.show()
+        # plt.show()
         return getCmdMaxAmplitude(dataP300Sum,cmdCount,threshold)
 
 
 def getCmdMaxAmplitude(dataP300, cmdCount,threshold):
     # ONLY ANALYSE DATA BETWEEN 200ms(50) and 400ms(100) AFTER CMD
     for i in range(cmdCount):
-        dataP300[i] = dataP300[i][50:100]
+        dataP300[i] = dataP300[i][40:60]
 
     ## CALCULATE AMPLITUDE
     diff = []
