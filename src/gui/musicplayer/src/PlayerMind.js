@@ -14,7 +14,7 @@ export default class PlayerBlink extends React.Component {
         console.log(props);
         this.state = {
             playpauseToggle: 'play',
-            trainingTime: 7000,  //7 sec. for dev, 65 sec. aka 65000 for production (a bit longer than record session)
+            trainingTime: 6000,  //6 sec. recording (pause will be added)
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
@@ -63,7 +63,7 @@ export default class PlayerBlink extends React.Component {
         infotext.innerText = "Training will start soon. Relax and focus on the highlighted command.";
 
         //train each command
-        let i = 3;  //TODO: set i = 0 to loop all commands
+        let i = 0;  //TODO: set i = 0 to loop all commands
         const commands = Object.keys(this.state.commands);
         let interval = setInterval(function () {
             if (i === 5) {
@@ -73,7 +73,7 @@ export default class PlayerBlink extends React.Component {
                 this.showtrainCommand(commands[i]);
             }
             i++;
-        }.bind(this), this.state.trainingTime + 2000); //waits 2000ms longer than actual training time
+        }.bind(this), this.state.trainingTime + 3000);  //training time plus pause
     }
 
 
@@ -148,7 +148,8 @@ export default class PlayerBlink extends React.Component {
 
     //training of command x (init on server)
     trainCommand(command) {
-        sendTrainingCmd(command);    //after training phase - server saves past data to file
+        let trainingSlotSize = this.state.trainingTime/4;    //on 250 Hz, each 4 ms a sample is recorded
+        sendTrainingCmd({command:command, slots:trainingSlotSize});    //after training phase - server saves past data to file
         this.trainingPause(); //gui: show training pause
     }
 
