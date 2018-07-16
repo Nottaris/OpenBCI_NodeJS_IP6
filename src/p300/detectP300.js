@@ -4,13 +4,15 @@ module.exports = {
 
 const p300 = require('./p300');
 const server = require('../socket/server');
+const fs = require('fs');
+
 
 let PythonShell = require('python-shell');
 
 let settings;
 let init = true;
-let docommand = "nop"; //no operation detected so far
 
+let fileNr = 1;
 function detectP300(volts, timestamps, cmdTimestamps) {
 
     if (init) {
@@ -36,6 +38,11 @@ function detectP300(volts, timestamps, cmdTimestamps) {
     });
     // console.log(cmdTimestamps);
     // console.log(cmdIdx);
+
+    fs.writeFile("data/p300/"+Date.now()+"_"+fileNr+"_volts.json", volts);
+    fs.writeFile("data/p300/"+Date.now()+"_"+fileNr+"_cmdIdx.json", cmdIdx);
+    fileNr++;
+
     const options = {mode: 'text'};
     let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300.py', options);
     let data = JSON.stringify({volts: volts, cmdIdx: cmdIdx});

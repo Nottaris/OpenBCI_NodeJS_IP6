@@ -33,7 +33,7 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
-data/data*.json
+data/
 package-lock.json
 src/gui/playerP300/build
 venv
