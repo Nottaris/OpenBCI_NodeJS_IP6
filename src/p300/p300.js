@@ -98,7 +98,7 @@ function getCmdTimefromPlayer(data) {
                 console.log("detect P300 startIdx "+startIdx+" "+startTimestamp+" voltsForCycles.length "+voltsForCycles.length+" voltes.length "+volts.length+" cycle "+cycle);
 
                 //Analayse data for P300
-                detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd);
+                detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd, server);
 
 
 

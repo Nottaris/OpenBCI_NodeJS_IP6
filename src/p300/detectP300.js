@@ -3,6 +3,7 @@ module.exports = {
 };
 
 const p300 = require('./p300');
+const server = require('../socket/server');
 
 let PythonShell = require('python-shell');
 
@@ -51,18 +52,20 @@ function detectP300(volts, timestamps, cmdTimestamps) {
     pyshell.stdout.on('data', function (data) {
         // Remove all new lines
         console.log(data);
-        docommand = data.replace(/\r?\n|\r/g, "");
+        idx = data.replace(/\r?\n|\r/g, "");
+        cmd = settings.commands[idx];
+        //process python result, send cmd if detected
+        if (cmd !== "nop") {
+            console.log("doCmd was: " + cmd);
+            //send doCommand to execute
+            server.doCmd(cmd);
+        }
+
     });
 
     // end the input stream and allow the process to exit
     pyshell.end(function (err) {
         if (err) throw err;
-        //process python result, send cmd if detected
-        if (docommand !== "nop") {
-            console.log("doCmd was: " + settings.commands[docommand]);
-            //send doCommand to execute
-            // server.doCmd(docommand);
-        }
     });
 
 }

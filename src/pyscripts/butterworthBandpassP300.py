@@ -50,13 +50,13 @@ def main():
         cmd = detectP300(dataChannel, cmdIdx, channel)
         cmdResult.append(cmd)
 
-
-
-
-    # send docommand back to node
-    # Todo: Retrn most common result in cmdResult
-    print(cmdResult)
-
+    #Return most common cmd
+    if(cmdResult[0] == cmdResult[1] or  cmdResult[0] == cmdResult[2]):
+        print(cmdResult[0])
+    elif(cmdResult[1] == cmdResult[2]):
+        print(cmdResult[1])
+    else:
+        print("nop")
 
 
 def detectP300(data, cmdIdx, channel):
@@ -66,7 +66,7 @@ def detectP300(data, cmdIdx, channel):
     lowcut = 0.1
     highcut = 30.0
     order = 2
-    threshold = 1
+    threshold = 1.5
     slotSize = 120
     commands = ['playpause', 'next', 'prev', 'volup', 'voldown']
     cmdCount = len(cmdIdx)
@@ -138,7 +138,7 @@ def detectP300(data, cmdIdx, channel):
 def getCmdMaxAmplitude(dataP300, cmdCount,threshold):
     # ONLY ANALYSE DATA BETWEEN 200ms(50) and 400ms(100) AFTER CMD
     for i in range(cmdCount):
-        dataP300[i] = dataP300[i][40:60]
+        dataP300[i] = dataP300[i][50:100]
 
     ## CALCULATE AMPLITUDE
     diff = []
