@@ -7,13 +7,12 @@ module.exports = {
     detectMind: detectMind
 };
 
-
 const mathFunctions = require('../functions/mathFunctions');
 const mind = require('./mind');
 const server = require('../socket/server');
 
-var PythonShell = require('python-shell');
-var docommand = "nop";
+let PythonShell = require('python-shell');
+let docommand = "nop";
 
 function detectMind(volts) {
 
