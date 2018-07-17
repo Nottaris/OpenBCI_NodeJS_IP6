@@ -7,7 +7,7 @@ module.exports = {
     trainMind: trainMind
 };
 
-var PythonShell = require('python-shell');
+let PythonShell = require('python-shell');
 
 function trainMind(trainingCmd) {
 
