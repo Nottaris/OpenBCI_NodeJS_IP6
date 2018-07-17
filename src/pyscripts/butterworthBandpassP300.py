@@ -139,7 +139,7 @@ def detectP300(data, baseline, cmdIdx, channel):
             #     plt.plot(dataP300[i][j] * 1000000, color='b')
 
             plt.figure(10 + i)
-            plt.title(' P300 %d Avg Cycles Cmd: %s ' % (channel, commands[i]))
+            plt.title(' P300 %s Avg Cycles Cmd: %s ' % (channel, commands[i]))
             plt.plot(dataP300Avg[i] * 1000000, color='r')
         # plt.show()
         return getCmdMaxAmplitude(dataP300Avg, cmdCount, threshold)
