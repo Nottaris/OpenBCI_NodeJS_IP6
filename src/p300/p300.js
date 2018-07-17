@@ -22,7 +22,7 @@ const defaultSettings = {
     slots: 112,             // data points per slot ( 450ms === 112 )
     threshold: 1.8,         // deviation factor
     //ToDo: Set correct baselineLength
-    baselineLength: 500,    // baseline 3s = 750 samples
+    baselineLength: 1000,    // baseline 3s = 750 samples
     voltsMaxLength: 40000,  //max length of volts array
     cycles: 5,              //nr of cycles that will be analysed
     commands: ['playpause','next','prev','volup', 'voldown'],
@@ -74,7 +74,7 @@ function getCmdTimefromPlayer(data) {
 
             let voltsForCycles = volts.slice(0); //clone
             let timestampesForCycles = timestamps.slice(0);//clone
-
+            let baselineForCycles = [];
             let compareCmd = [];
             let firstTimestampe = []; //timestamps of first cycle
 
@@ -89,16 +89,19 @@ function getCmdTimefromPlayer(data) {
             startIdx = getIdxForTimestamp(timestampesForCycles, startTimestamp);
 
             if (startIdx > 0) {
+
+                baselineForCycles = voltsForCycles.slice(startIdx-settings.baselineLength,startIdx);
+
                 //get volts between startIdx and the end of volts array
                 voltsForCycles = voltsForCycles.slice(startIdx);
-
+                
                 //save timestamp from startIdx until the end of timestamp array
                 timestampesForCycles = timestampesForCycles.slice(startIdx);
 
                 console.log("detect P300 startIdx "+startIdx+" "+startTimestamp+" voltsForCycles.length "+voltsForCycles.length+" voltes.length "+volts.length+" cycle "+cycle);
 
                 //Analayse data for P300
-                detectP300.getVEP(voltsForCycles, timestampesForCycles, compareCmd, server);
+                detectP300.getVEP(voltsForCycles, baselineForCycles, timestampesForCycles, compareCmd, server);
 
 
 
