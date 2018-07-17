@@ -1,3 +1,8 @@
+/**
+ * process eeg volts from p300 control to python
+ *
+ */
+
 module.exports = {
     getVEP: detectP300
 };
@@ -6,13 +11,12 @@ const p300 = require('./p300');
 const server = require('../socket/server');
 const fs = require('fs');
 
-
 let PythonShell = require('python-shell');
 
 let settings;
 let init = true;
-
 let fileNr = 1;
+
 function detectP300(volts, timestamps, cmdTimestamps) {
 
     if (init) {
