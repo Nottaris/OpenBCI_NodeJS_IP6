@@ -44,15 +44,15 @@ function getTrainingCmd(data) {
 
 server.subscribeToTrainingCmds(getTrainingCmd);
 
-
+// process data from openbci board
 function digestSamples(sample) {
-    // live detection mode:
     // fetch samples for slottime from all channels
     if (count < settings.slots) {
-        //save channel data
+        //save channel data for live detecion
         volts.push({
             channelData: sample.channelData
         });
+        //save channel data for training
         trainvolts.push({
             channelData: sample.channelData
         });
