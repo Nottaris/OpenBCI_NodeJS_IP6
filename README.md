@@ -1,13 +1,28 @@
 # OpenBCI NodeJS IP6
+Brain Computer Interface to control a web musicplayer
 
-## Installation:
+## Installation
 ``` npm install ``` 
 
-## Start blink with board
+## Start Musicplayer
+``` npm run player ``` 
+
+## EEG Controls
+#### Start blink control
 ``` npm run blink ``` 
 
-## Start blink with file
+###### Start blink from file
 ``` npm run blinkfile ```
 
-## Save Data
+#### Start P300 control - beta
+``` npm run p300 ```
+
+#### Start mind control - beta
+``` npm run mind ``` 
+
+
+### Helpers
+#### Save Data
 ``` npm run save ``` 
+#### Plot Data
+``` npm run plot ``` 
