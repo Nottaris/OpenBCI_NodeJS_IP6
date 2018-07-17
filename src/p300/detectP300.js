@@ -1,8 +1,3 @@
-/**
- * process eeg volts from p300 control to python
- *
- */
-
 module.exports = {
     getVEP: detectP300
 };
@@ -11,13 +6,14 @@ const p300 = require('./p300');
 const server = require('../socket/server');
 const fs = require('fs');
 
+
 let PythonShell = require('python-shell');
 
 let settings;
 let init = true;
-let fileNr = 1;
 
-function detectP300(volts, timestamps, cmdTimestamps) {
+let fileNr = 1;
+function detectP300(volts, baseline, timestamps, cmdTimestamps) {
 
     if (init) {
         //get Settings only once
@@ -30,26 +26,28 @@ function detectP300(volts, timestamps, cmdTimestamps) {
     //get get index for each timestamp
     cmdIdx = [[], [], [], [], []];
     cmdTimestamps.forEach((cmd, i) => {
-        cmd.forEach(currentTime => {
+        cmd.forEach((currentTime, j) => {
             idx = getIdxForTimestamp(timestamps, currentTime);
             if (idx > -1) {
                 cmdIdx[i].push(idx);
+                console.log(i+" "+settings.commands[i]+" "+idx+" "+timestamps[idx]+" "+volts[idx][0])
             } else {
                 console.log("No index for timestamp was found " + currentTime);
             }
 
         });
     });
-    // console.log(cmdTimestamps);
-    // console.log(cmdIdx);
 
-    fs.writeFile("data/p300/"+Date.now()+"_"+fileNr+"_volts.json", volts);
-    fs.writeFile("data/p300/"+Date.now()+"_"+fileNr+"_cmdIdx.json", cmdIdx);
+    console.log(cmdIdx);
+
+    fs.writeFile("data/p300/"+Date.now()+"_"+fileNr+"_volts.json", JSON.stringify(volts));
+    fs.writeFile("data/p300/"+Date.now()+"_"+fileNr+"_baseline.json", JSON.stringify(baseline));
+    fs.writeFile("data/p300/"+Date.now()+"_"+fileNr+"_cmdIdx.json", JSON.stringify(cmdIdx));
     fileNr++;
 
     const options = {mode: 'text'};
     let pyshell = new PythonShell('/src/pyscripts/butterworthBandpassP300.py', options);
-    let data = JSON.stringify({volts: volts, cmdIdx: cmdIdx});
+    let data = JSON.stringify({volts: volts, baseline: baseline, cmdIdx: cmdIdx});
 
     // sends channel data to the Python script via stdin
     pyshell.send(data).end(function (err) {
@@ -64,9 +62,9 @@ function detectP300(volts, timestamps, cmdTimestamps) {
         // Remove all new lines
         console.log(data);
         idx = data.replace(/\r?\n|\r/g, "");
-        cmd = settings.commands[idx];
         //process python result, send cmd if detected
-        if (cmd !== "nop") {
+        if (idx !== "nop") {
+            cmd = settings.commands[idx];
             console.log("doCmd was: " + cmd);
             //send doCommand to execute
             server.doCmd(cmd);
