@@ -1,3 +1,8 @@
+/**
+ * save eeg volts from p300 control to file
+ *
+ */
+
 module.exports = {
     getP300: function (sample) {
         digestSamples(sample);
@@ -11,8 +16,6 @@ const commands = ["next", "voldown", "playpause", "prev", "volup"];
 const focus = 1; //command 0-4
 
 const server = require('../socket/server');
-// const detectP300 = require('./detectP300');
-// const mathFunctions = require('../functions/mathFunctions');
 var init = true;
 
 const defaultSettings = {

@@ -1,5 +1,5 @@
 /**
- * extract p300 from eeg signal
+ * use p300 to control musicplayer
  *
  */
 
@@ -157,6 +157,8 @@ function findIndexForTimestamp(time) {
 function enoughDataForP300(cmdTimestamps, commands, compareCycles) {
     return commands.filter(cmd => cmdTimestamps[cmd].length > compareCycles).length === commands.length;
 }
+
+//used by testing
 
 function getSettings() {
     return settings;
