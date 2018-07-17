@@ -20,6 +20,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     y = lfilter(b, a, data)
     return y
 
+
 def main():
     with open('../../../data/p300/ex4_cycles5/1531816738843_2_baseline.json') as f:
         baseline = json.load(f)
@@ -34,32 +35,58 @@ def main():
     # # cmd = detectP300(data, cmdIdx)
 
     ## active channels
-    channels = [0,1,2]  # 0-7 channels
+    channels = [0, 1, 2]  # 0-7 channels
 
-    #
+    averageChannels = True
     cmdResult = []
-    # # Split channel Data
-    for channel in range(len(channels)):
-        dataChannel = []
-        dataBaseline = []
-        # save volts for each channel
-        for i in range(len(data)):
-            dataChannel.append(data[i][channel])
-        #save baseline for each channel
-        for i in range(len(baseline)):
-            dataBaseline.append(baseline[i][channel])
-        # detect P300 for each channel
-        cmd = detectP300(dataChannel, dataBaseline, cmdIdx, channel)
-        cmdResult.append(cmd)
 
-    print(cmdResult)
-    # Return most common cmd
-    if (cmdResult[0] == cmdResult[1] or cmdResult[0] == cmdResult[2]):
-        print(cmdResult[0])
-    elif (cmdResult[1] == cmdResult[2]):
-        print(cmdResult[1])
+    if (averageChannels):
+        # # Split channel Data
+        dataChannel3 = []
+        dataBaseline3 = []
+        for channel in range(len(channels)):
+            dataChannel = []
+            dataBaseline = []
+            # save volts for each channel
+            for i in range(len(data)):
+                dataChannel.append(data[i][channel])
+            # save baseline for each channel
+            for i in range(len(baseline)):
+                dataBaseline.append(baseline[i][channel])
+            dataChannel3.append(dataChannel)
+            dataBaseline3.append(dataBaseline)
+        # average arrays
+        avgDataChannel = np.average(dataChannel3, axis=0)
+        avgDataBaseline = np.average(dataBaseline3, axis=0)
+        # detect P300 for averaged channels
+        cmd = detectP300(avgDataChannel, avgDataBaseline, cmdIdx, 'all averaged')
+        cmdResult.append(cmd)
+        print("Result idx: " + str(cmdResult[0]))
+        # Return cmd (can only be index 0 and will be "nop" if nothing found)
+        return cmdResult[0]
     else:
-        print("nop")
+        # # Split channel Data
+        for channel in range(len(channels)):
+            dataChannel = []
+            dataBaseline = []
+            # save volts for each channel
+            for i in range(len(data)):
+                dataChannel.append(data[i][channel])
+            # save baseline for each channel
+            for i in range(len(baseline)):
+                dataBaseline.append(baseline[i][channel])
+            # detect P300 for each channel
+            cmd = detectP300(dataChannel, dataBaseline, cmdIdx, channel)
+            cmdResult.append(cmd)
+
+        print(cmdResult)
+        # Return most common cmd
+        if (cmdResult[0] == cmdResult[1] or cmdResult[0] == cmdResult[2]):
+            print(cmdResult[0])
+        elif (cmdResult[1] == cmdResult[2]):
+            print(cmdResult[1])
+        else:
+            print("nop")
 
 
 def detectP300(data, baseline, cmdIdx, channel):
@@ -88,15 +115,13 @@ def detectP300(data, baseline, cmdIdx, channel):
     baselineBP = dataFilterd[:len(baseline)]
     # Plot filterd data
     plt.figure(1)
-    plt.title("filterd data - Channel "+str(channel))
+    plt.title("filterd data - Channel " + str(channel))
     plt.plot(dataBP, color='r')
 
     print(data)
     plt.figure(2)
-    plt.title("Raw data - Channel "+str(channel))
+    plt.title("Raw data - Channel " + str(channel))
     plt.plot(data, color='r')
-
-
 
     # ## SPLIT VOLTS DATA IN COMMAND EPOCHES
     ##  collect volt for each cmd in dataP300[CMD][CYCLE][VOLTS]
@@ -106,7 +131,8 @@ def detectP300(data, baseline, cmdIdx, channel):
     for cmd in range(cmdCount):
         for cycle in range(cycles):
             dataP300[cmd].append(dataBP[cmdIdx[cmd][cycle]:(cmdIdx[cmd][cycle] + slotSize)])
-            dataBaseline[cmd].append(dataFilterd[cmdIdx[cmd][cycle]+baselineLength-slotSize+40:(cmdIdx[cmd][cycle]+baselineLength+40)])
+            dataBaseline[cmd].append(dataFilterd[cmdIdx[cmd][cycle] + baselineLength - slotSize + 40:(
+                        cmdIdx[cmd][cycle] + baselineLength + 40)])
 
     ## SUBTRACT BASELINE FROM SLOT BEFORE
     # dataP300Baseline = [[], [], [], [], []]
@@ -133,7 +159,7 @@ def detectP300(data, baseline, cmdIdx, channel):
             dataP300Avg[i] = np.average(dataP300[i], axis=0)
 
             for j in range(cycles):
-                plt.figure(10+i)
+                plt.figure(10 + i)
                 plt.title(' P300 %d Avg Cycles Cmd: %s ' % (channel, commands[i]))
                 plt.plot(dataP300[i][j] * 1000000, color='b')
 
