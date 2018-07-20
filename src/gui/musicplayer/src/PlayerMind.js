@@ -63,7 +63,7 @@ export default class PlayerBlink extends React.Component {
         infotext.innerText = "Training will start soon. Relax and focus on the highlighted command.";
 
         //train each command
-        let i = 0;  //TODO: set i = 0 to loop all commands
+        let i = 0;
         const commands = Object.keys(this.state.commands);
         let interval = setInterval(function () {
             if (i === 5) {
