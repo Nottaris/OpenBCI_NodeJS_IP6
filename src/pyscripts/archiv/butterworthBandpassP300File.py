@@ -2,7 +2,7 @@ from typing import List, Any
 
 from scipy.signal import butter, lfilter
 import json, sys, numpy as np, matplotlib.pyplot as plt
-
+from scipy import signal
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
 
@@ -93,7 +93,7 @@ def detectP300(data, baseline, cmdIdx, channel):
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 1
-    highcut = 15.0
+    highcut = 12.0
     order = 4
     threshold = 1.5
     slotSize = 120
@@ -185,6 +185,14 @@ def detectP300(data, baseline, cmdIdx, channel):
             axes = plt.gca()
             axes.set_ylim([-50, 50])
             plt.plot(dataP300Sum[i] * 1000000, color='r')
+            print(len(dataP300Sum[i]))
+            ## Downsample signal 1/6
+            dataResample = signal.resample(dataP300Sum[i], 20)
+            plt.figure(30 + i)
+            axes.set_ylim([-50, 50])
+            plt.title(' P300 Sum Cycles Downsample Cmd: %s ' % (commands[i]))
+            plt.plot(dataResample * 1000000, color='r')
+
         plt.show()
         return getCmdMaxAmplitude(dataP300Sum, cmdCount, threshold)
 
