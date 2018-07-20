@@ -91,9 +91,9 @@ def detectP300(data, baseline, cmdIdx, channel):
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 1
-    highcut = 30.0
-    order = 2
-    threshold = 1.5
+    highcut = 12.0
+    order = 4
+    threshold = 5
     slotSize = 120
     commands = ['playpause', 'next', 'prev', 'volup', 'voldown']
     cmdCount = len(cmdIdx)
@@ -104,11 +104,6 @@ def detectP300(data, baseline, cmdIdx, channel):
     dataWithBaseline = np.concatenate([baseline, data])
     dataFilterd = filterData(dataWithBaseline, lowcut, highcut, fs, order)
     dataBP = dataFilterd[len(baseline):]
-
-    # Plot filterd data
-    plt.figure(1)
-    plt.title("filterd data")
-    plt.plot(dataBP * 1000000, color='r')
 
     # ## SPLIT VOLTS DATA IN COMMAND EPOCHES
     ##  collect volt for each cmd in dataP300[CMD][CYCLE][VOLTS]
@@ -133,15 +128,6 @@ def detectP300(data, baseline, cmdIdx, channel):
         for i in range(cmdCount):
             dataP300Avg[i] = np.average(dataP300[i], axis=0)
 
-            # for j in range(cycles):
-            #     plt.figure(10+i)
-            #     plt.title(' P300 Avg Cycles Cmd: %s ' % (commands[i], channel))
-            #     plt.plot(dataP300[i][j] * 1000000, color='b')
-
-            plt.figure(10 + i)
-            plt.title(' P300 %s Avg Cycles Cmd: %s ' % (channel, commands[i]))
-            plt.plot(dataP300Avg[i] * 1000000, color='r')
-        # plt.show()
         return getCmdMaxAmplitude(dataP300Avg, cmdCount, threshold)
     else:
         # SUM CYCLES
@@ -150,13 +136,8 @@ def detectP300(data, baseline, cmdIdx, channel):
         for i in range(cmdCount):
             dataP300Sum[i] = dataP300[i][0]
             for j in range(cycles):
-                plt.figure(20 + i)
-                plt.title(' P300 Sum Cycles Cmd: %s ' % (commands[i]))
-                plt.plot(dataP300[i][j] * 1000000, color='b')
                 dataP300Sum[i] = np.sum(np.array([dataP300Sum[i], dataP300[i][j]]), axis=0)
-            plt.figure(20 + i)
-            plt.plot(dataP300Sum[i] * 1000000, color='r')
-        # plt.show()
+
         return getCmdMaxAmplitude(dataP300Sum, cmdCount, threshold)
 
 
@@ -174,7 +155,7 @@ def getCmdMaxAmplitude(dataP300, cmdCount, threshold):
     if (not np.isnan(float(maxdiff))):
         idx = diff.index(maxdiff)
         max = np.max(dataP300[idx])
-        mean = np.mean(dataP300[idx])
+        mean = np.abs(np.mean(dataP300[idx]))
         if (max > mean * threshold):
             return idx
     return "nop"

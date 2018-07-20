@@ -22,11 +22,11 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
 
 
 def main():
-    with open('../../../data/p300/ex4_cycles5/1531816738843_2_baseline.json') as f:
+    with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410890_1_baseline.json') as f:
         baseline = json.load(f)
-    with open('../../../data/p300/ex4_cycles5/1531816738826_2_volts.json') as f:
+    with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410878_1_volts.json') as f:
         volts = json.load(f)
-    with open('../../../data/p300/ex4_cycles5/1531816738849_2_cmdIdx.json') as f:
+    with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410893_1_cmdIdx.json') as f:
         cmdIdx = json.load(f)
 
     # create a numpy array
@@ -35,7 +35,7 @@ def main():
     # # cmd = detectP300(data, cmdIdx)
 
     ## active channels
-    channels = [0, 1, 2]  # 0-7 channels
+    channels = [0,1,2,4,5,6,7]  # 0-7 channels
 
     averageChannels = True
     cmdResult = []
@@ -59,7 +59,7 @@ def main():
         avgDataChannel = np.average(dataChannel3, axis=0)
         avgDataBaseline = np.average(dataBaseline3, axis=0)
         # detect P300 for averaged channels
-        cmd = detectP300(avgDataChannel, avgDataBaseline, cmdIdx, 'all averaged')
+        cmd = detectP300(avgDataChannel, avgDataBaseline, cmdIdx, 'averaged Channels')
         cmdResult.append(cmd)
         print("Result idx: " + str(cmdResult[0]))
         # Return cmd (can only be index 0 and will be "nop" if nothing found)
@@ -95,7 +95,7 @@ def detectP300(data, baseline, cmdIdx, channel):
     lowcut = 1
     highcut = 12.0
     order = 4
-    threshold = 1.5
+    threshold = 15
     slotSize = 120
     commands = ['playpause', 'next', 'prev', 'volup', 'voldown']
     cmdCount = len(cmdIdx)
@@ -165,6 +165,10 @@ def detectP300(data, baseline, cmdIdx, channel):
 
             plt.figure(10 + i)
             plt.title(' P300 %s Avg Cycles Cmd: %s ' % (channel, commands[i]))
+            plt.ylabel('microVolts')
+            plt.xlabel('Samples 250/s')
+            axes = plt.gca()
+            axes.set_ylim([-30, 30])
             plt.plot(dataP300Avg[i] * 1000000, color='r')
         plt.show()
         return getCmdMaxAmplitude(dataP300Avg, cmdCount, threshold)
@@ -176,22 +180,23 @@ def detectP300(data, baseline, cmdIdx, channel):
             dataP300Sum[i] = dataP300[i][0]
             for j in range(cycles):
                 plt.figure(20 + i)
-                plt.title(' P300 Sum Cycles Cmd: %s ' % (commands[i]))
+                plt.title(' P300 %s Sum Cycles Cmd: %s ' % (channel, commands[i]))
                 plt.plot(dataP300[i][j] * 1000000, color='b')
                 axes = plt.gca()
-                axes.set_ylim([-50, 50])
                 dataP300Sum[i] = np.sum(np.array([dataP300Sum[i], dataP300[i][j]]), axis=0)
             plt.figure(20 + i)
             axes = plt.gca()
-            axes.set_ylim([-50, 50])
+            plt.ylabel('microVolts')
+            plt.xlabel('Samples 250/s')
+            axes.set_ylim([-30, 30])
             plt.plot(dataP300Sum[i] * 1000000, color='r')
             print(len(dataP300Sum[i]))
             ## Downsample signal 1/6
-            dataResample = signal.resample(dataP300Sum[i], 20)
-            plt.figure(30 + i)
-            axes.set_ylim([-50, 50])
-            plt.title(' P300 Sum Cycles Downsample Cmd: %s ' % (commands[i]))
-            plt.plot(dataResample * 1000000, color='r')
+            # dataResample = signal.resample(dataP300Sum[i], 20)
+            # plt.figure(30 + i)
+            # axes.set_ylim([-50, 50])
+            # plt.title(' P300 Sum Cycles Downsample Cmd: %s ' % (commands[i]))
+            # plt.plot(dataResample * 1000000, color='r')
 
         plt.show()
         return getCmdMaxAmplitude(dataP300Sum, cmdCount, threshold)
@@ -211,7 +216,10 @@ def getCmdMaxAmplitude(dataP300, cmdCount, threshold):
     if (not np.isnan(float(maxdiff))):
         idx = diff.index(maxdiff)
         max = np.max(dataP300[idx])
-        mean = np.mean(dataP300[idx])
+        mean = np.abs(np.mean(dataP300[idx]))
+        print("max "+str(max))
+        print("mean "+str(mean))
+        print("threshold " + str(mean))
         if (max > mean * threshold):
             return idx
     return "nop"

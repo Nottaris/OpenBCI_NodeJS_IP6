@@ -24,7 +24,7 @@ const defaultSettings = {
     //ToDo: Set correct baselineLength
     baselineLength: 1000,    // baseline 3s = 750 samples
     voltsMaxLength: 40000,  //max length of volts array
-    cycles: 5,              //nr of cycles that will be analysed
+    cycles: 3,              //nr of cycles that will be analysed
     commands: ['playpause','next','prev','volup', 'voldown'],
     debug: true             // show console.log
 };
