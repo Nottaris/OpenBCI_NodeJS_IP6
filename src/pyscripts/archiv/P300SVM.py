@@ -1,6 +1,6 @@
 from typing import List, Any
 
-from scipy.signal import butter, lfilter
+from scipy.signal import butter, lfilter, decimate, resample
 import json, sys, numpy as np, matplotlib.pyplot as plt
 from sklearn import svm
 
@@ -104,6 +104,9 @@ def filterChannelData(volts, baseline, cmdIdx, channels):
         plt.plot(baselineDataBP[channel], color='g')
         plt.show()
 
+
+
+
     ## SPLIT VOLTS DATA IN COMMAND EPOCHES
     ## collect volt for each cmd in dataP300[CMD][CHANNEL][VOLTS] of all cycles
     dataP300 = [[], [], [], [], []]
@@ -147,6 +150,23 @@ def filterChannelData(volts, baseline, cmdIdx, channels):
 
     print("len(blP300) aka 4cycles*8channels = 32 : " + str(len(blP300)))
     print("len(blP300[0])  slotsize 120: " + str(len(blP300[0])))
+
+
+    ## Downsample
+    # reduce dimensions from 120 samples to 40 samples
+    for cmd in range(cmdCount):
+        for channel in range(len(channels)):
+            dataP300[cmd][channel] = resample(dataP300[cmd][channel], 24)
+            blP300[cmd][channel] = resample(blP300[cmd][channel], 24)
+            dataP300TEST[cmd][channel] = resample(dataP300TEST[cmd][channel], 24)
+
+
+    #https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.signal.decimate.html
+    #decimate(dataP300TEST[cmd][channel], 5, n=8, ftype='iir', axis=-1, zero_phase=True)
+
+
+
+
 
     extractFeature(np.array(dataP300), np.array(blP300))
 
