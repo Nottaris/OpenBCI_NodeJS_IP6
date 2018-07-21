@@ -134,7 +134,11 @@ def extractFeature(dataP300, blP300):
     clf = svm.SVC()
     clf.fit(trainData, y)
 
-
+    #test predictions
+    resultTarget = clf.predict([dataP300target[3]])
+    print(resultTarget)
+    resultNonTarget = clf.predict([blP300[3]])
+    print(resultNonTarget)
 
 
 def filterData(data, lowcut, highcut, fs, order):
