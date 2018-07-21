@@ -4,6 +4,7 @@ from scipy.signal import butter, lfilter
 import json, sys, numpy as np, matplotlib.pyplot as plt
 from scipy import signal
 
+
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
 
 
@@ -26,25 +27,22 @@ def main():
         baseline = json.load(f)
     with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410878_1_volts.json') as f:
         volts = json.load(f)
-    with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410893_1_cmdIdx_Training.json') as f:
+    with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410893_1_cmdIdx.json') as f:
         cmdIdx = json.load(f)
 
     # create a numpy array
-    volts = np.array(volts)
+    volts = np.array(volts)  # about 10 sec., enough for 3 cycles at least (4 sharp)
     baseline = np.array(baseline)
     # # cmd = detectP300(data, cmdIdx)
 
     ## active channels
-    channels = [0,1,2,3,4,5,6,7]  # 0-7 channels
+    channels = [0, 1, 2, 3, 4, 5, 6, 7]  # 0-7 channels
 
     filterChannelData(volts, baseline, cmdIdx, channels)
     # extractFeature(dataChannel, dataBaseline, channels)
 
 
-
-
-
-def filterChannelData(data, baseline, cmdIdx, channels):
+def filterChannelData(volts, baseline, cmdIdx, channels):
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 1
@@ -57,9 +55,9 @@ def filterChannelData(data, baseline, cmdIdx, channels):
     # # Split channel Data
     channelDataBP = []
     for channel in range(len(channels)):
-        dataWithBaseline = np.concatenate([baseline[:,channel], data[:,channel]])
+        dataWithBaseline = np.concatenate([baseline[:, channel], volts[:, channel]])
         dataFilterd = filterData(dataWithBaseline, lowcut, highcut, fs, order)
-        channelDataBP.append(dataFilterd[len(baseline[:,channel]):])
+        channelDataBP.append(dataFilterd[len(baseline[:, channel]):])
         # Plot filterd data
         plt.figure(channel)
         plt.title("filterd data - Channel " + str(channel))
@@ -67,22 +65,27 @@ def filterChannelData(data, baseline, cmdIdx, channels):
 
         plt.figure(channel)
         plt.title("Raw data - Channel " + str(channel))
-        plt.plot(data[:,channel], color='b')
+        plt.plot(volts[:, channel], color='b')
     plt.show()
 
     # ## SPLIT VOLTS DATA IN COMMAND EPOCHES
-    ##  collect volt for each cmd in dataP300[CMD][CHANNEL][VOLTS]
+    ##  collect volt for each cmd in dataP300[CMD][CHANNEL][VOLTS] of all cycles
     dataP300 = [[], [], [], [], []]
-    cycle = 0
+    cycles = 3
     print(cmdIdx)
     for cmd in range(cmdCount):
         for channel in range(len(channels)):
-            dataP300[cmd].append(channelDataBP[channel][cmdIdx[cmd][cycle]:(cmdIdx[cmd][cycle] + slotSize)])
+            for cycle in range(0, cycles):
+                dataP300[cmd].append(
+                    channelDataBP[channel][cmdIdx[cmd][cycle]:(cmdIdx[cmd][cycle] + slotSize)]
+                )
 
-    print(len(dataP300[0][1]))
+    print("len(dataP300[0] "+str(len(dataP300[0])))
+    print("len(dataP300[0][1] "+str(len(dataP300[0][1])))
 
 def extractFeature(dataChannel, dataBaseline, channels):
     print("extract feature")
+
 
 def filterData(data, lowcut, highcut, fs, order):
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
