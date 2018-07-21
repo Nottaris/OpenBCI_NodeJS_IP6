@@ -2,8 +2,7 @@ from typing import List, Any
 
 from scipy.signal import butter, lfilter
 import json, sys, numpy as np, matplotlib.pyplot as plt
-from scipy import signal
-
+from sklearn import svm
 
 # Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
 
@@ -99,24 +98,43 @@ def filterChannelData(volts, baseline, cmdIdx, channels):
                 )
 
     print("len(dataP300) aka 5 cmds: " + str(len(dataP300)))
-    print("len(dataP300[0]) aka 5cmd*8channels = 24 : " + str(len(dataP300[0])))
+    print("len(dataP300[0]) aka 3cycles*8channels = 24 : " + str(len(dataP300[0])))
     print("len(dataP300[0][1]) slotsize 120: " + str(len(dataP300[0][1])))
 
     ## SPLIT BASELINE IN EPOCHES
-    BLP300 = []
+    blP300 = []
     cycles = 3
     print(cmdIdx)
     for channel in range(len(channels)):
         for cycle in range(0, cycles):
-            BLP300.append(
+            blP300.append(
                 baselineDataBP[channel][120*cycle:120*cycle + slotSize]
             )
 
-    print("len(BLP300) aka 5cmd*8channels = 24 : " + str(len(BLP300)))
-    print("len(BLP300[0])  slotsize 120: " + str(len(BLP300[0])))
+    print("len(blP300) aka 3cycles*8channels = 24 : " + str(len(blP300)))
+    print("len(blP300[0])  slotsize 120: " + str(len(blP300[0])))
 
-def extractFeature(dataP300, BLP300, channels):
-    print("extract feature")
+    extractFeature(np.array(dataP300), np.array(blP300))
+
+
+def extractFeature(dataP300, blP300):
+    print("extract features: ")
+    #baseline blP300 is non-target
+    #dataP300 cmd playpause index=2 is target
+    dataP300target = dataP300[2]
+    trainData = np.concatenate((dataP300target, blP300))
+    nx, ny = trainData.shape
+    print(nx)
+    print(ny)
+    # create label y
+    z = np.zeros(24)  # 0 = non-target for blP300
+    o = np.ones(24)   # 1 = target for dataP300target
+    y = np.concatenate((o, z))
+    print(y)
+    clf = svm.SVC()
+    clf.fit(trainData, y)
+
+
 
 
 def filterData(data, lowcut, highcut, fs, order):
