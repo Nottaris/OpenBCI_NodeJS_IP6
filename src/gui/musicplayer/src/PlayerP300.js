@@ -18,10 +18,11 @@ export default class P300 extends React.Component {
             trackNr: 0,
             currentCmd: 'no',
             colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
-            //colors: ['#fff'],
-            commands: ["noCmd1", "next", "noCmd2", "voldown", "noCmd3", "playpause", "noCmd4", "prev", "noCmd5", "volup", "noCmd1", "next", "noCmd5", "voldown", "noCmd3", "playpause", "noCmd2", "prev", "noCmd4", "volup"],
-            cmdInterval: 250,
-            flashCmdInterval: 100
+            //real cmds in order, empty slots random (20 flashes, if each 250 ms = 5000 ms = 2 cycles)
+            commands: ["noCmd1", "next", "noCmd2", "voldown", "noCmd3", "playpause", "noCmd4", "prev", "noCmd5", "volup",
+                       "noCmd1", "next", "noCmd5", "voldown", "noCmd3", "playpause", "noCmd2", "prev", "noCmd4", "volup"],
+            cmdInterval: 250, //interval of new flashes, real cmds twice this time
+            flashCmdInterval: 100 //duration of flash
         };
 
         this.clickCommand = this.clickCommand.bind(this);
