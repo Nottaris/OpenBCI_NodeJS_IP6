@@ -51,25 +51,43 @@ def filterChannelData(volts, baseline, cmdIdx, channels):
     cmdCount = len(cmdIdx)
     slotSize = 120
 
-    # ## FILTER DATA
-    # # Split channel Data
+    ## BP FILTER DATA
     channelDataBP = []
     for channel in range(len(channels)):
+        #add baseline before filter BP
         dataWithBaseline = np.concatenate([baseline[:, channel], volts[:, channel]])
         dataFilterd = filterData(dataWithBaseline, lowcut, highcut, fs, order)
+        #cut off baseline again
         channelDataBP.append(dataFilterd[len(baseline[:, channel]):])
+
         # Plot filterd data
         plt.figure(channel)
         plt.title("filterd data - Channel " + str(channel))
         plt.plot(channelDataBP[channel], color='r')
-
-        plt.figure(channel)
+        plt.show()
+        # Plot raw data
+        plt.figure(channel+10)
         plt.title("Raw data - Channel " + str(channel))
         plt.plot(volts[:, channel], color='b')
-    plt.show()
+        plt.show()
 
-    # ## SPLIT VOLTS DATA IN COMMAND EPOCHES
-    ##  collect volt for each cmd in dataP300[CMD][CHANNEL][VOLTS] of all cycles
+    ## BP FILTER BASELINE
+    baselineDataBP = []
+    for channel in range(len(channels)):
+        dataFilterd = filterData(baseline[:, channel], lowcut, highcut, fs, order) #baseline is 1000 samples
+        baselineDataBP.append(
+            dataFilterd[int(len(baseline[:, channel]) / 4):int(3*(len(baseline[:, channel]) / 4))]
+        )  # middle half (500 samples)
+
+        # Plot filterd baseline
+        plt.figure(channel+20)
+        plt.title("filterd Baseline - Channel " + str(channel))
+        plt.plot(baselineDataBP[channel], color='g')
+        plt.show()
+
+
+    ## SPLIT VOLTS DATA IN COMMAND EPOCHES
+    ## collect volt for each cmd in dataP300[CMD][CHANNEL][VOLTS] of all cycles
     dataP300 = [[], [], [], [], []]
     cycles = 3
     print(cmdIdx)
@@ -80,10 +98,24 @@ def filterChannelData(volts, baseline, cmdIdx, channels):
                     channelDataBP[channel][cmdIdx[cmd][cycle]:(cmdIdx[cmd][cycle] + slotSize)]
                 )
 
-    print("len(dataP300[0] "+str(len(dataP300[0])))
-    print("len(dataP300[0][1] "+str(len(dataP300[0][1])))
+    print("len(dataP300) aka 5 cmds: " + str(len(dataP300)))
+    print("len(dataP300[0]) aka 5cmd*8channels = 24 : " + str(len(dataP300[0])))
+    print("len(dataP300[0][1]) slotsize 120: " + str(len(dataP300[0][1])))
 
-def extractFeature(dataChannel, dataBaseline, channels):
+    ## SPLIT BASELINE IN EPOCHES
+    BLP300 = []
+    cycles = 3
+    print(cmdIdx)
+    for channel in range(len(channels)):
+        for cycle in range(0, cycles):
+            BLP300.append(
+                baselineDataBP[channel][120*cycle:120*cycle + slotSize]
+            )
+
+    print("len(BLP300) aka 5cmd*8channels = 24 : " + str(len(BLP300)))
+    print("len(BLP300[0])  slotsize 120: " + str(len(BLP300[0])))
+
+def extractFeature(dataP300, BLP300, channels):
     print("extract feature")
 
 
