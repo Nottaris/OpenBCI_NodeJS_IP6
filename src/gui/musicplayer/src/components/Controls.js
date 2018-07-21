@@ -17,8 +17,8 @@ export default class Controls extends React.Component {
                     <div onClick={() => this.setCommand('prev')} id="prev" className="Button">
                         <i className='fa fa-fw fa-backward'></i>
                     </div>
-                    <div onClick={() => this.setCommand('play')} id="play" className="Button">
-                        <i className='fa fa-fw fa-play'></i>
+                    <div onClick={() => this.setCommand('playpause')} id="playpause" className="Button">
+                        <i className={"fa fa-fw fa-" + this.props.playpauseToggle}></i>
                     </div>
                     <div onClick={() => this.setCommand('next')} id="next" className="Button">
                         <i className='fa fa-fw fa-forward'></i>
@@ -27,9 +27,6 @@ export default class Controls extends React.Component {
                 <div className="row">
                     <div onClick={() => this.setCommand('voldown')} id="voldown" className="Button">
                         <i className='fa fa-fw fa-volume-down'></i>
-                    </div>
-                    <div onClick={() => this.setCommand('pause')} id="pause" className="Button">
-                        <i className='fa fa-fw fa-pause'></i>
                     </div>
                     <div onClick={() => this.setCommand('volup')} id="volup" className="Button">
                         <i className='fa fa-fw fa-volume-up'></i>

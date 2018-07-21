@@ -12,11 +12,10 @@ export default class PlayerBlink extends React.Component {
         super(props);
         console.log(props);
         this.state = {
-            playStatus: 'play',
+            playpauseToggle: 'play',
             currentTime: 0,
             audioVolume: 0.5,
-            trackNr: 0,
-            currentCmd: 'no'
+            trackNr: 0
         };
 
         this.clickCommand = this.clickCommand.bind(this);
@@ -40,16 +39,19 @@ export default class PlayerBlink extends React.Component {
 
 
     flashCommand = (data) => {
-        this.setState({currentCmd: data.command});
+        console.log("exec: " + data.command);
         this.blinkCommandButton(data.command);
-    }
+    };
 
-    execCommand = () => {
-        console.log("exec: " + this.state.currentCmd);
-        this.clickCommand(this.state.currentCmd);
-        let elem = document.getElementById(this.state.currentCmd).getElementsByClassName('fa')[0];
+    execCommand = (data) => {
+        console.log("exec: " + data.docommand);
+        this.clickCommand(data.docommand);
+        let elem = document.getElementById(data.docommand).getElementsByClassName('fa')[0];
         elem.style.color = "green";
-    }
+        setTimeout(function () {
+                elem.style.color = "#1c739d";
+                }, 1000);
+    };
 
     //Set the color of the command to white for X seconds
     blinkCommandButton(command) {
@@ -57,7 +59,7 @@ export default class PlayerBlink extends React.Component {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
             setTimeout(function () {
-                elem.style.color = "#1c456e";
+                elem.style.color = "#1c739d";
             }, 1000);
         }
     }
@@ -65,11 +67,12 @@ export default class PlayerBlink extends React.Component {
     clickCommand = (state) => {
         let audio = document.getElementById('audio');
         switch (state) {
-            case "play":
-                this.play(audio);
-                break;
-            case "pause":
-                this.pause(audio);
+            case "playpause":
+                if (this.state.playpauseToggle === 'play') {
+                    this.play(audio);
+                } else if (this.state.playpauseToggle === 'pause') {
+                    this.pause(audio);
+                }
                 break;
             case "next":
                 this.next(audio);
@@ -178,7 +181,7 @@ export default class PlayerBlink extends React.Component {
                     </div>
 
                 </div>
-                <Controls clickCommand={this.clickCommand}/>
+                <Controls playpauseToggle={this.state.playpauseToggle} clickCommand={this.clickCommand}/>
             </div>
 
         )

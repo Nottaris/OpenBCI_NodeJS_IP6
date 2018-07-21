@@ -15,7 +15,7 @@ function subscribeToP300Cmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd
 
 function subscribeToBlinkCmds(callbackFlashCmd, callbackBlinkCmd) {
     socket.on('command', command => callbackFlashCmd(command));
-    socket.on('blinkcommand', _ => callbackBlinkCmd());
+    socket.on('blinkcommand', docommand => callbackBlinkCmd(docommand));
 
     socket.on('error', console.error.bind(console));
     socket.on('message', console.log.bind(console));

@@ -12,10 +12,9 @@ let skip = 0;
 
 const commands = [
     "prev",
-    "play",
+    "playpause",
     "next",
     "voldown",
-    "pause",
     "volup",
     "prev"
 ];
@@ -60,7 +59,7 @@ function detectBlinkOld(baseline, currentMedian) {
         blink.setBlinkcount();
 
         //send doCommand to execute
-        server.doBlinkCmd();
+        server.doBlinkCmd(currentCommand);
 
         skip = settings.slots * 5;
     }

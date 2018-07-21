@@ -192,6 +192,9 @@ body {
 }
 
 /* Custom CSS for Blink */
+.Blink .Controls .Button {
+    color: #1c739d;
+}
 .Blink .Controls {
     border-spacing: 25px;
     display: table;
