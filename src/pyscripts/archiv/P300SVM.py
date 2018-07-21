@@ -24,7 +24,8 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
 
 # global variable
 clf = svm.SVC()
-
+plot = False
+downsample = True
 
 def main():
     # with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410890_1_baseline.json') as f:
@@ -79,16 +80,17 @@ def filterChannelData(volts, baseline, cmdIdx, channels):
         # cut off baseline again
         channelDataBP.append(dataFilterd[len(baseline[:, channel]):])
 
-        # Plot filterd data
-        plt.figure(channel)
-        plt.title("filterd data - Channel " + str(channel))
-        plt.plot(channelDataBP[channel], color='r')
-        plt.show()
-        # Plot raw data
-        plt.figure(channel + 10)
-        plt.title("Raw data - Channel " + str(channel))
-        plt.plot(volts[:, channel], color='b')
-        plt.show()
+        if plot:
+            # Plot filterd data
+            plt.figure(channel)
+            plt.title("filterd data - Channel " + str(channel))
+            plt.plot(channelDataBP[channel], color='r')
+            plt.show()
+            # Plot raw data
+            plt.figure(channel + 10)
+            plt.title("Raw data - Channel " + str(channel))
+            plt.plot(volts[:, channel], color='b')
+            plt.show()
 
     ## BP FILTER BASELINE
     baselineDataBP = []
@@ -98,11 +100,12 @@ def filterChannelData(volts, baseline, cmdIdx, channels):
             dataFilterd[int(len(baseline[:, channel]) / 4):int(3 * (len(baseline[:, channel]) / 4))]
         )  # middle half (500 samples)
 
-        # Plot filterd baseline
-        plt.figure(channel + 20)
-        plt.title("filterd Baseline - Channel " + str(channel))
-        plt.plot(baselineDataBP[channel], color='g')
-        plt.show()
+        if plot:
+            # Plot filterd baseline
+            plt.figure(channel + 20)
+            plt.title("filterd Baseline - Channel " + str(channel))
+            plt.plot(baselineDataBP[channel], color='g')
+            plt.show()
 
 
 
@@ -151,21 +154,30 @@ def filterChannelData(volts, baseline, cmdIdx, channels):
     print("len(blP300) aka 4cycles*8channels = 32 : " + str(len(blP300)))
     print("len(blP300[0])  slotsize 120: " + str(len(blP300[0])))
 
+    if downsample:
 
-    ## Downsample
-    # reduce dimensions from 120 samples to 40 samples
-    for cmd in range(cmdCount):
+        newSampleRate = 30
+        downsampleFactor = slotSize/newSampleRate
+
+        # Alternativ Downsample
+        #https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.signal.decimate.html
+        #decimate(dataP300TEST[cmd][channel], 5, n=8, ftype='iir', axis=-1, zero_phase=True)
+
+        ## Downsample
+        # reduce dimensions from 120 samples to 30 samples
+        for cmd in range(cmdCount):
+            for channel in range(len(channels)):
+                #print(dataP300[cmd][channel].shape) # (120,)
+                dataP300[cmd][channel] = resample(dataP300[cmd][channel], newSampleRate)
+                dataP300TEST[cmd][channel] = resample(dataP300TEST[cmd][channel], newSampleRate)
+
+        # downsample baseline (has no cmds)
         for channel in range(len(channels)):
-            dataP300[cmd][channel] = resample(dataP300[cmd][channel], 24)
-            blP300[cmd][channel] = resample(blP300[cmd][channel], 24)
-            dataP300TEST[cmd][channel] = resample(dataP300TEST[cmd][channel], 24)
+             blP300[channel] = resample(blP300[channel], newSampleRate)
 
-
-    #https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.signal.decimate.html
-    #decimate(dataP300TEST[cmd][channel], 5, n=8, ftype='iir', axis=-1, zero_phase=True)
-
-
-
+        # downsample cmdIdx - from 120 samples to 30 samples for example is 4 times less data, indexes are 4 times lower
+        for cmd in range(cmdCount):
+           cmdIdx[cmd] = list(map(lambda i: int(i/downsampleFactor), cmdIdx[cmd]))
 
 
     extractFeature(np.array(dataP300), np.array(blP300))
