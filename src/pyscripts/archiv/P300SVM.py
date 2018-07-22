@@ -27,20 +27,6 @@ clf = svm.SVC()
 
 
 def main():
-    # with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410890_1_baseline.json') as f:
-    #     baseline = json.load(f)
-    # with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410878_1_volts.json') as f:
-    #     volts = json.load(f)
-    # with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410893_1_cmdIdx.json') as f:
-    #     cmdIdx = json.load(f)
-
-
-    #    with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080418380_2_baseline.json') as f:
-    #        baseline = json.load(f)
-    #    with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080418368_2_volts.json') as f:
-    #        volts = json.load(f)
-    #    with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080418385_2_cmdIdx.json') as f:
-    #        cmdIdx = json.load(f)
     with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410890_1_baseline.json') as f:
         baselineTraining = json.load(f)
     with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410878_1_volts.json') as f:
@@ -66,27 +52,27 @@ def main():
     channels = [0, 1, 2, 3, 4, 5, 6, 7]  # 0-7 channels
 
     ## EXTRACT FEATURES FOR TRAINING DATA
-    print("------ Traing Data ------")
+    print("\n------ Traing Data ------")
     ## Training Target
     targetCmd = 0 # Playpause
 
     ## 1. Filter and Downsample Traingsdata
-    filterdTraindata = filterDownsampleData(voltsTraining, baselineTraining, cmdIdxTraining, channels)
+    [filterdTraindata, filterdBaseline] = filterDownsampleData(voltsTraining, baselineTraining, cmdIdxTraining, channels)
 
     ##  2. Extract Features for Traingsdata
-    featuresTraining = extractFeature(filterdTraindata, targetCmd)
+    [X, y] = extractFeature(filterdTraindata,filterdBaseline, targetCmd)
 
     ##  3. Train Model with features
 
 
     ## EXTRACT FEATURES FOR TEST DATA
-    print("------ Test Data ------")
+    print("\n------ Test Data ------")
     ## 1. Filter and Downsample Testdata
 
-    filterdTestdata = filterDownsampleData(voltsTest, baselineTest, cmdIdxTest, channels)
+    [filterdTestdata, filterdTestBaseline] = filterDownsampleData(voltsTest, baselineTest, cmdIdxTest, channels)
 
     ##  2. Extract Features from Testdata
-    featuresTraining = extractFeature(filterdTestdata, None)
+    [Xtest, ytest] = extractFeature(filterdTestdata, filterdTestBaseline, None)
 
    ##  3. Compare with Model
 
@@ -100,7 +86,6 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
     order = 4
     cmdCount = len(cmdIdx)
     slotSize = 120
-    baselineLength = len(baseline[0])
     commands = ['playpause', 'next', 'prev', 'volup', 'voldown']
     cycles = len(cmdIdx[0])
     channels = len(channels)
@@ -129,9 +114,7 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
     baselineDataBP = []
     for channel in range(channels):
         dataFilterd = filterData(baseline[:, channel], lowcut, highcut, fs, order)  # baseline is 1000 samples
-        baselineDataBP.append(
-            dataFilterd[int(len(baseline[:, channel]) / 4):int(3 * (len(baseline[:, channel]) / 4))]
-        )  # middle half (500 samples)
+        baselineDataBP.append(dataFilterd)
 
         # Plot filterd baseline
         # plt.figure(channel + 20)
@@ -142,81 +125,76 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
     ## SPLIT VOLTS DATA IN COMMAND EPOCHES
     ## collect volt for each cmd in dataP300[CMD][CYCLE][CHANNEL][VOLTS] of all cycles
     paddingSlot = 20 # remove first and last 20 samples from slots
-    dataP300 =  []
+    dataDownSampleP300 =  []
     for cmd in range(cmdCount):
         cycleData = []
         for cycle in range(cycles):
             channelData = []
             for channel in range(channels):
-                channelData.append(channelDataBP[channel][cmdIdx[cmd][cycle]+paddingSlot:(cmdIdx[cmd][cycle] + slotSize-paddingSlot)])
+                volts = channelDataBP[channel][cmdIdx[cmd][cycle]+paddingSlot:(cmdIdx[cmd][cycle] + slotSize-paddingSlot)]
+                # reduce dimensions from 80 samples to 20 samples
+                channelData.append(resample(volts, 20))
                 if(cmd == 0 and channel == 0 and cycle == 1):
                     plt.figure(channel + 20)
                     plt.title("filterd Data - Channel " + str(channel)+" cmd "+str(commands[cmd])+" cycle"+str(cycle))
                     plt.plot(channelData[channel], color='g')
 
             cycleData.append(channelData)
-        dataP300.append(cycleData)
+        dataDownSampleP300.append(cycleData)
 
-    print("-- Command Data ---")
-    print("len(dataP300) aka 5 cmds: " + str(len(dataP300)))
-    print("len(dataP300[0]) aka 3 cycles : " + str(len(dataP300[0])))
-    print("len(dataP300[0][0]) aka 8 channels : " + str(len(dataP300[0][0])))
-    print("len(dataP300[0][0][0]) aka 80 volts : " + str(len(dataP300[0][0][0])))
-
-    ## Downsample
-    # reduce dimensions from 80 samples to 20 samples
-    dataDownSampleP300 = dataP300
-    for cmd in range(cmdCount):
-        for cycle in range(cycles):
-            for channel in range(channels):
-                dataDownSampleP300[cmd][cycle][channel] = resample(dataP300[cmd][cycle][channel], 20)
-                if (cmd == 0 and channel == 0 and cycle == 1):
-                    plt.figure(channel + 30)
-                    plt.title(
-                        "filterd Downsampled Data - Channel " + str(channel) + " cmd " + str(commands[cmd]) + " cycle" + str(cycle))
-                    plt.plot(dataDownSampleP300[cmd][cycle][channel], color='b')
-    print("-- Downsampled Command Data ---")
+    print("\n-- Command Data (Downsampled) ---")
     print("len(dataDownSampleP300) aka 5 cmds: " + str(len(dataDownSampleP300)))
     print("len(dataDownSampleP300[0]) aka 3 cycles : " + str(len(dataDownSampleP300[0])))
     print("len(dataDownSampleP300[0][0]) aka 8 channels : " + str(len(dataDownSampleP300[0][0])))
-    print("len(dataDownSampleP300[0][0][0]) aka 80 volts : " + str(len(dataDownSampleP300[0][0][0])))
+    print("len(dataDownSampleP300[0][0][0]) aka 20 volts : " + str(len(dataDownSampleP300[0][0][0])))
+
+    ## SPLIT BASELINE IN COMMAND EPOCHES
+    start = 0
+    downSampleBaseline = []
+    while(start < len(baselineDataBP[0])-80):
+        channelData = []
+        for channel in range(channels):
+            volts = baselineDataBP[channel][start:start + 80]
+            # reduce dimensions from 80 samples to 20 samples
+            channelData.append(resample(volts, 20))
+        downSampleBaseline.append(channelData)
+        start += 80
+
+    print("\n-- Baseline Data (Downsampled) ---")
+    print("len(downSampleBaseline[0]) aka 1000 / 80 = 12 : " + str(len(downSampleBaseline)))
+    print("len(downSampleBaseline[0][0]) aka 8 channels : " + str(len(downSampleBaseline[0])))
+    print("len(downSampleBaseline[0][0][0]) aka 20 volts : " + str(len(downSampleBaseline[0][0])))
 
     plt.show()
-    return dataDownSampleP300
+    return dataDownSampleP300, downSampleBaseline
 
 
-def extractFeature(dataDownSample, targetCmd):
+def extractFeature(dataDownSample, filterdBaseline, targetCmd):
     cmdCount = len(dataDownSample)
     cycles = len(dataDownSample[0])
-
-    # ## Split Data into target and non-target Data
-    # target = []
-    # nonTarget = []
-    #
-    # for cmd in range(len(dataDownSample)):
-    #     if(cmd == targetCmd):
-    #         target.append([dataDownSample[cmd]])
-    #     else:
-    #         nonTarget.append(dataDownSample[cmd])
-    # print(len(target))
-    # print(len(nonTarget))
-
 
     ## Reshape Data
     reshapedData =  [[],[],[],[],[]]
     for cmd in range(cmdCount):
 
         cmdData = np.array(dataDownSample[cmd])
-        print(cmdData.shape)
         cycle, nx, ny = cmdData.shape
         reshapedData[cmd] = cmdData.reshape((cycle, nx * ny))
         # reshapedData[cmd].append(cycleData.reshape((nx * ny)))
-        print(len(reshapedData[cmd]))
 
-    print("-- Reshaped Data ---")
+    print("\n-- Reshaped Data ---")
     print("len(reshapedData) aka 5 cmds: " + str(len(reshapedData)))
     print("len(reshapedData[0]) aka 3 cycles : " + str(len(reshapedData[0])))
     print("len(reshapedData[0][0]) aka 8 channels and 20 samples : " + str(len(reshapedData[0][0])))
+
+    ## Reshape Baseline
+    baselineData = np.array(filterdBaseline)
+    cycle, nx, ny = baselineData.shape
+    reshapedBaselineData = baselineData.reshape((cycle, nx * ny))
+
+    print("\n-- Reshaped Baseline ---")
+    print("len(reshapedBaselineData) aka 1000 / 80 = 12 : " + str(len(reshapedBaselineData)))
+    print("len(reshapedBaselineData[0]) aka 8 channels and 20 samples : " + str(len(reshapedBaselineData[0])))
 
     ## Create X and Y data for SVM training
     X = []
@@ -225,23 +203,24 @@ def extractFeature(dataDownSample, targetCmd):
     for cmd in range(cmdCount):
         for cycle in range(cycles):
             X.append(reshapedData[cmd][cycle])
-            if(cmd == targetCmd):
+            if(cmd == targetCmd): #if cmd is traget command set y = 1
                 y.append(1)
             else:
                 y.append(0)
 
-    print("-- X and Y Data ---")
-    print("len(X) cycles x cmd = 3 * 5 : " + str(len(X)))
+    print("\n-- X and Y Data ---")
+    print("len(X) cycles x cmd = 3 * 5 = 15 : " + str(len(X)))
     print("y : " + str(y))
-    # baseline blP300 is non-target
-    # dataP300 cmd playpause index=2 is target
-    # dataP300target = dataP300[2]
-    # print(dataP300target.shape)
-    # print(blP300.shape)
-    # trainData = np.concatenate((dataP300target, blP300))
-    # nx, ny = trainData.shape
-    # print(nx)
-    # print(ny)
+
+
+    for i in range(len(reshapedBaselineData)):
+        X.append(reshapedBaselineData[i])
+        y.append(0)
+
+    print("\n-- X and Y Data with Baseline Data ---")
+    print("len(X) data epoches + baseline epoches 15 + 12 = 27 : " + str(len(X)))
+    print("y : " + str(y))
+    return X, y
 
 def trainData(dataP300, blP300):
     # create label y
