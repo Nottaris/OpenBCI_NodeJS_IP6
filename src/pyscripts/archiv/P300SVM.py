@@ -218,6 +218,9 @@ def extractFeature(dataDownSample, filterdBaseline, targetCmd):
         print("len(X) cycles x cmd = 3 * 5 = 15 : " + str(len(X)))
         print("y : " + str(y))
 
+        # Alternativ Downsample
+        #https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.signal.decimate.html
+        #decimate(dataP300TEST[cmd][channel], 5, n=8, ftype='iir', axis=-1, zero_phase=True)
 
     for i in range(len(reshapedBaselineData)):
         X.append(reshapedBaselineData[i])
