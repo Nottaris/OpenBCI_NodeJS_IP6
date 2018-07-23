@@ -1,13 +1,7 @@
-from typing import List, Any
-
-from scipy.signal import butter, lfilter
-import json, sys, numpy as np, matplotlib.pyplot as plt
 import pickle
 from scipy.signal import butter, lfilter, decimate, resample
 import json, sys, numpy as np, matplotlib.pyplot as plt
 from sklearn import svm, preprocessing, metrics
-from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.model_selection import GridSearchCV
 
 # enable/disable debug Mode
 debug = False
@@ -68,9 +62,11 @@ def main():
 
         for y in range(len(y_pred)):
             if(y_pred[y] == 1):
+                # increment cmd counter if classified as p300
                 cmdP300[int(y/cmdCount)] += 1
 
         # print(cmdP300)
+        # return cmd idx with most found p300 classifications
         print(np.argmax(cmdP300))
     else:
         print("nop")

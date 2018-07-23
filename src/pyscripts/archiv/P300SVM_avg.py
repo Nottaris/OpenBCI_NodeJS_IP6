@@ -3,7 +3,7 @@ import json, sys, numpy as np, matplotlib.pyplot as plt
 from sklearn import svm, preprocessing, metrics
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import GridSearchCV
-
+import pickle
 
 def butter_bandpass(lowcut, highcut, fs, order):
     nyq = 0.5 * fs
@@ -66,9 +66,9 @@ def main():
     #    A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly by giving the model freedom to select more samples as support vectors.
     # Find optimal gamma and C parameters: http://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html
     # ToDo: Set correct SVM params
-    [C, gamma] = findTrainClassifier(X,y)
+    # [C, gamma] = findTrainClassifier(X,y)
     # clf = svm.SVC(kernel='rbf', gamma=gamma, C=C)
-    clf = svm.SVC(kernel='linear',  C=100.0)
+    clf = svm.SVC(kernel='linear',  C=10.0)
     clf.fit(X,y)
 
     ##  Check if traingdata get 100% accuracy
@@ -79,8 +79,8 @@ def main():
         print("Wrong classification with traingdata. check SVM algorithm")
 
     ## save model
-    # with open('../../../data/p300/model/svm_model.txt', 'wb') as outfile:
-    #     pickle.dump(clf, outfile)
+    with open('../../../data/p300/model/svm_model.txt', 'wb') as outfile:
+        pickle.dump(clf, outfile)
 
     print("\n------ Test Data ------")
     ## 4. Filter and Downsample Testdata
