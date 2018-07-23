@@ -21,7 +21,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
 
 # enable/disable debug Mode
 debug = False
-substractBaseline = False
+substractBaseline = True
 
 def main():
     with open('../../../data/p300/ex7_1_cycles5/training/1532349861282_1_baseline.json') as f:
@@ -150,22 +150,30 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
                     volts = channelDataBP[channel][cmdIdx[cmd][cycle] + paddingSlot:(cmdIdx[cmd][cycle] + slotSize - paddingSlot)]
                 # Downsample: reduce dimensions from 80 samples to 20 samples
                 channelData.append(resample(volts, downsampleSize))
-                if(cmd == 0 and debug):
+                if(cmd == 3):
                     plt.figure(cycle + 1)
                     plt.plot(channelData[channel] * 1000000, color='r')
                     plt.title("Playpause Data - Channel 0 - Cycle " + str(cycle))
                     axes = plt.gca()
                     axes.set_ylim([-25, 25])
-                    plt.show()
-            cycleData.append(channelData)
 
+            median = np.median(channelData, axis=0)
+            cycleData.append(median)
+            if (cmd == 3):
+                avg = np.average(cycleData[cycle], axis=0)
+                plt.figure(cycle + 1)
+                plt.plot(avg * 1000000, label="Avg Channels", color='b')
+                plt.title("Playpause AVG Data - All Channel - Cycle " + str(cycle))
+                plt.figure(cycle + 1)
+                plt.plot(median * 1000000, label="Median Channels", color='g')
+                plt.legend(loc='lower right')
+                plt.show()
         dataDownSampleP300.append(cycleData)
     if(debug):
         print("\n-- Command Data (Downsampled) ---")
         print("len(dataDownSampleP300) aka 5 cmds: " + str(len(dataDownSampleP300)))
         print("len(dataDownSampleP300[0]) aka 3 cycles : " + str(len(dataDownSampleP300[0])))
-        print("len(dataDownSampleP300[0][0]) aka 8 channels : " + str(len(dataDownSampleP300[0][0])))
-        print("len(dataDownSampleP300[0][0][0]) aka 20 volts : " + str(len(dataDownSampleP300[0][0][0])))
+        print("len(dataDownSampleP300[0][0]) aka 20 volts : " + str(len(dataDownSampleP300[0][0])))
 
     ## SPLIT BASELINE IN COMMAND EPOCHES AND DOWNSAMPLE
     start = 0
@@ -181,14 +189,14 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
                 volts = baselineDataBP[channel][start:start + 80]
             # Downsample: reduce dimensions from 80 samples to 20 samples
             channelData.append(resample(volts, downsampleSize))
-        downSampleBaseline.append(channelData)
+        median = np.median(channelData, axis=0)
+        downSampleBaseline.append(median)
         start += 80
 
     if(debug):
         print("\n-- Baseline Data (Downsampled) ---")
         print("len(downSampleBaseline[0]) : " + str(len(downSampleBaseline)))
-        print("len(downSampleBaseline[0][0]) aka 8 channels : " + str(len(downSampleBaseline[0])))
-        print("len(downSampleBaseline[0][0][0]) aka 20 volts : " + str(len(downSampleBaseline[0][0])))
+        print("len(downSampleBaseline[0][0]) aka 20 volts : " + str(len(downSampleBaseline[0])))
 
     return dataDownSampleP300, downSampleBaseline
 
@@ -197,34 +205,34 @@ def extractFeature(dataDownSample, filterdBaseline, targetCmd):
     cmdCount = len(dataDownSample)
     cycles = len(dataDownSample[0])
 
-    ## Reshape Data
-    reshapedData =  [[],[],[],[],[]]
-    for cmd in range(cmdCount):
-        cmdData = np.array(dataDownSample[cmd])
-        cycle, nx, ny = cmdData.shape
-        reshapedData[cmd] = cmdData.reshape((cycle, nx * ny))
-        # reshapedData[cmd].append(cycleData.reshape((nx * ny)))
-    if (debug):
-        print("\n-- Reshaped Data ---")
-        print("len(reshapedData) aka 5 cmds: " + str(len(reshapedData)))
-        print("len(reshapedData[0]) aka 3 cycles : " + str(len(reshapedData[0])))
-        print("len(reshapedData[0][0]) aka 8 channels and 20 samples : " + str(len(reshapedData[0][0])))
-
-    ## Reshape Baseline
-    baselineData = np.array(filterdBaseline)
-    cycle, nx, ny = baselineData.shape
-    reshapedBaselineData = baselineData.reshape((cycle, nx * ny))
-    if (debug):
-        print("\n-- Reshaped Baseline ---")
-        print("len(reshapedBaselineData): " + str(len(reshapedBaselineData)))
-        print("len(reshapedBaselineData[0]) aka 8 channels and 20 samples : " + str(len(reshapedBaselineData[0])))
+    # ## Reshape Data
+    # reshapedData =  [[],[],[],[],[]]
+    # for cmd in range(cmdCount):
+    #     cmdData = np.array(dataDownSample[cmd])
+    #     cycle, nx, ny = cmdData.shape
+    #     reshapedData[cmd] = cmdData.reshape((cycle, nx * ny))
+    #     # reshapedData[cmd].append(cycleData.reshape((nx * ny)))
+    # if (debug):
+    #     print("\n-- Reshaped Data ---")
+    #     print("len(reshapedData) aka 5 cmds: " + str(len(reshapedData)))
+    #     print("len(reshapedData[0]) aka 3 cycles : " + str(len(reshapedData[0])))
+    #     print("len(reshapedData[0][0]) aka 8 channels and 20 samples : " + str(len(reshapedData[0][0])))
+    #
+    # ## Reshape Baseline
+    # baselineData = np.array(filterdBaseline)
+    # cycle, nx, ny = baselineData.shape
+    # reshapedBaselineData = baselineData.reshape((cycle, nx * ny))
+    # if (debug):
+    #     print("\n-- Reshaped Baseline ---")
+    #     print("len(reshapedBaselineData): " + str(len(reshapedBaselineData)))
+    #     print("len(reshapedBaselineData[0]) aka 8 channels and 20 samples : " + str(len(reshapedBaselineData[0])))
 
     ## Create X and Y data for SVM training
     X = []
     y = []
     for cmd in range(cmdCount):
         for cycle in range(cycles):
-            X.append(reshapedData[cmd][cycle])
+            X.append(dataDownSample[cmd][cycle])
             if cmd == targetCmd: #if cmd is traget command set y = 1
                 print(cycle)
                 y.append(1)
@@ -239,8 +247,8 @@ def extractFeature(dataDownSample, filterdBaseline, targetCmd):
         #https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.signal.decimate.html
         #decimate(dataP300TEST[cmd][channel], 5, n=8, ftype='iir', axis=-1, zero_phase=True)
 
-    for i in range(len(reshapedBaselineData)):
-        X.append(reshapedBaselineData[i])
+    for i in range(len(filterdBaseline)):
+        X.append(filterdBaseline[i])
         y.append(0)
     if (debug):
         print("\n-- X and Y Data with Baseline Data ---")
