@@ -21,6 +21,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
 
 # enable/disable debug Mode
 debug = False
+substractBaseline = True
 
 def main():
     with open('../../../data/p300/ex5_2_cycles3_trainingdata/1532080410890_1_baseline.json') as f:
@@ -46,7 +47,7 @@ def main():
     baselineTest = np.array(baselineTest, dtype='f')
 
     # active channels
-    channels = [0, 1, 2, 3, 4, 5, 6, 7]  # 0-7 channels
+    channels = [0, 1, 2, 3, 4, 5, 6]  # 0-7 channels
 
     print("\n------ Traing Data ------")
 
@@ -65,8 +66,10 @@ def main():
     # C: trades off misclassification of training examples against simplicity of the decision surface.
     #    A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly by giving the model freedom to select more samples as support vectors.
     # Find optimal gamma and C parameters: http://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html
+    # ToDo: Set correct SVM params
     [C, gamma] = findTrainClassifier(X,y)
-    clf = svm.SVC(kernel='rbf', gamma=gamma, C=C)
+    # clf = svm.SVC(kernel='rbf', gamma=gamma, C=C)
+    clf = svm.SVC(kernel='linear',  C=1.0)
     clf.fit(X,y)
 
     ##  Check if traingdata get 100% accuracy
@@ -138,9 +141,12 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
         for cycle in range(cycles):
             channelData = []
             for channel in range(channels):
-                ## Substract Baseline mean
-                mean = np.mean(channelDataBP[channel][cmdIdx[cmd][cycle]+paddingSlot:(cmdIdx[cmd][cycle] + slotSize-paddingSlot)])
-                volts = channelDataBP[channel][cmdIdx[cmd][cycle]+paddingSlot:(cmdIdx[cmd][cycle] + slotSize-paddingSlot)]-mean
+                if (substractBaseline):
+                #   # Substract Baseline mean
+                    mean = np.mean(channelDataBP[channel][cmdIdx[cmd][cycle]+paddingSlot:(cmdIdx[cmd][cycle] + slotSize-paddingSlot)])
+                    volts = channelDataBP[channel][cmdIdx[cmd][cycle]+paddingSlot:(cmdIdx[cmd][cycle] + slotSize-paddingSlot)]-mean
+                else:
+                    volts = channelDataBP[channel][cmdIdx[cmd][cycle] + paddingSlot:(cmdIdx[cmd][cycle] + slotSize - paddingSlot)]
                 # Downsample: reduce dimensions from 80 samples to 20 samples
                 channelData.append(resample(volts, 20))
 
@@ -159,9 +165,12 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
     while(start < len(baselineDataBP[0])-80):
         channelData = []
         for channel in range(channels):
-            ## SUBTRACT BASELINE MEAN
-            mean = np.mean(baselineDataBP[channel][start:start + 80])
-            volts = baselineDataBP[channel][start:start + 80]-mean
+            if (substractBaseline):
+                ## SUBTRACT BASELINE MEAN
+                mean = np.mean(baselineDataBP[channel][start:start + 80])
+                volts = baselineDataBP[channel][start:start + 80]-mean
+            else:
+                volts = baselineDataBP[channel][start:start + 80]
             # Downsample: reduce dimensions from 80 samples to 20 samples
             channelData.append(resample(volts, 20))
         downSampleBaseline.append(channelData)
@@ -183,7 +192,6 @@ def extractFeature(dataDownSample, filterdBaseline, targetCmd):
     ## Reshape Data
     reshapedData =  [[],[],[],[],[]]
     for cmd in range(cmdCount):
-
         cmdData = np.array(dataDownSample[cmd])
         cycle, nx, ny = cmdData.shape
         reshapedData[cmd] = cmdData.reshape((cycle, nx * ny))
@@ -215,7 +223,7 @@ def extractFeature(dataDownSample, filterdBaseline, targetCmd):
                 y.append(0)
     if (debug):
         print("\n-- X and Y Data ---")
-        print("len(X) cycles x cmd = 3 * 5 = 15 : " + str(len(X)))
+        print("len(X) cycles x cmd = "+str(cycles)+" * "+(str(cmdCount))+" = "+str(cycles*cmdCount)+" : " + str(len(X)))
         print("y : " + str(y))
 
         # Alternativ Downsample
