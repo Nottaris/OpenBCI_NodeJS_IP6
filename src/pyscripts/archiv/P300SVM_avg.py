@@ -1,10 +1,9 @@
-from typing import List, Any
-
 from scipy.signal import butter, lfilter, decimate, resample
 import json, sys, numpy as np, matplotlib.pyplot as plt
 from sklearn import svm, preprocessing, metrics
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import GridSearchCV
+
 
 def butter_bandpass(lowcut, highcut, fs, order):
     nyq = 0.5 * fs
@@ -69,7 +68,7 @@ def main():
     # ToDo: Set correct SVM params
     [C, gamma] = findTrainClassifier(X,y)
     # clf = svm.SVC(kernel='rbf', gamma=gamma, C=C)
-    clf = svm.SVC(kernel='linear',  C=10.0)
+    clf = svm.SVC(kernel='linear',  C=100.0)
     clf.fit(X,y)
 
     ##  Check if traingdata get 100% accuracy
@@ -79,6 +78,9 @@ def main():
     else:
         print("Wrong classification with traingdata. check SVM algorithm")
 
+    ## save model
+    # with open('../../../data/p300/model/svm_model.txt', 'wb') as outfile:
+    #     pickle.dump(clf, outfile)
 
     print("\n------ Test Data ------")
     ## 4. Filter and Downsample Testdata
