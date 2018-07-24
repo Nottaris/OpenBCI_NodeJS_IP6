@@ -30,13 +30,13 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
         # cut off baseline again
         channelDataBP.append(dataFilterd[len(baseline[:, channel])-1:])
         baselineDataBP.append(dataFilterd[1000:len(baseline)])# baseline is 9000 samples
-        plt.figure(channel + 1)
-        plt.title("filterd Baseline - Channel " + str(channel))
-        plt.plot(baselineDataBP[channel]*1000000, color='g')
-        plt.figure(channel + 2)
-        plt.plot(channelDataBP[channel] * 1000000, color='r')
-        plt.title("Baseline Data - Channel " + str(channel))
         if (debug):
+            plt.figure(channel + 1)
+            plt.title("filterd Baseline - Channel " + str(channel))
+            plt.plot(baselineDataBP[channel]*1000000, color='g')
+            plt.figure(channel + 2)
+            plt.plot(channelDataBP[channel] * 1000000, color='r')
+            plt.title("Baseline Data - Channel " + str(channel))
             plt.show()
 
     ## SPLIT VOLTS DATA IN COMMAND EPOCHES AND DOWNSAMPLE
