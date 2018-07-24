@@ -17,7 +17,7 @@ let docommand = "nop";
 function detectMind(volts) {
 
     const options = {mode: 'text'};
-    let pyshell = new PythonShell('/src/pyscripts/mind.py', options);
+    let pyshell = new PythonShell('/src/pyscripts/mindDetect.py', options);
     let data = JSON.stringify(volts);
 
     // sends channel data to the Python script via stdin

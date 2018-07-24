@@ -1,10 +1,9 @@
-from typing import List, Any
-
 from scipy.signal import butter, lfilter, decimate, resample
 import json, sys, numpy as np, matplotlib.pyplot as plt
 from sklearn import svm, preprocessing, metrics
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import GridSearchCV
+import pickle
 
 def butter_bandpass(lowcut, highcut, fs, order):
     nyq = 0.5 * fs
@@ -57,7 +56,7 @@ def main():
     ##  2. Extract Features for Traingsdata
     targetCmd = 0 # Training Target: Playpause
     [X, y] = extractFeature(filterdTraindata,filterdBaseline, targetCmd)
-    print("Features: "+str(len(X)))
+    print("Anz. Features: "+str(len(X)))
     print("y: " + str(y))
 
     ##  3. Train Model with features
@@ -67,7 +66,7 @@ def main():
     #    A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly by giving the model freedom to select more samples as support vectors.
     # Find optimal gamma and C parameters: http://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html
     # ToDo: Set correct SVM params
-    [C, gamma] = findTrainClassifier(X,y)
+    # [C, gamma] = findTrainClassifier(X,y)
     # clf = svm.SVC(kernel='rbf', gamma=gamma, C=C)
     clf = svm.SVC(kernel='linear',  C=10.0)
     clf.fit(X,y)
@@ -79,6 +78,9 @@ def main():
     else:
         print("Wrong classification with traingdata. check SVM algorithm")
 
+    ## save model
+    with open('../../../data/p300/model/svm_model.txt', 'wb') as outfile:
+        pickle.dump(clf, outfile)
 
     print("\n------ Test Data ------")
     ## 4. Filter and Downsample Testdata
@@ -87,7 +89,7 @@ def main():
     ##  5. Extract Features from Testdata
     targetCmd = 0  # Playpause
     [X_test, y_test] = extractFeature(filterdTestdata, filterdTestBaseline, targetCmd)
-    print("Features X_Test: "+str(len(X_test)))
+    print("Anz. Features X_Test: "+str(len(X_test)))
     print("y_Test: " + str(y_test))
 
     ##  6. Check Model Accuracy
@@ -124,12 +126,13 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
         channelDataBP.append(dataFilterd[len(baseline[:, channel])-1:])
         baselineDataBP.append(dataFilterd[1000:len(baseline)])# baseline is 9000 samples
         plt.figure(channel + 1)
-        plt.title("filterd Data - Channel " + str(channel))
+        plt.title("filterd Baseline - Channel " + str(channel))
         plt.plot(baselineDataBP[channel]*1000000, color='g')
         plt.figure(channel + 2)
         plt.plot(channelDataBP[channel] * 1000000, color='r')
         plt.title("Baseline Data - Channel " + str(channel))
-
+        if (debug):
+            plt.show()
 
     ## SPLIT VOLTS DATA IN COMMAND EPOCHES AND DOWNSAMPLE
     ## collect volt for each cmd in dataP300[CMD][CYCLE][CHANNEL][VOLTS] of all cycles
@@ -149,7 +152,7 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
                 # Downsample: reduce dimensions from 80 samples to 20 samples
                 channelData.append(resample(volts, downsampleSize))
                 if(cmd == 0):
-                    plt.figure(cycle + 1)
+                    plt.figure(cycle + 10)
                     plt.plot(channelData[channel] * 1000000, color='r')
                     plt.title("Playpause Data - Channel 0 - Cycle " + str(cycle))
                     axes = plt.gca()
@@ -159,13 +162,14 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
             cycleData.append(median)
             if (cmd == 0):
                 avg = np.average(cycleData[cycle], axis=0)
-                plt.figure(cycle + 1)
+                plt.figure(cycle + 10)
                 plt.plot(avg * 1000000, label="Avg Channels", color='b')
                 plt.title("Playpause AVG Data - All Channel - Cycle " + str(cycle))
-                plt.figure(cycle + 1)
+                plt.figure(cycle + 10)
                 plt.plot(median * 1000000, label="Median Channels", color='g')
                 plt.legend(loc='lower right')
-
+            if (debug):
+                plt.show()
         dataDownSampleP300.append(cycleData)
     if(debug):
         print("\n-- Command Data (Downsampled) ---")
@@ -173,8 +177,7 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels):
         print("len(dataDownSampleP300[0]) aka 3 cycles : " + str(len(dataDownSampleP300[0])))
         print("len(dataDownSampleP300[0][0]) aka 20 volts : " + str(len(dataDownSampleP300[0][0])))
 
-    if (debug):
-        plt.show()
+
 
     ## SPLIT BASELINE IN COMMAND EPOCHES AND DOWNSAMPLE
     start = 0
