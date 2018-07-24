@@ -14,7 +14,7 @@ export default class PlayerBlink extends React.Component {
         console.log(props);
         this.state = {
             playpauseToggle: 'play',
-            trainingTime: 4000,  //6 sec. recording (pause will be added)
+            trainingTime: 6000,  //TODO: set final time, (?) 6 sec. recording (pause will be added)
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
@@ -67,15 +67,24 @@ export default class PlayerBlink extends React.Component {
         const commands = Object.keys(this.state.commands);
         let interval = setInterval(function () {
             if (i === 5) {
-                this.trainingFinished();
+                this.trainingStartML();
                 clearInterval(interval);
             } else {
                 this.showtrainCommand(commands[i]);
             }
             i++;
-        }.bind(this), this.state.trainingTime + 5000);  //training time plus pause
+        }.bind(this), this.state.trainingTime + 6000);  //training time plus pause
     }
 
+    //training recording finished, init ml training
+    trainingStartML() {
+        let infotext = document.getElementById('infotext');
+        infotext.innerText = "Please wait. Training data is processed.";
+        sendTrainingCmd({command:'init', slots:0});
+        setTimeout(function () {
+            this.trainingFinished();
+        }.bind(this), 6000);
+    }
 
     //show training finished
     trainingFinished() {
