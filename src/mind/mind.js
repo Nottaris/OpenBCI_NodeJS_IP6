@@ -38,8 +38,12 @@ function getTrainingCmd(data) {
     //reset
     trainingCmd = data.command.command;
     slotsize = data.command.slots;
-
-    saveTrainingData();
+    //if init Training command is comming start training of ml
+    if (trainingCmd === 'init'){
+        initTraining();
+    }else{   //if a cmd is comming save volts in file
+        saveTrainingData();
+    }
 };
 
 server.subscribeToTrainingCmds(getTrainingCmd);
@@ -80,15 +84,21 @@ function saveTrainingData() {
     //save to file
     let values = sendvolts.map(v => v.channelData);
     let record = JSON.stringify(values);
-    fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, processTrainingsData(trainingCmd));
+    fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, reportTrainingsData(trainingCmd));
 }
 
 
-//init processing of trainings data in callback of file write
-function processTrainingsData(trainingCmd) {
+//report file write in callback of file write
+function reportTrainingsData(trainingCmd) {
     console.log("training file for " + trainingCmd + " written");
-    trainMind.trainMind(trainingCmd);
 }
+
+//init processing of trainings data
+function initTraining() {
+    console.log("training started");
+    trainMind.trainMind();
+}
+
 
 //used by testing
 
