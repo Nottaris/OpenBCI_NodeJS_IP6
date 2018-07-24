@@ -1,93 +1,188 @@
-from scipy import sparse
-from scipy._lib.six import xrange
-from scipy.signal import butter, lfilter
-from scipy.sparse.linalg import spsolve
-from scipy.stats import norm
-from tempfile import TemporaryFile
-import time, json, sys, numpy as np, matplotlib.pyplot as plt
-from pprint import pprint
+import json
 import os
+import sys
+import time
+import numpy as np
+from mindFunctions import filterDownsampleData
+from scipy.signal import butter, lfilter
+from sklearn import svm, preprocessing, metrics
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import StratifiedShuffleSplit
 
 
-# Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
+# enable/disable debug Mode
+debug = True
 
-def butter_bandpass(lowcut, highcut, fs, order):
-    nyq = 0.5 * fs
-    low = lowcut / nyq
-    high = highcut / nyq
-    b, a = butter(order, [low, high], btype='band')
-    return b, a
+# the 5 commands from player
+commands = {
+    'volup': 0,
+    'playpause': 1,
+    'next': 2,
+    'prev': 3,
+    'voldown': 4
+}
+
+cmds = commands.keys()  #cmds as strings
+yindicies = commands.values()   #cmds indicies for ml label
 
 
-def butter_bandpass_filter(data, lowcut, highcut, fs, order):
-    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
-
-
-def filterData(data, lowcut, highcut, fs, order):
-    doubledata = np.concatenate([data, data])
-    doubledataFilterd = butter_bandpass_filter(doubledata, lowcut, highcut, fs, order)
-    dataBP0 = doubledataFilterd[int(len(doubledataFilterd)/2):]
-
-    return dataBP0
 
 
 def main():
-    # get trainingCmd as from read_in()
-    input = sys.stdin.read()
-    trainingCmd = str(input.strip())
+    # read training data from files
     # filepath = '/Users/mjair/Documents/GitHub/OpenBCI_NodeJS_IP6/data/mind/training-playpause.json'
     cwd = os.getcwd()
-    filepath = ''.join([cwd, '/data/mind/training-', trainingCmd, '.json'])
-    path = filepath.replace('"', '')
-    # read file of trainingCmd
-    with open(path) as f:
-        data = json.load(f)
+    traindata = np.array()
 
-    traindata = np.array(data)
-    # process data
-    trainmind(traindata)
+    for cmd in cmds:
+        filepath = ''.join([cwd, '/data/mind/training-', cmd, '.json'])
+        path = filepath.replace('"', '')
+        # read file of trainingCmd
+        with open(path) as f:
+            data = json.load(f)
+        traindata.append(data)
+
+    #read in baseline from file
+    baseline = np.array()
+    blfilepath = ''.join([cwd, '/data/mind/training-baseline.json'])
+    blpath = blfilepath.replace('"', '')
+    # read file of baseline
+    with open(blpath) as blf:
+        bl = json.load(blf)
+    baseline.append(bl)
+
+    ##TODO: generate testdata
+    ## read in test data
+    with open('../../data/mind/ex42/test/?_baseline.json') as f:
+        baselineTest = json.load(f)
+    with open('../../data/mind/ex42/test/?_volts.json') as f:
+        voltsTest = json.load(f)
+
+    # create a numpy array
+    voltsTest = np.array(voltsTest, dtype='f')
+    baselineTest = np.array(baselineTest, dtype='f')
+
+
+
+    print("\n------ Traing Data ------")
+    ## 1. Filter and Downsample Traingsdata
+    # bp filter data
+    [filterdTraindata, filterdBaseline] = filterDownsampleData(traindata, baseline, yindicies, debug)
+
+
+    ##  2. Extract Features for Trainingdata
+    [X, y] = extractFeature(filterdTraindata)
+    print("Anz. Features: " + str(len(X)))
+    print("y: " + str(y))
+
+    ##  3. Train Model with features
+
+    # gamma: defines how far the influence of a single training example reaches, with low values meaning ‘far’ and high values meaning ‘close’.
+    # C: trades off misclassification of training examples against simplicity of the decision surface.
+    #    A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly by giving the model freedom to select more samples as support vectors.
+    # Find optimal gamma and C parameters: http://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html
+    # ToDo: Set correct SVM params
+    # [C, gamma] = findTrainClassifier(X,y)
+    # clf = svm.SVC(kernel='rbf', gamma=gamma, C=C)
+    clf = svm.SVC(kernel='linear', C=10.0)
+    clf.fit(X, y)
+
+    ##  Check if trainingdata get 100% accuracy
+    [accuracy, _, _] = modelAccuracy(y, clf.predict(X))
+    if (accuracy == 1.0):
+        print("Correct classification with traingdata")
+    else:
+        print("Wrong classification with traingdata. check SVM algorithm")
+
+    ## save model
+    # with open('../../data/p300/model/svm_model.txt', 'wb') as outfile:
+    #     pickle.dump(clf, outfile)
+
+    print("\n------ Test Data ------")
+    ## 4. Filter and Downsample Testdata
+    [filterdTestdata] = filterDownsampleData(voltsTest, yindicies, debug)
+
+    ##  5. Extract Features from Testdata
+    targetCmd = 0  # Playpause TODO: ajust to test cmd
+    [X_test, y_test] = extractFeature(filterdTestdata, targetCmd)
+    print("Anz. Features X_Test: " + str(len(X_test)))
+    print("y_Test: " + str(y_test))
+
+    ##  6. Check Model Accuracy
+    print("\n------ Model Accuracy ------")
+    y_pred = clf.predict(X_test)  # Predict the response for test dataset
+    print("predicted y " + str(y_pred))
+
+    [accuracy, precision, recall] = modelAccuracy(y_test, y_pred)
+    print("Accuracy: " + str(accuracy))
+    print("Precision: " + str(precision))
+    print("Recall: " + str(recall))
+
 
     # send success back to node
     # TODO: uncomment / implement success boolean return
     # print('true')
 
 
-def trainmind(traindata):
-    ch1 = traindata[:, 0]
-    ch2 = traindata[:, 1]
-    ch3 = traindata[:, 2]
-    ch4 = traindata[:, 3]
-    ch5 = traindata[:, 4]
-    ch6 = traindata[:, 5]
-    ch7 = traindata[:, 6]
-    ch8 = traindata[:, 7]
 
-    # Define sample rate and desired cutoff frequencies (in Hz).
-    fs = 250.0
-    lowcut = 8
-    highcut = 30.0
-    order = 5
+def extractFeature(dataDownSample):
 
-    ## FILTER DATA
-    ch1f = filterData(ch1, lowcut, highcut, fs, order)
-    ch2f = filterData(ch2, lowcut, highcut, fs, order)
-    ch3f = filterData(ch3, lowcut, highcut, fs, order)
-    ch4f = filterData(ch4, lowcut, highcut, fs, order)
-    ch5f = filterData(ch5, lowcut, highcut, fs, order)
-    ch6f = filterData(ch6, lowcut, highcut, fs, order)
-    ch7f = filterData(ch7, lowcut, highcut, fs, order)
-    ch8f = filterData(ch8, lowcut, highcut, fs, order)
+    ## Create X and Y data for SVM training
+    X = []
+    y = []
+    for cmd in yindicies:
+            X.append(dataDownSample[cmd])
+            y.append(cmd)
+    if (debug):
+        print("\n-- X and Y Data ---")
+        print("y : " + str(y))
 
-    ## save to file for dev
-    timestr = time.strftime("%Y%m%d-%H%M%S")
-    with open("data/mind/"+timestr+'_dataCh1.json', 'w') as outfile:
-        json.dump(ch1f.tolist(), outfile)
-    with open("data/mind/"+timestr+'_dataCh2.json', 'w') as outfile:
-        json.dump(ch2f.tolist(), outfile)
-    with open("data/mind/"+timestr+'_dataCh3.json', 'w') as outfile:
-        json.dump(ch3f.tolist(), outfile)
+    ## Feature Standardization
+    X = preprocessing.scale(X)
+
+    return X, y
+
+def extractFeatureTest(dataDownSample, cmd):
+
+    ## Create X and Y data for SVM test
+    X = []
+    y = []
+    X.append(dataDownSample)
+    y.append(cmd)
+    if (debug):
+        print("\n-- X and Y Data ---")
+        print("y : " + str(y))
+
+    ## Feature Standardization
+    X = preprocessing.scale(X)
+
+    return X, y
+
+
+def modelAccuracy(y_test, y_pred):
+    # Model Accuracy: how often is the classifier correct
+    accuracy = metrics.accuracy_score(y_test, y_pred)
+
+    # Model Precision: what percentage of positive tuples are labeled as such?
+    precision = metrics.precision_score(y_test, y_pred)
+
+    # Model Recall: what percentage of positive tuples are labelled as such?
+    recall =  metrics.recall_score(y_test, y_pred)
+
+    return[accuracy,precision,recall]
+
+def findTrainClassifier(X,y):
+    C_range = np.logspace(-2, 10, 13)
+    gamma_range = np.logspace(-9, 3, 13)
+    param_grid = dict(gamma=gamma_range, C=C_range)
+    cv = StratifiedShuffleSplit(n_splits=5, test_size=0.2, random_state=42)
+    grid = GridSearchCV(svm.SVC(), param_grid=param_grid, cv=cv)
+    grid.fit(X, y)
+    print("The best parameters are %s with a score of %0.2f"
+          % (grid.best_params_, grid.best_score_))
+    return grid.best_params_['C'], grid.best_params_['gamma']
+
+
 
 # start process
 if __name__ == '__main__':
