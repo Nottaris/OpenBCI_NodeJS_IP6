@@ -46,7 +46,7 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
     fileNr++;
 
     const options = {mode: 'text'};
-    let pyshell = new PythonShell('/src/pyscripts/filterP300SVM.py', options);
+    let pyshell = new PythonShell('/src/pyscripts/p300detect.py', options);
     let data = JSON.stringify({volts: volts, baseline: baseline, cmdIdx: cmdIdx});
 
     // sends channel data to the Python script via stdin

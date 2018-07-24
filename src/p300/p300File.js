@@ -7,7 +7,7 @@ var PythonShell = require('python-shell');
 
 var commands =  ['playpause','next','prev','volup', 'voldown'];
 const options = {mode: 'text'};
-let pyshell = new PythonShell('../pyscripts/filterP300SVM.py', options);
+let pyshell = new PythonShell('../pyscripts/p300detect.py', options);
 
 // received a message sent from the Python script (a simple "print" statement)
 pyshell.stdout.on('data', function (value) {
