@@ -12,7 +12,7 @@ let PythonShell = require('python-shell');
 function trainMind(trainingCmd) {
 
     const options = {mode: 'text'};
-    let pyshell = new PythonShell('/src/pyscripts/trainmind.py', options);
+    let pyshell = new PythonShell('/src/pyscripts/mindTrain.py', options);
     let data = JSON.stringify(trainingCmd);
 
     // sends channel data to the Python script via stdin
