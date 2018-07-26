@@ -21,9 +21,9 @@ export default class PlayerBlink extends React.Component {
             currentCmd: 'no',
             commands: {
                 'volup': 'Focus on volume up and think of screaming with your mouth wide open.',
-                'playpause': 'Focus on playing and think of leaning or going forward.',
-                'next': 'Focus on next and think of stretching your right arm.',
-                'prev': 'Focus on prev and think of stretching your left arm.',
+                'playpause': 'Focus on playing and think of leaning and going forward.',
+                'next': 'Focus on next and think of open and closing your right hand to a fist.',
+                'prev': 'Focus on prev and think of open and closing your left hand to a fist.',
                 'voldown': 'Focus on volume down and think of lowering you head.'
             }
         };
@@ -60,7 +60,7 @@ export default class PlayerBlink extends React.Component {
         let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
         trainIcon.style.color = "lightblue";
         let infotext = document.getElementById('infotext');
-        infotext.innerText = "Training will start soon. Relax and focus on the highlighted command.";
+        infotext.innerText = "Training will start soon. Relax and sit comfy.";
 
         //train each command
         let i = 0;
@@ -104,7 +104,7 @@ export default class PlayerBlink extends React.Component {
             cmdIcons[i].style.color = "#1c456e";
         }
         let infotext = document.getElementById('infotext');
-        infotext.innerText = "...hold on - the next command is coming!";
+        infotext.innerText = "...relax - stay calm...";
     }
 
     toggleButtonsOnTraining(disable) {
@@ -200,9 +200,9 @@ export default class PlayerBlink extends React.Component {
                 this.voldown(audio);
                 break;
             case "playpause":
-                if (this.state.playpauseToggle === 'play') {
+                if (this.state.playpauseToggle == 'play') {
                     this.play(audio);
-                } else if (this.state.playpauseToggle === 'pause') {
+                } else if (this.state.playpauseToggle == 'pause') {
                     this.pause(audio);
                 }
                 break;
