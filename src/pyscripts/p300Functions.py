@@ -1,13 +1,8 @@
 from scipy.signal import butter, lfilter, decimate, resample
 import json, os, sys, numpy as np, matplotlib.pyplot as plt
-from sklearn import svm, preprocessing, metrics
-from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.model_selection import GridSearchCV
-import pickle
-def a():
-    print("test")
 
-substractBaseline = False
+substractBaseline = True
+
 def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
@@ -48,14 +43,16 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
         for cycle in range(cycles):
             channelData = []
             for channel in range(channels):
+                volts = channelDataBP[channel][cmdIdx[cmd][cycle] + paddingSlot:(cmdIdx[cmd][cycle] + slotSize - paddingSlot)]
                 if (substractBaseline):
-                #   # Substract Baseline mean
-                    mean = np.mean(channelDataBP[channel][cmdIdx[cmd][cycle]+paddingSlot:(cmdIdx[cmd][cycle] + slotSize-paddingSlot)])
-                    volts = channelDataBP[channel][cmdIdx[cmd][cycle]+paddingSlot:(cmdIdx[cmd][cycle] + slotSize-paddingSlot)]-mean
-                else:
-                    volts = channelDataBP[channel][cmdIdx[cmd][cycle] + paddingSlot:(cmdIdx[cmd][cycle] + slotSize - paddingSlot)]
+                   # Substract Baseline mean
+                    mean = np.mean(volts)
+                    volts = volts-mean
+
                 # Downsample: reduce dimensions from 80 samples to 20 samples
                 channelData.append(resample(volts, downsampleSize))
+
+
                 if(cmd == 0):
                     plt.figure(cycle + 10)
                     plt.plot(channelData[channel] * 1000000, color='r')
@@ -87,20 +84,19 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
     ## SPLIT BASELINE IN COMMAND EPOCHES AND DOWNSAMPLE
     start = 0
     downSampleBaseline = []
-    while(start < len(baselineDataBP[0])-80):
+    while(start < len(baselineDataBP[0])-slotSize):
         channelData = []
         for channel in range(channels):
+            volts = baselineDataBP[channel][start:start + slotSize]
             if (substractBaseline):
                 ## SUBTRACT BASELINE MEAN
-                mean = np.mean(baselineDataBP[channel][start:start + 80])
-                volts = baselineDataBP[channel][start:start + 80]-mean
-            else:
-                volts = baselineDataBP[channel][start:start + 80]
+                mean = np.mean(volts)
+                volts = volts-mean
             # Downsample: reduce dimensions from 80 samples to 20 samples
             channelData.append(resample(volts, downsampleSize))
         median = np.median(channelData, axis=0)
         downSampleBaseline.append(median)
-        start += 80
+        start += slotSize
 
     if(debug):
         print("\n-- Baseline Data (Downsampled) ---")
