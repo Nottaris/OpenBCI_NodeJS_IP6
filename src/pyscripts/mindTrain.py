@@ -2,12 +2,12 @@ import json
 import os
 import sys
 import time
+import pickle
 import numpy as np
 from mindFunctions import filterDownsampleData
 from scipy.signal import butter, lfilter
 from sklearn import svm, preprocessing, metrics
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.model_selection import GridSearchCV, StratifiedShuffleSplit
 
 
 # enable/disable debug Mode
@@ -22,15 +22,13 @@ commands = {
     'voldown': 4
 }
 
-cmds = commands.keys()  #cmds as strings
-yindicies = commands.values()   #cmds indicies for ml label
-
-
+cmds = commands.keys()  # cmds as strings
+yindicies = commands.values()  # cmds indicies for ml label
 
 
 def main():
     # read training data from files
-    # filepath = '/Users/mjair/Documents/GitHub/OpenBCI_NodeJS_IP6/data/mind/training-playpause.json'
+    # filepath-example = 'your project path'/data/mind/training-playpause.json'
     cwd = os.getcwd()
     traindata = np.array()
 
@@ -42,7 +40,8 @@ def main():
             data = json.load(f)
         traindata.append(data)
 
-    #read in baseline from file
+    # read in baseline from file
+    # TODO: generate baseline in training phase
     baseline = np.array()
     blfilepath = ''.join([cwd, '/data/mind/training-baseline.json'])
     blpath = blfilepath.replace('"', '')
@@ -51,29 +50,26 @@ def main():
         bl = json.load(blf)
     baseline.append(bl)
 
-    ##TODO: generate testdata
+    # TODO: generate testdata from live session (current ones are fake copies)
     ## read in test data
-    with open('../../data/mind/ex42/test/?_baseline.json') as f:
+    with open('../../data/mind/test-baseline.json') as f:
         baselineTest = json.load(f)
-    with open('../../data/mind/ex42/test/?_volts.json') as f:
+    with open('../../data/mind/test-volts.json') as f:
         voltsTest = json.load(f)
 
     # create a numpy array
     voltsTest = np.array(voltsTest, dtype='f')
     baselineTest = np.array(baselineTest, dtype='f')
 
-
-
-    print("\n------ Traing Data ------")
+    if debug: print("\n------ Traing Data ------")
     ## 1. Filter and Downsample Traingsdata
     # bp filter data
     [filterdTraindata, filterdBaseline] = filterDownsampleData(traindata, baseline, yindicies, debug)
 
-
-    ##  2. Extract Features for Trainingdata
+    ##  2. Extract Features for Trainingdata (only commands)
     [X, y] = extractFeature(filterdTraindata)
-    print("Anz. Features: " + str(len(X)))
-    print("y: " + str(y))
+    if debug: print("Anz. Features: " + str(len(X)))
+    if debug: print("y: " + str(y))
 
     ##  3. Train Model with features
 
@@ -81,59 +77,57 @@ def main():
     # C: trades off misclassification of training examples against simplicity of the decision surface.
     #    A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly by giving the model freedom to select more samples as support vectors.
     # Find optimal gamma and C parameters: http://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html
-    # ToDo: Set correct SVM params
-    # [C, gamma] = findTrainClassifier(X,y)
-    # clf = svm.SVC(kernel='rbf', gamma=gamma, C=C)
-    clf = svm.SVC(kernel='linear', C=10.0)
+    # TODO: Set correct SVM params
+    [C, gamma] = findTrainClassifier(X, y)
+    clf = svm.SVC(kernel='rbf', gamma=gamma, C=C)
     clf.fit(X, y)
 
-    ##  Check if trainingdata get 100% accuracy
-    [accuracy, _, _] = modelAccuracy(y, clf.predict(X))
-    if (accuracy == 1.0):
-        print("Correct classification with traingdata")
-    else:
-        print("Wrong classification with traingdata. check SVM algorithm")
-
     ## save model
-    # with open('../../data/p300/model/svm_model.txt', 'wb') as outfile:
-    #     pickle.dump(clf, outfile)
+    with open('../../data/mind/model/svm_model-mind.txt', 'wb') as outfile:
+        pickle.dump(clf, outfile)
 
-    print("\n------ Test Data ------")
-    ## 4. Filter and Downsample Testdata
-    [filterdTestdata] = filterDownsampleData(voltsTest, yindicies, debug)
 
-    ##  5. Extract Features from Testdata
-    targetCmd = 0  # Playpause TODO: ajust to test cmd
-    [X_test, y_test] = extractFeature(filterdTestdata, targetCmd)
-    print("Anz. Features X_Test: " + str(len(X_test)))
-    print("y_Test: " + str(y_test))
+    ##  Check if trainingdata get 100% accuracy
+    if debug:
+        [accuracy, _, _] = modelAccuracy(y, clf.predict(X))
+        if (accuracy == 1.0):
+            print("Correct classification with traingdata")
+        else:
+            print("Wrong classification with traingdata. check SVM algorithm")
 
-    ##  6. Check Model Accuracy
-    print("\n------ Model Accuracy ------")
-    y_pred = clf.predict(X_test)  # Predict the response for test dataset
-    print("predicted y " + str(y_pred))
+        print("\n------ Test Data ------")
+        ## 4. Filter and Downsample Testdata
+        [filterdTestdata] = filterDownsampleData(voltsTest, yindicies, debug)
 
-    [accuracy, precision, recall] = modelAccuracy(y_test, y_pred)
-    print("Accuracy: " + str(accuracy))
-    print("Precision: " + str(precision))
-    print("Recall: " + str(recall))
+        ##  5. Extract Features from Testdata
+        targetCmd = 1  # Playpause===1
+        [X_test, y_test] = extractFeature(filterdTestdata, targetCmd)
+        print("Anz. Features X_Test: " + str(len(X_test)))
+        print("y_Test: " + str(y_test))
 
+        ##  6. Check Model Accuracy
+        print("\n------ Model Accuracy ------")
+        y_pred = clf.predict(X_test)  # Predict the response for test dataset
+        if debug: print("predicted y " + str(y_pred))
+
+        [accuracy, precision, recall] = modelAccuracy(y_test, y_pred)
+        print("Accuracy: " + str(accuracy))
+        print("Precision: " + str(precision))
+        print("Recall: " + str(recall))
 
     # send success back to node
-    # TODO: uncomment / implement success boolean return
+    # TODO: uncomment / implement success boolean return and
     # print('true')
 
 
-
 def extractFeature(dataDownSample):
-
     ## Create X and Y data for SVM training
     X = []
     y = []
     for cmd in yindicies:
-            X.append(dataDownSample[cmd])
-            y.append(cmd)
-    if (debug):
+        X.append(dataDownSample[cmd])
+        y.append(cmd)
+    if debug:
         print("\n-- X and Y Data ---")
         print("y : " + str(y))
 
@@ -142,14 +136,14 @@ def extractFeature(dataDownSample):
 
     return X, y
 
-def extractFeatureTest(dataDownSample, cmd):
 
+def extractFeatureTest(dataDownSample, cmd):
     ## Create X and Y data for SVM test
     X = []
     y = []
     X.append(dataDownSample)
     y.append(cmd)
-    if (debug):
+    if debug:
         print("\n-- X and Y Data ---")
         print("y : " + str(y))
 
@@ -167,21 +161,21 @@ def modelAccuracy(y_test, y_pred):
     precision = metrics.precision_score(y_test, y_pred)
 
     # Model Recall: what percentage of positive tuples are labelled as such?
-    recall =  metrics.recall_score(y_test, y_pred)
+    recall = metrics.recall_score(y_test, y_pred)
 
-    return[accuracy,precision,recall]
+    return [accuracy, precision, recall]
 
-def findTrainClassifier(X,y):
+
+def findTrainClassifier(X, y):
     C_range = np.logspace(-2, 10, 13)
     gamma_range = np.logspace(-9, 3, 13)
     param_grid = dict(gamma=gamma_range, C=C_range)
     cv = StratifiedShuffleSplit(n_splits=5, test_size=0.2, random_state=42)
     grid = GridSearchCV(svm.SVC(), param_grid=param_grid, cv=cv)
     grid.fit(X, y)
-    print("The best parameters are %s with a score of %0.2f"
-          % (grid.best_params_, grid.best_score_))
+    if debug:
+        print("The best parameters are %s with a score of %0.2f" % (grid.best_params_, grid.best_score_))
     return grid.best_params_['C'], grid.best_params_['gamma']
-
 
 
 # start process
