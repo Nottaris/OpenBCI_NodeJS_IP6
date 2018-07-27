@@ -5,10 +5,11 @@ import time
 import pickle
 import numpy as np
 from mindFunctions import filterDownsampleData
+import codecs, json
 from scipy.signal import butter, lfilter
 from sklearn import svm, preprocessing, metrics
 from sklearn.model_selection import GridSearchCV, StratifiedShuffleSplit
-
+from pathlib import Path
 
 # enable/disable debug Mode
 debug = False
@@ -21,11 +22,19 @@ cmdCount = len(commands)  # nr of commands
 
 def main():
     # read training data from files
-    # filepath-example = 'your project path'/data/mind/training-playpause.json'
-    traindata = []
+    cwd = os.getcwd()
 
+    # default path with stored traingsdata
+    # filepath-example = 'your project path'/data/mind/training-playpause.json'
+    traindataFolder = cwd+'/data/mind/'
+
+    # default path if python script runs standalone
+    if(os.path.basename(cwd)=="pyscripts"):
+        traindataFolder = cwd+'/../../data/mind/'
+
+    traindata = []
     for cmd in range (cmdCount):
-        filepath = '../../data/mind/training-'+commands[cmd]+'.json'
+        filepath = Path(traindataFolder+'training-'+commands[cmd]+'.json')
         # read file of trainingCmd
         with open(filepath) as f:
             data = json.load(f)
@@ -33,10 +42,8 @@ def main():
 
 
     # read in baseline from file
-    # TODO: generate baseline in training phase
     baseline = []
-    blfilepath = '../../data/mind/training-baseline.json'
-    blpath = blfilepath.replace('"', '')
+    blpath = Path(traindataFolder+'training-baseline.json')
     # read file of baseline
     with open(blpath) as blf:
         bl = json.load(blf)
@@ -44,25 +51,37 @@ def main():
 
 
     # TODO: generate testdata from live session (current ones are fake copies)
-    ## read in test data
-    with open('../../data/mind/test-baseline.json') as f:
-        baselineTest = json.load(f)
-    with open('../../data/mind/test-volts.json') as f:
-        voltsTest = json.load(f)
-
-    # create a numpy array
-    voltsTest = np.array(voltsTest, dtype='f')
-    baselineTest = np.array(baselineTest, dtype='f')
-
-    if debug: print("\n------ Traing Data ------")
+    # ## read in test data
+    # with open('../../data/mind/test-baseline.json') as f:
+    #     baselineTest = json.load(f)
+    # with open('../../data/mind/test-volts.json') as f:
+    #     voltsTest = json.load(f)
+    #
+    # # create a numpy array
+    # voltsTest = np.array(voltsTest, dtype='f')
+    # baselineTest = np.array(baselineTest, dtype='f')
+    #
+    # if debug: print("\n------ Traing Data ------")
     ## 1. Filter and Downsample Traingsdata
     # bp filter data
     [filterdTraindata,baselineDataBP] = filterDownsampleData(traindata, baseline, commands, debug)
+
+    # # save filterd Data
+    # filterdTraindata = np.array(filterdTraindata)
+    # baselineDataBP = np.array(baselineDataBP)
+    # outfile = '../../data/mind/model/filterdTraingdata.txt'
+    # json.dump(filterdTraindata.tolist(), codecs.open(outfile, 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True,
+    #               indent=4)  ### this saves the array in .json format
+    # outfile = '../../data/mind/model/baselineDataBP.txt'
+    # json.dump(baselineDataBP.tolist(), codecs.open(outfile, 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True,
+    #               indent=4)  ### this saves the array in .json format
 
     ##  2. Extract Features for Trainingdata (only commands)
     [X, y] = extractFeature(filterdTraindata)
     print("Anz. Features: " + str(len(X)))
     print("y: " + str(y))
+
+
     #
     # ##  3. Train Model with features
     #
