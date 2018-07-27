@@ -31,8 +31,7 @@ export default class P300 extends React.Component {
 
         subscribeToP300Cmds(
             this.flashCommand,
-            this.execCommand,
-            this.execCommand,
+            this.execCommand
         );
 
     };

@@ -7,7 +7,6 @@ const socket = openSocket('http://localhost:3001');
 function subscribeToP300Cmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd) {
     socket.on('command', command => callbackFlashCmd(command));
     socket.on('docommand', docommand => callbackExecCmd(docommand));
-    socket.on('blinkcommand', _ => callbackBlinkCmd());
 
     socket.on('error', console.error.bind(console));
     socket.on('message', console.log.bind(console));

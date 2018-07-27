@@ -53,7 +53,11 @@ def main():
 
         # print(cmdP300)
         # return cmd idx with most found p300 classifications
-        print(np.argmax(cmdP300))
+        maxIdx = np.argmax(cmdP300)
+        if(cmdP300[maxIdx]>1):
+            print(np.argmax(cmdP300))
+        else:
+            print("nop")
     else:
         print("nop")
 
