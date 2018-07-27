@@ -10,7 +10,7 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
     highcut = 12.0
     order = 4
     cmdCount = len(cmdIdx)
-    slotSize = 120
+    slotSize = 124 #500 ms
     downsampleSize = 16
     cycles = len(cmdIdx[0])
     channels = len(channels)
@@ -59,16 +59,17 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
                     plt.title("Playpause Data - Channel 0 - Cycle " + str(cycle))
                     axes = plt.gca()
                     axes.set_ylim([-25, 25])
+            ## save median from  all channels
+            # median = np.median(channelData, axis=0)
 
-            median = np.median(channelData, axis=0)
-            cycleData.append(median)
+            cycleData.append(channelData)
             if (cmd == 0):
                 avg = np.average(cycleData[cycle], axis=0)
                 plt.figure(cycle + 10)
                 plt.plot(avg * 1000000, label="Avg Channels", color='b')
                 plt.title("Playpause AVG Data - All Channel - Cycle " + str(cycle))
                 plt.figure(cycle + 10)
-                plt.plot(median * 1000000, label="Median Channels", color='g')
+                # plt.plot(median * 1000000, label="Median Channels", color='g')
                 plt.legend(loc='lower right')
             if (debug):
                 plt.show()
@@ -94,8 +95,9 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
                 volts = volts-mean
             # Downsample: reduce dimensions from 80 samples to 20 samples
             channelData.append(resample(volts, downsampleSize))
-        median = np.median(channelData, axis=0)
-        downSampleBaseline.append(median)
+        ## save median from  all channels
+        # median = np.median(channelData, axis=0)
+        downSampleBaseline.append(channelData)
         start += slotSize
 
     if(debug):
