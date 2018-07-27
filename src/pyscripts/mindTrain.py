@@ -118,26 +118,29 @@ def extractFeature(dataFilterd):
     X = []
     y = []
 
-    ## Reshape Data
-    reshapedData = []
-    dataFilterdNp = np.array(dataFilterd)
-    trainCmd, nx, ny = dataFilterdNp.shape
-    reshapedData = dataFilterdNp.reshape((trainCmd, nx * ny))
+    # TODO: Extract Features
 
-    # if (debug):
-    print("\n-- Reshaped Data ---")
-    print("len(reshapedData) aka 5 cmds: " + str(len(reshapedData)))
-    print("len(reshapedData[0]) channels*samples aka  8*250  : " + str(len(reshapedData[0])))
+    # ## Reshape Data
+    # reshapedData = []
+    # dataFilterdNp = np.array(dataFilterd)
+    # trainCmd, nx, ny = dataFilterdNp.shape
+    # reshapedData = dataFilterdNp.reshape((trainCmd, nx * ny))
+    #
+    # # if (debug):
+    # print("\n-- Reshaped Data ---")
+    # print("len(reshapedData) aka 5 cmds: " + str(len(reshapedData)))
+    # print("len(reshapedData[0]) channels*samples aka  8*250  : " + str(len(reshapedData[0])))
 
-    print(len(dataFilterd))
-    for cmd in range (cmdCount):
-        X.append(reshapedData[cmd])
-        y.append(cmd)
-    if debug:
-        print("\n-- X and Y Data ---")
-        print("y : " + str(y))
-    print(X)
+    # print(len(dataFilterd))
+    # for cmd in range (cmdCount):
+    #     X.append(dataFilterd[cmd])
+    #     y.append(cmd)
+    # if debug:
+    #     print("\n-- X and Y Data ---")
+    #     print("y : " + str(y))
+    # print(X)
 
+    # TODO: Feature Standardization
     ## Feature Standardization
     # X = preprocessing.scale(X)
 
