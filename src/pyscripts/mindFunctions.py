@@ -8,13 +8,15 @@ import pickle
 
 substractBaseline = False
 
-def filterDownsampleData(volts, baseline, y, debug):
+def filterDownsampleData(volts, baseline, commands, debug):
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 8
     highcut = 30.0
     order = 5
-    cmdCount = len(y)
+    startSample = 125
+    endSample = 375
+    cmdCount = len(commands)
     downsampleFactor = 12   # reduce dimensions by this factor
     downsampleSize = int(len(volts)/downsampleFactor)   #resulting size of downsampled data depending on input size
     channels = 8    # always use all 8 channels
@@ -22,38 +24,48 @@ def filterDownsampleData(volts, baseline, y, debug):
     ## BP FILTER DATA
     channelDataBP = []
     baselineDataBP = []
-    for channel in range(channels):
-        # add baseline before filter BP
-        dataWithBaseline = np.concatenate([baseline[:, channel], volts[:, channel]])
-        dataFilterd = filterData(dataWithBaseline, lowcut, highcut, fs, order)
-        # cut off baseline again
-        channelDataBP.append(dataFilterd[len(baseline[:, channel])-1:])
-        #get Baseline without first 1000 samples
-        baselineDataBP.append(dataFilterd[1000:len(baseline)])
-        if (debug):
-            plt.figure(channel + 1)
-            plt.title("filterd Baseline - Channel " + str(channel))
-            plt.plot(baselineDataBP[channel] * 1000000, color='g')
-            plt.figure(channel + 2)
-            plt.plot(channelDataBP[channel] * 1000000, color='r')
-            plt.title("Baseline Data - Channel " + str(channel))
-            plt.show()
 
-    #downsample
-    dataDownSample = []
     for cmd in range(cmdCount):
-        # Downsample: reduce dimensions from 80 samples to 20 samples
-        dataDownSample.append(resample(channelDataBP[cmd], downsampleSize))
+        channelData = []
+        channelBaselineData = []
+        for channel in range(channels):
+            # add baseline before filter BP
+            dataWithBaseline = np.concatenate([baseline[:, channel], volts[cmd][:, channel]])
+            dataFilterd = filterData(dataWithBaseline, lowcut, highcut, fs, order)
+            # cut off baseline again
+            channelData.append(dataFilterd[len(baseline[:, channel])-1:])
+            channelBaselineData.append(dataFilterd[1000:len(baseline)])  # baseline is 9000 samples
+            if (debug):
+                plt.figure(channel + 1)
+                plt.title("filterd Baseline Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
+                plt.plot(channelBaselineData[channel] * 1000000, color='g')
+                plt.figure(channel + 2)
+                plt.plot(channelData[channel] * 1000000, color='r')
+                plt.title("Data Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
+                plt.show()
+        channelDataBP.append(channelData)
+        baselineDataBP.append(channelBaselineData)
 
-    baselineDownSample = resample(baselineDataBP, downsampleSize)
 
-    if(debug):
-        print("\n-- Command Data (Downsampled) ---")
-        print("len(dataDownSample) aka 5 cmds: " + str(len(dataDownSample)))
-        print("len(dataDownSample[0]) aka trainingSampleLength : " + str(len(dataDownSample[0])))
+    ## EXTRACT EPOCHE BETWEEN 0.5 - 1.5 s (125 - 375) FOR EACH COMMAND
+    ## dataMind[CMD][CHANNEL][VOLTS]
+    dataMind = []
+    for cmd in range(cmdCount):
+        channelData = []
+        for channel in range(channels):
+            channelData.append(channelDataBP[cmd][channel][startSample:endSample])
+            if (debug):
+                plt.figure(channel)
+                plt.title("Train Epoche Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
+                plt.plot(channelData[channel] * 1000000, color='b')
+                plt.show()
+        dataMind.append(channelData)
+
+        # ToDo: Imolement common spacial pattern
+        ## SPACIAL PATTERM
 
 
-    return dataDownSample, baselineDownSample
+    return dataMind, baselineDataBP
 
 
 
