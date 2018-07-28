@@ -30,7 +30,7 @@ let count = 0;
 let settings = defaultSettings;
 let trainingCmd = "none";
 let slotsize = 1000;
-
+let baseline = false;
 server.startSocketServer();
 
 function getTrainingCmd(data) {
@@ -85,6 +85,19 @@ function saveTrainingData() {
     let values = sendvolts.map(v => v.channelData);
     let record = JSON.stringify(values);
     fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, reportTrainingsData(trainingCmd));
+    // Save baseline
+    if(!baseline) {
+        if(trainvolts.length>3*slotsize) {
+            baselinevolts = trainvolts.slice(-3*slotsize,-slotsize);
+            console.log("baseline: "+baselinevolts.length);
+            //save to file
+            let values = baselinevolts.map(v => v.channelData);
+            let record = JSON.stringify(values);
+            fs.writeFile("data/mind/training-baseline.json", record, reportTrainingsData("baseline"));
+            baseline = true;
+        }
+    }
+
 }
 
 

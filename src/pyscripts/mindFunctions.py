@@ -6,20 +6,20 @@ from sklearn.model_selection import GridSearchCV
 import pickle
 
 
-substractBaseline = False
 
 def filterDownsampleData(volts, baseline, commands, debug):
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
-    lowcut = 8
-    highcut = 30.0
-    order = 5
-    startSample = 125
-    endSample = 375
+    lowcut = 16.0
+    highcut = 24.0
+    order = 4
+    startSample = 1500
+    endSample = 1750
     cmdCount = len(commands)
     downsampleFactor = 12   # reduce dimensions by this factor
     downsampleSize = int(len(volts)/downsampleFactor)   #resulting size of downsampled data depending on input size
-    channels = 8    # always use all 8 channels
+    # ToDO: Set correct Channel Count
+    channels = [1, 2]
 
     ## BP FILTER DATA
     channelDataBP = []
@@ -28,21 +28,25 @@ def filterDownsampleData(volts, baseline, commands, debug):
     for cmd in range(cmdCount):
         channelData = []
         channelBaselineData = []
-        for channel in range(channels):
+        for c in range(len(channels)):
             # add baseline before filter BP
-            dataWithBaseline = np.concatenate([baseline[:, channel], volts[cmd][:, channel]])
-            dataFilterd = filterData(dataWithBaseline, lowcut, highcut, fs, order)
+            dataFilterd = filterData(volts[cmd][:, channels[c]], lowcut, highcut, fs, order)
             # cut off baseline again
-            channelData.append(dataFilterd[len(baseline[:, channel])-1:])
-            channelBaselineData.append(dataFilterd[1000:len(baseline)])  # baseline is 9000 samples
+            channelData.append(dataFilterd)
+
             if (debug):
-                plt.figure(channel + 1)
-                plt.title("filterd Baseline Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
-                plt.plot(channelBaselineData[channel] * 1000000, color='g')
-                plt.figure(channel + 2)
-                plt.plot(channelData[channel] * 1000000, color='r')
-                plt.title("Data Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
-                plt.show()
+                if(cmd == 2 or cmd == 3):
+                    # plt.figure(channel + 1)
+                    # plt.title("filterd Baseline Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
+                    # plt.plot(channelBaselineData[channel] * 1000000, color='g')
+                    # axes = plt.gca()
+                    # axes.set_ylim([-40, 40])
+                    plt.figure(c + 2)
+                    plt.plot(channelData[c] * 1000000, color='r')
+                    plt.title("Data Cmd " + str(commands[cmd]) + " - Channel " + str(c))
+                    # axes = plt.gca()
+                    # axes.set_ylim([-40, 40])
+                    plt.show()
         channelDataBP.append(channelData)
         baselineDataBP.append(channelBaselineData)
 
@@ -52,13 +56,21 @@ def filterDownsampleData(volts, baseline, commands, debug):
     dataMind = []
     for cmd in range(cmdCount):
         channelData = []
-        for channel in range(channels):
+        for channel in range(len(channels)):
             channelData.append(channelDataBP[cmd][channel][startSample:endSample])
+            squareData = np.square(channelData[channel]* 1000000)
+            mean = np.mean(squareData)
+
             if (debug):
-                plt.figure(channel)
-                plt.title("Train Epoche Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
-                plt.plot(channelData[channel] * 1000000, color='b')
-                plt.show()
+                if (cmd == 2 or cmd == 3):
+                    print("cmd: "+str(cmd) + " channel " + str(channel) + " mean: " + str(mean))
+                    plt.figure(channel)
+                    plt.title("Train Epoche Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
+                    plt.plot(channelData[channel] * 1000000, color='b')
+                    plt.plot(np.square(channelData[channel]* 1000000) , color='r')
+                    axes = plt.gca()
+                    axes.set_ylim([0, 100])
+                    plt.show()
         dataMind.append(channelData)
 
         # ToDo: Imolement common spacial pattern
