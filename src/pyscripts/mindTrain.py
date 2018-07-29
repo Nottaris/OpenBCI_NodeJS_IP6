@@ -15,7 +15,7 @@ from pathlib import Path
 debug = False
 
 # the 5 commands from player
-commands = ['volup', 'playpause','next','prev','voldown']
+commands = ['volup', 'playpause', 'next', 'prev', 'voldown']
 cmdCount = len(commands)  # nr of commands
 
 
