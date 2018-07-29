@@ -121,6 +121,9 @@ export default class PlayerBlink extends React.Component {
     }
 
     toggleButtonsOnTraining(disable) {
+        let guiSelector = document.getElementById('guiSelector');
+        guiSelector.disabled=disable;
+
         let buttons = document.getElementsByClassName('Button');
         if (disable) {
             for (let i = 0; i < buttons.length; i++) {

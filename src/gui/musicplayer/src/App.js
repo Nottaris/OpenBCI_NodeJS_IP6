@@ -21,6 +21,7 @@ class App extends Component {
     }
 
     changePlayer(event) {
+        //change Player
         this.setState({selectedPlayer: event.target.value});
         this.showPlayer = this.getPlayerCompoonent(event.target.value)
     }
@@ -45,7 +46,7 @@ class App extends Component {
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h5 className="App-title">bci Music Player
                         <span className="selectPlayer">
-                            <select onChange={this.changePlayer} value={this.state.value}>
+                            <select onChange={this.changePlayer} value={this.state.value} id='guiSelector'>
                             <option value="PlayerBlink">Blink</option>
                             <option value="PlayerP300">P300</option>
                             <option value="PlayerMind">Mind</option>
