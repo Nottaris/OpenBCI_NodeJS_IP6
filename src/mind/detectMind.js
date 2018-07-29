@@ -7,8 +7,6 @@ module.exports = {
     detectMind: detectMind
 };
 
-const mathFunctions = require('../functions/mathFunctions');
-const mind = require('./mind');
 const server = require('../socket/server');
 
 let PythonShell = require('python-shell');
