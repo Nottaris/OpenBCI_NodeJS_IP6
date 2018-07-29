@@ -31,11 +31,14 @@ let settings = defaultSettings;
 let trainingCmd = "none";
 let slotsize = 1000;
 let baseline = false;
+
 server.startSocketServer();
 
+
+//receive training commands with slotsize, or training init from GUI
 function getTrainingCmd(data) {
     console.log("mind got training cmd from player: " + data.command.command);
-    //reset
+    //get cmd and slotsize
     trainingCmd = data.command.command;
     slotsize = data.command.slots;
     //if init Training command is comming start training of ml
