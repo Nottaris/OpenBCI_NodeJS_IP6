@@ -33,8 +33,7 @@ function start(sampleFunction, boardSettings) {
         })
         .catch((err) => {
             //Workaraound: If autofind board doesn't work(windows 10) try it with COM13
-            var portName = "COM13";
-            connectToBoard(portName);
+            connectToBoard(boardSettings.port);
         });
 
     function connectToBoard(portName) {
