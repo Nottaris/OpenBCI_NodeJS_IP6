@@ -15,7 +15,7 @@ Run ``` npm run player ```  to start the react music player.
 With the Dropdown in the title of the musicplayer you can switch between the player for Blink, P300 and Mind Control
 
 ## 2. Connect with OpenBCI Cyton Board
-In every control folder is a app.js file prepard, where the board can be configured. 
+In every control folder is a app.js file prepared, where the board can be configured. 
 ```javascript
 const boardSettings = {
     verbose: true,                                              //  Print out useful debugging events
