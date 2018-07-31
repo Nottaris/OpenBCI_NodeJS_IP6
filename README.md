@@ -8,6 +8,7 @@ Brain Computer Interface to control a web musicplayer
 ``` npm run player ``` 
 
 ## EEG Controls
+
 #### Start blink control
 ``` npm run blink ``` 
 
