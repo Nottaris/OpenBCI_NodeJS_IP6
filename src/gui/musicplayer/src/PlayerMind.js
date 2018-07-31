@@ -23,14 +23,14 @@ export default class PlayerBlink extends React.Component {
             commandinfos: [' volume up - open mouth',
                 'play - go forward',
                 'next - right hand',
-                'prev - left hand',
+                'previous - left hand',
                 'volume down - move feet'
             ],
-            commandpreinfos: ['Focus on volume up and think of screaming with your mouth wide open.',
-                'Focus on playing and think of leaning and going forward.',
-                'Focus on next and think of open and closing your right hand to a fist.',
-                'Focus on prev and think of open and closing your left hand to a fist.',
-                'Focus on volume down and think of moving your feet.'
+            commandpreinfos: ['If icon turns white, focus on volume up and think of opening your mouth.',
+                'If icon turns white, focus on playing and think of going forward.',
+                'If icon turns white, focus on next and think of open and closing your right hand.',
+                'If icon turns white, focus on prev and think of open and closing your left hand.',
+                'If icon turns white, focus on volume down and think of moving your feet.'
             ]
         };
 
@@ -66,12 +66,15 @@ export default class PlayerBlink extends React.Component {
         let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
         trainIcon.style.color = "lightblue";
         let infotext = document.getElementById('infotext');
-        //init text
-        infotext.innerText = "Training will start soon. Relax and sit comfy.";
+        let inittext = "Training will start soon. Relax and sit comfy.";
+        infotext.innerText = inittext;
+        window.responsiveVoice.speak(inittext);
         //info for first command training
         setTimeout(function () {
-            infotext.innerText = "Focus on volume up and think of screaming with your mouth wide open.";
-        }, 2000);
+            let preinfotext = this.state.commandpreinfos[0];
+            infotext.innerText = preinfotext;
+            window.responsiveVoice.speak(preinfotext);
+        }.bind(this), 4000);
 
         //train each command
         let i = 0;
@@ -90,6 +93,7 @@ export default class PlayerBlink extends React.Component {
     trainingStartML() {
         let infotext = document.getElementById('infotext');
         infotext.innerText = "Please wait. Training data is processed.";
+        window.responsiveVoice.speak("Please wait. Training data is processed.");
         sendTrainingCmd({command: 'init', slots: 0});
         setTimeout(function () {
             this.trainingFinished();
@@ -104,6 +108,7 @@ export default class PlayerBlink extends React.Component {
         }
         let infotext = document.getElementById('infotext');
         infotext.innerText = "Training finished. Have fun.";
+        window.responsiveVoice.speak("Training finished. Have fun.");
         this.toggleButtonsOnTraining(false);
     }
 
@@ -115,9 +120,11 @@ export default class PlayerBlink extends React.Component {
         }
         let infotext = document.getElementById('infotext');
         infotext.innerText = "...relax - stay calm...";
+        window.responsiveVoice.speak("...relax - stay calm...");
         setTimeout(function () {
             infotext.innerText = info;
-        }, 3000);
+            window.responsiveVoice.speak(info);
+        }, 4000);
     }
 
     toggleButtonsOnTraining(disable) {
@@ -141,7 +148,9 @@ export default class PlayerBlink extends React.Component {
         //show info and start highligthing command to train
         let infotext = document.getElementById('infotext');
         let cmdindex = this.state.commands.indexOf(command);
-        infotext.innerText = this.state.commandinfos[cmdindex];
+        let text = this.state.commandinfos[cmdindex];
+        infotext.innerText = text;
+        window.responsiveVoice.speak(text);
         //reset all icons to default color
         let cmdIcons = document.getElementsByClassName('cmd');
         for (var i = 0; i < cmdIcons.length; i++) {
