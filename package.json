@@ -6,14 +6,10 @@
   "scripts": {
     "start": "cd src/gui/musicplayer && react-scripts start",
     "blink": "node src/blink/app",
-    "blinkfile": "node src/blink/blinkFile",
     "p300": "node src/p300/app",
-    "p300file": "node src/p300/p300File",
-    "p300filestream": "node src/p300/p300FileStream",
     "mind": "node src/mind/app",
     "save": "node src/functions/saveData.js start",
     "plot": "node src/gui/plot/plot.js",
-    "stream": "node src/functions/streamData",
     "test": "mocha",
     "player": "cd src/gui/musicplayer && react-scripts start",
     "playerBuild": "cd src/gui/musicplayer && react-scripts build"
