@@ -49,8 +49,8 @@ export default class PlayerBlink extends React.Component {
         let elem = document.getElementById(data.docommand).getElementsByClassName('fa')[0];
         elem.style.color = "green";
         setTimeout(function () {
-                elem.style.color = "#1c739d";
-                }, 1000);
+            elem.style.color = "#1c739d";
+        }, 1000);
     };
 
     //Set the color of the command to white for X seconds
@@ -65,33 +65,37 @@ export default class PlayerBlink extends React.Component {
     }
 
     clickCommand = (state) => {
-        let audio = document.getElementById('audio');
-        switch (state) {
-            case "playpause":
-                if (this.state.playpauseToggle === 'play') {
-                    this.play(audio);
-                } else if (this.state.playpauseToggle === 'pause') {
-                    this.pause(audio);
-                }
-                break;
-            case "next":
-                this.next(audio);
-                break;
-            case "prev":
-                this.prev(audio);
-                break;
-            case "volup":
-                this.volup(audio);
-                break;
-            case "voldown":
-                this.voldown(audio);
-                break;
-            default:
-                //this should never happen
-                console.log("Error: clickCommand had unknown state")
-                break;
+        console.log("participant is looking - controls are active: " + window.looking);
+        if (window.looking) {
+            let audio = document.getElementById('audio');
+            switch (state) {
+                case "playpause":
+                    if (this.state.playpauseToggle === 'play') {
+                        this.play(audio);
+                    } else if (this.state.playpauseToggle === 'pause') {
+                        this.pause(audio);
+                    }
+                    break;
+                case "next":
+                    this.next(audio);
+                    break;
+                case "prev":
+                    this.prev(audio);
+                    break;
+                case "volup":
+                    this.volup(audio);
+                    break;
+                case "voldown":
+                    this.voldown(audio);
+                    break;
+                default:
+                    //this should never happen
+                    console.log("Error: clickCommand had unknown state")
+                    break;
+            }
+        }else{
+             console.log("participant is not looking - controls are off");
         }
-
     }
 
     updateTime(timestamp) {
@@ -182,6 +186,11 @@ export default class PlayerBlink extends React.Component {
 
                 </div>
                 <Controls playpauseToggle={this.state.playpauseToggle} clickCommand={this.clickCommand}/>
+                <div className="row">
+                    <div>
+                        <video id="video" width="160" height="120" preload autoPlay loop></video>
+                    </div>
+                </div>
             </div>
 
         )
