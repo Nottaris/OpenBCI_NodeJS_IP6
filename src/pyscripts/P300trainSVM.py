@@ -9,7 +9,7 @@ from p300Functions import filterDownsampleData
 import codecs, json
 # enable/disable debug Mode
 debug = False
-useSavedFatures = False
+useSavedFeatures = False
 
 def main():
     with open('../../data/p300/ex7_1_cycles5/training/1532349861282_1_baseline.json') as f:
@@ -36,7 +36,7 @@ def main():
     ##  2. Extract Features for Traingsdata
     targetCmd = 0 # Training Target: Playpause
     [X, y] = extractFeature(filterdTraindata,filterdBaseline, targetCmd)
-    if (useSavedFatures):
+    if (useSavedFeatures):
         X = []
         y = []
         file_path = '../../data/p300/model/X_training.txt'
