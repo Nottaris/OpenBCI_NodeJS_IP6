@@ -145,7 +145,6 @@ body {
     justify-content: center;
     background: #000;
     height: 200px;
-    max-width: 675px;
     margin: 0 auto;
     padding-top: 100px;
 }
@@ -198,21 +197,34 @@ body {
 .Blink .Controls {
     border-spacing: 25px;
     display: table;
-    width: 757px;
     padding-top: 50px;
+    background: #ffd4f9;
 }
 
 .Blink .Controls .row {
     margin: 0 auto;
     display: table;
-    max-width: 1200px;
 }
 
 .Blink .Controls .Button {
     padding: 30px 60px;
     width: 33%;
 }
+.Blink .Controls .subrow {
+    padding-top: 0px;
+    width: 757px;
+    display: table;
+    align-items: center;
+    justify-content: center;
+    background: #b4bcd2;
+}
 
+.cam {
+    color: #1c739d;
+}
+.vid{
+    visibility: hidden;
+}
 /*Custom CSS for P300*/
 .P300 .Controls {
     max-width: 100%;
@@ -235,18 +247,30 @@ body {
 .infotext {
     font-size: 12px;
     font-family: "Roboto", sans-serif;
-    color: lightblue;
+    color: #1c739d;
+}
+#trainingbar{
+    text-align: center;
+    height: 10px;
 }
 
 #progress {
-    width: 100%;
+    align-content: center;
+    width: 700px;
     border-radius: 5px;
-    background-color: #1c456e;
+    background-color: #1c739d;
+    max-width: 700px;
+    display: inline-block;
 }
 
 #progressBar {
     width: 0%;
     height: 5px;
     border-radius: 5px;
-    background-color: lightblue;
+    background-color: ghostwhite;
+}
+
+.Controls.Mind div.row .Button {
+    padding: 30px 60px;
+    width: 20%;
 }
