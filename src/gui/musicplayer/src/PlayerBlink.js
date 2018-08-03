@@ -15,12 +15,14 @@ export default class PlayerBlink extends React.Component {
             playpauseToggle: 'play',
             currentTime: 0,
             audioVolume: 0.5,
-            trackNr: 0
+            trackNr: 0,
+            camcontrol: false
         };
 
         this.clickCommand = this.clickCommand.bind(this);
         this.flashCommand = this.flashCommand.bind(this);
         this.execCommand = this.execCommand.bind(this);
+        this.toggleCamcontrol = this.toggleCamcontrol.bind(this);
 
 
         subscribeToBlinkCmds(
@@ -64,9 +66,26 @@ export default class PlayerBlink extends React.Component {
         }
     }
 
+    //turn on/off activation of controls by webcam face tracking
+    toggleCamcontrol() {
+       let elemcam = document.getElementById('cam');
+       let elemvid = document.getElementById('vid');
+
+       if (this.state.camcontrol){
+            //turn camcontrol off
+            elemcam.style.color = "#1c739d";
+            elemvid.style.visibility = "hidden";
+        }else{
+            //turn cam control on
+            elemcam.style.color = "white";
+            elemvid.style.visibility = "visible";
+        }
+        //toggle
+        this.setState({camcontrol: !this.state.camcontrol})
+    }
+
     clickCommand = (state) => {
-        console.log("participant is looking - controls are active: " + window.looking);
-        if (window.looking) {
+        if (!this.state.camcontrol || (this.state.camcontrol && window.looking)) {
             let audio = document.getElementById('audio');
             switch (state) {
                 case "playpause":
@@ -186,8 +205,11 @@ export default class PlayerBlink extends React.Component {
 
                 </div>
                 <Controls playpauseToggle={this.state.playpauseToggle} clickCommand={this.clickCommand}/>
-                <div className="row">
-                    <div>
+                <div className="Controls subrow">
+                    <div id="cam" onClick={() => this.toggleCamcontrol()}  className="cam">
+                        <i className="fas fa-video"></i>
+                    </div>
+                    <div id="vid" className="vid">
                         <video id="video" width="160" height="120" preload autoPlay loop></video>
                     </div>
                 </div>
@@ -196,3 +218,4 @@ export default class PlayerBlink extends React.Component {
         )
     }
 };
+
