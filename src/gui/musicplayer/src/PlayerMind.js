@@ -26,11 +26,11 @@ export default class PlayerBlink extends React.Component {
                 'previous - left hand',
                 'volume down - move feet'
             ],
-            commandpreinfos: ['If icon turns white, focus on volume up and think of opening your mouth.',
-                'If icon turns white, focus on playing and think of going forward.',
-                'If icon turns white, focus on next and think of open and closing your right hand.',
-                'If icon turns white, focus on prev and think of open and closing your left hand.',
-                'If icon turns white, focus on volume down and think of moving your feet.'
+            commandpreinfos: ['If volume up icon turns white, focus on volume up and think of opening your mouth.',
+                'If play icon turns white, focus on playing and think of going forward.',
+                'If next icon turns white, focus on next and think of open and closing your right hand.',
+                'If prev icon turns white, focus on prev and think of open and closing your left hand.',
+                'If volume down icon turns white, focus on volume down and think of moving your feet.'
             ]
         };
 
@@ -64,7 +64,7 @@ export default class PlayerBlink extends React.Component {
         let audio = document.getElementById('audio');
         this.pause(audio);
         let trainIcon = document.getElementById('training').getElementsByClassName('fa')[0];
-        trainIcon.style.color = "lightblue";
+        trainIcon.style.color = "white";
         let infotext = document.getElementById('infotext');
         let inittext = "Training will start soon. Relax and sit comfy.";
         infotext.innerText = inittext;
@@ -79,7 +79,7 @@ export default class PlayerBlink extends React.Component {
         //train each command
         let i = 0;
         let interval = setInterval(function () {
-            if (i === 5) {
+            if (i === this.state.commands.length) {
                 this.trainingStartML();
                 clearInterval(interval);
             } else {
@@ -92,8 +92,9 @@ export default class PlayerBlink extends React.Component {
     //training recording finished, init ml training
     trainingStartML() {
         let infotext = document.getElementById('infotext');
-        infotext.innerText = "Please wait. Training data is processed.";
-        window.responsiveVoice.speak("Please wait. Training data is processed.");
+        let processedText = "Please wait. Training data is processed.";
+        infotext.innerText = processedText;
+        window.responsiveVoice.speak(processedText);
         sendTrainingCmd({command: 'init', slots: 0});
         setTimeout(function () {
             this.trainingFinished();
@@ -107,8 +108,9 @@ export default class PlayerBlink extends React.Component {
             cmdIcons[i].style.color = "#1c456e";
         }
         let infotext = document.getElementById('infotext');
-        infotext.innerText = "Training finished. Have fun.";
-        window.responsiveVoice.speak("Training finished. Have fun.");
+        let finishedText = "Training finished. Have fun."
+        infotext.innerText = finishedText;
+        window.responsiveVoice.speak(finishedText);
         this.toggleButtonsOnTraining(false);
     }
 
@@ -121,10 +123,12 @@ export default class PlayerBlink extends React.Component {
         let infotext = document.getElementById('infotext');
         infotext.innerText = "...relax - stay calm...";
         window.responsiveVoice.speak("...relax - stay calm...");
-        setTimeout(function () {
-            infotext.innerText = info;
-            window.responsiveVoice.speak(info);
-        }, 4000);
+        if (info!=='done'){
+            setTimeout(function () {
+                infotext.innerText = info;
+                window.responsiveVoice.speak(info);
+            }, 4000);
+        }
     }
 
     toggleButtonsOnTraining(disable) {
@@ -188,8 +192,8 @@ export default class PlayerBlink extends React.Component {
         // get next command
         let cmdindex = this.state.commands.indexOf(command);
         let nextcmd = cmdindex+1;
-        let info = '...relax - stay calm...';
-        if (nextcmd !== 5){
+        let info = 'done';
+        if (nextcmd !== this.state.commands.length){
             info = this.state.commandpreinfos[nextcmd];
         }
         this.trainingPause(info); //gui: show training pause
