@@ -12,7 +12,7 @@ export default class Training extends React.Component {
 
     render() {
         return (
-            <div className="Controls">
+            <div className="Controls subrow">
                 <div className="row">
                     <div onClick={() => this.trainingInit()} id="training" className="Button">
                         <i className='fa fa-fw fa-graduation-cap'></i>
