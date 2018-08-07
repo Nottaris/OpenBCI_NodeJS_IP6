@@ -6,85 +6,86 @@ from sklearn.model_selection import GridSearchCV
 import pickle
 
 
-
 def filterDownsampleData(volts, baseline, commands, debug):
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
-    lowcut = 16.0
-    highcut = 24.0
+    lowcut = 8.0
+    highcut = 30.0
     order = 4
-    startSample = 1500
-    endSample = 1750
+    startSample = 250   #analyse three 1 second slots in training phase
+    sampleSize = 250
     cmdCount = len(commands)
-    downsampleFactor = 12   # reduce dimensions by this factor
-    downsampleSize = int(len(volts)/downsampleFactor)   #resulting size of downsampled data depending on input size
-    # ToDO: Set correct Channel Count
-    channels = [1, 2]
+    downsampleFactor = 12  # reduce dimensions by this factor
+    downsampleSize = int(len(volts) / downsampleFactor)  # resulting size of downsampled data depending on input size
+    channels = [0, 1, 2, 3, 4, 5, 6, 7]
 
     ## BP FILTER DATA
-    channelDataBP = []
-    baselineDataBP = []
+    ## volts[CMD][Samples][Channels]
+    voltsBP = []
+    baselineBP = []
 
     for cmd in range(cmdCount):
-        channelData = []
-        channelBaselineData = []
+        voltsPerCmd = []
+        baselinePerCmd = []
         for c in range(len(channels)):
-            # add baseline before filter BP
-            dataFilterd = filterData(volts[cmd][:, channels[c]], lowcut, highcut, fs, order)
-            # cut off baseline again
-            channelData.append(dataFilterd)
+            # print("volts[cmd][:, c] : "+str(len(volts[cmd][:, c])))
+            dataBP = filterData(volts[cmd][:, c], lowcut, highcut, fs, order)
+            voltsPerCmd.append(dataBP)
+            dataBPbl = filterData(baseline[:, c], lowcut, highcut, fs, order)
+            baselinePerCmd.append(dataBPbl)
 
             if (debug):
-                if(cmd == 2 or cmd == 3):
+                if (cmd == 2 or cmd == 3):
                     # plt.figure(channel + 1)
                     # plt.title("filterd Baseline Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
                     # plt.plot(channelBaselineData[channel] * 1000000, color='g')
                     # axes = plt.gca()
                     # axes.set_ylim([-40, 40])
                     plt.figure(c + 2)
-                    plt.plot(channelData[c] * 1000000, color='r')
+                    plt.plot(voltsPerCmd[c] * 1000000, color='r')
                     plt.title("Data Cmd " + str(commands[cmd]) + " - Channel " + str(c))
                     # axes = plt.gca()
                     # axes.set_ylim([-40, 40])
                     plt.show()
-        channelDataBP.append(channelData)
-        baselineDataBP.append(channelBaselineData)
+        voltsBP.append(voltsPerCmd)
+        baselineBP.append(baselinePerCmd)
 
-
-    ## EXTRACT EPOCHE BETWEEN 0.5 - 1.5 s (125 - 375) FOR EACH COMMAND
-    ## dataMind[CMD][CHANNEL][VOLTS]
+    ## analyse 3 seconds  from 1-4 seconds in training phase
+    ## dataMind[CMD][CHANNEL][sampleVOLTS]
     dataMind = []
     for cmd in range(cmdCount):
         channelData = []
         for channel in range(len(channels)):
-            channelData.append(channelDataBP[cmd][channel][startSample:endSample])
-            squareData = np.square(channelData[channel]* 1000000)
-            mean = np.mean(squareData)
+            #take three seconds from each training phase
+            channelData.append(voltsBP[cmd][channel][startSample:startSample+sampleSize])
+            channelData.append(voltsBP[cmd][channel][startSample+sampleSize:startSample+2*sampleSize])
+            channelData.append(voltsBP[cmd][channel][startSample+2*sampleSize:startSample+3*sampleSize])
 
-            if (debug):
-                if (cmd == 2 or cmd == 3):
-                    print("cmd: "+str(cmd) + " channel " + str(channel) + " mean: " + str(mean))
-                    plt.figure(channel)
-                    plt.title("Train Epoche Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
-                    plt.plot(channelData[channel] * 1000000, color='b')
-                    plt.plot(np.square(channelData[channel]* 1000000) , color='r')
-                    axes = plt.gca()
-                    axes.set_ylim([0, 100])
-                    plt.show()
+            # squareData = np.square(channelData[channel] * 1000000)
+            # mean = np.mean(squareData)
+
+            # if (debug):
+            #     if (cmd == 2 or cmd == 3):
+            #      #   print("cmd: " + str(cmd) + " channel " + str(channel) + " mean: " + str(mean))
+            #         plt.figure(channel)
+            #         plt.title("Train Epoche Cmd " + str(commands[cmd]) + " - Channel " + str(channel))
+            #         plt.plot(channelData[channel] * 1000000, color='b')
+            #         plt.plot(np.square(channelData[channel] * 1000000), color='r')
+            #         axes = plt.gca()
+            #         axes.set_ylim([0, 100])
+            #         plt.show()
         dataMind.append(channelData)
 
-        # ToDo: Imolement common spacial pattern
-        ## SPACIAL PATTERM
+    # ToDo: Implement common spacial pattern
+    ## SPACIAL PATTERM
 
-
-    return dataMind, baselineDataBP
-
-
+    return dataMind, baselineBP
 
 
 def filterData(data, lowcut, highcut, fs, order):
     filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
     return filterdData
+
 
 def butter_bandpass(lowcut, highcut, fs, order):
     nyq = 0.5 * fs
