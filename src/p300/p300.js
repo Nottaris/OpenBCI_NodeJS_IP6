@@ -17,10 +17,7 @@ const server = require('../socket/server');
 const detectP300 = require('./detectP300');
 
 const defaultSettings = {
-    channel: 1,             // number of channel ( from 1 to 8 ) 1 === OZ for p300
     sampleRate: 250,        // 250Hz
-    slots: 112,             // data points per slot ( 450ms === 112 )
-    threshold: 1.8,         // deviation factor
     //ToDo: Set correct baselineLength
     baselineLength: 8000,    // baseline 3s = 750 samples
     voltsMaxLength: 100000,  //max length of volts array

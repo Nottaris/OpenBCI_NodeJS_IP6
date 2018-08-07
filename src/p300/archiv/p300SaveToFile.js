@@ -15,7 +15,7 @@ module.exports = {
 const commands = ["next", "voldown", "playpause", "prev", "volup"];
 const focus = 1; //command 0-4
 
-const server = require('../socket/server');
+const server = require('../../socket/server');
 var init = true;
 
 const defaultSettings = {
