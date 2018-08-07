@@ -10,7 +10,6 @@ import Controls from './components/Controls';
 export default class PlayerBlink extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             playpauseToggle: 'play',
             currentTime: 0,
@@ -41,7 +40,6 @@ export default class PlayerBlink extends React.Component {
 
 
     flashCommand = (data) => {
-        console.log("exec: " + data.command);
         this.blinkCommandButton(data.command);
     };
 
@@ -49,9 +47,9 @@ export default class PlayerBlink extends React.Component {
         console.log("exec: " + data.docommand);
         this.clickCommand(data.docommand);
         let elem = document.getElementById(data.docommand).getElementsByClassName('fa')[0];
-        elem.style.color = "green";
+        elem.style.color = "#037e09";
         setTimeout(function () {
-            elem.style.color = "#1c739d";
+            elem.style.color = "#1c456e";
         }, 1000);
     };
 
@@ -61,7 +59,7 @@ export default class PlayerBlink extends React.Component {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
             setTimeout(function () {
-                elem.style.color = "#1c739d";
+                elem.style.color = "#1c456e";
             }, 1000);
         }
     }
@@ -205,7 +203,7 @@ export default class PlayerBlink extends React.Component {
 
                 </div>
                 <Controls playpauseToggle={this.state.playpauseToggle} clickCommand={this.clickCommand}/>
-                <div className="Controls subrow">
+                <div className="AdditonalControls">
                     <div id="cam" onClick={() => this.toggleCamcontrol()}  className="cam">
                         <i className="fas fa-video"></i>
                     </div>

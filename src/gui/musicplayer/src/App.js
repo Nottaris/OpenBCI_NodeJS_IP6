@@ -41,7 +41,7 @@ class App extends Component {
 
 
         return (
-            <div className="App">
+            <div className={"App "+this.state.selectedPlayer}>
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h5 className="App-title">bci Music Player

@@ -12,7 +12,7 @@ export default class Controls extends React.Component {
 
     render() {
         return (
-            <div className="Controls Mind">
+            <div className="Controls">
                 <div className="row">
                     <div onClick={() => this.setCommand('voldown')} id="voldown" className="Button">
                         <i className='cmd fa fa-fw fa-volume-down'></i>

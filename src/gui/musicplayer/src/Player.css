@@ -2,7 +2,6 @@
 
 body {
     align-items: center;
-    background: #0c1318;
     display: flex;
     font-family: "Roboto", sans-serif;
     color: white;
@@ -17,7 +16,6 @@ body {
     height: 100%;
     width: 100%;
     margin-top: 40px;
-    background: #000;
 }
 
 .Player .Info {
@@ -134,13 +132,13 @@ body {
 .Player .AudioProgressBar #ProgressVolume {
     width: 50%;
     height: 10px;
-    background-color: #1c739d;
+    background-color: #1D7FB0;
 }
 
 .Player .Controls {
     display: table;
     border-spacing: 10px;
-    width: 100%;
+    max-width: 100%;
     align-items: center;
     justify-content: center;
     background: #000;
@@ -160,7 +158,7 @@ body {
     min-width: 33%;
 }
 
-.Player .Controls .Button {
+.Player .Button {
     display: table-cell;
     align-items: center;
     justify-content: center;
@@ -168,20 +166,20 @@ body {
     margin: auto;
     pointer-events: all;
     cursor: pointer;
-    width: 100%;
+    max-width: 100%;
 }
 
-.Player .Controls .Button:hover .fa {
+.Player .Button:hover .fa {
     transform: scale(0.98);
     color: #FFF;
 }
 
-.Player .Controls .Button :active .fa {
+.Player .Button :active .fa {
     color: #FFF;
 
 }
 
-.Player .Controls .Button {
+.Player .Button {
     color: #1c456e;
     font-size: 80px;
 }
@@ -190,88 +188,101 @@ body {
     color: #000;
 }
 
+
 /* Custom CSS for Blink */
-.Blink .Controls .Button {
-    color: #1c739d;
+.PlayerBlink .Controls .Button {
+    color: #1c456e;
 }
-.Blink .Controls {
+.PlayerBlink .Controls {
     border-spacing: 25px;
     display: table;
     padding-top: 50px;
-    background: #ffb9f2;
+    background: #1D7FB0;
 }
 
-.Blink .Controls .row {
+.PlayerBlink .Controls .row {
     margin: 0 auto;
     display: table;
 }
 
-.Blink .Controls .Button {
+.PlayerBlink .Controls .Button {
     padding: 30px 60px;
     width: 33%;
 }
-.Blink div.Controls.subrow {
-    padding-top: 0px;
-    display: table;
-    align-items: center;
-    justify-content: center;
+
+.PlayerBlink .cam {
+    color: #1c456e;
+    position: relative;
+    cursor: pointer;
 }
 
-.cam {
-    color: #1c739d;
-    position: relative;
+.PlayerBlink .cam:hover {
+    transform: scale(0.98);
+    color: #FFF;
 }
-.vid{
+
+.PlayerBlink .vid{
     visibility: hidden;
     margin-top: -100px;
 }
 
 /*Custom CSS for P300*/
-.P300 .Controls {
+.PlayerP300 .Controls {
     max-width: 100%;
     min-height: 100%;
 }
 
-.P300 .Controls .row {
+.PlayerP300 .Controls .row {
     margin: 0 auto 40px;
     display: table;
     max-width: 1200px;
 }
 
-.P300 .Controls .Button {
+.PlayerP300 .Controls .Button {
     width: 200px;
     height: 200px;
 }
 
 
 /* Custom CSS for Mind */
-.infotext {
-    font-size: 12px;
-    font-family: "Roboto", sans-serif;
-    color: #1c739d;
+.PlayerMind .Controls {
+    background: #1D7FB0;
 }
-#trainingbar{
+
+.PlayerMind .AdditonalControls {
+    padding-top: 30px;
+
+}
+.PlayerMind .infotext {
+    font-size: 24px;
+    font-family: "Roboto", sans-serif;
+    color: #fff;
+}
+.PlayerMind #trainingbar{
     text-align: center;
     height: 10px;
 }
 
-#progress {
+.PlayerMind .AdditonalControls .Button {
+    display: block;
+}
+
+.PlayerMind #progress {
     align-content: center;
     width: 700px;
     border-radius: 5px;
-    background-color: #1c739d;
+    background-color: #1c456e;
     max-width: 700px;
     display: inline-block;
 }
 
-#progressBar {
+.PlayerMind #progressBar {
     width: 0%;
     height: 5px;
     border-radius: 5px;
     background-color: ghostwhite;
 }
 
-.Controls.Mind div.row .Button {
+.PlayerMind .Controls div.row .Button{
     padding: 30px 60px;
-    width: 20%;
 }
