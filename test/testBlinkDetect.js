@@ -7,6 +7,9 @@ const assert = require('assert');
 let settings = blink.getSettings();
 
 describe('blink - with Paste', function () {
+
+    this.timeout(15000);
+
     before(function () {
         const testfile = "../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json";
         data = openData.loadJSON(testfile);
