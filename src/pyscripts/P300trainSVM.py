@@ -8,33 +8,129 @@ import pickle
 from p300Functions import filterDownsampleData
 import codecs, json
 # enable/disable debug Mode
-debug = False
+debug = True
 useSavedFeatures = False
 
 def main():
-    with open('../../data/p300/ex7_1_cycles5/training/1532349861282_1_baseline.json') as f:
+    # active channels
+    channels = [0,1,2,3,4,5,6,7]  # 0-7 channels
+
+    print("\n------ Traing Data ------")
+    with open('../../data/p300/ex10_cycles5/1-play/1533644747884_1_baseline.json') as f:
         baselineTraining = json.load(f)
-    with open('../../data/p300/ex7_1_cycles5/training/1532349861273_1_volts.json') as f:
+    with open('../../data/p300/ex10_cycles5/1-play/1533644747872_1_volts.json') as f:
         voltsTraining = json.load(f)
-    with open('../../data/p300/ex7_1_cycles5/training/1532349861307_1_cmdIdx.json') as f:
+    with open('../../data/p300/ex10_cycles5/1-play/1533644747913_1_cmdIdx.json') as f:
         cmdIdxTraining = json.load(f)
 
     # create a numpy array
     voltsTraining = np.array(voltsTraining, dtype='f')
     baselineTraining = np.array(baselineTraining, dtype='f')
 
-
-
-    # active channels
-    channels = [0,1,2,3,4,5,6,7]  # 0-7 channels
-
-    print("\n------ Traing Data ------")
+    targetCmd = 0 # Training Target: Playpause
 
     ## 1. Filter and Downsample Traingsdata
-    [filterdTraindata, filterdBaseline] = filterDownsampleData(voltsTraining, baselineTraining, cmdIdxTraining, channels, debug)
+    [filterdTraindata, filterdBaseline] = filterDownsampleData(voltsTraining, baselineTraining, cmdIdxTraining, channels, debug, targetCmd)
 
     ##  2. Extract Features for Traingsdata
-    targetCmd = 0 # Training Target: Playpause
+    [X, y] = extractFeature(filterdTraindata,filterdBaseline, targetCmd)
+
+    print("\n------ Traing Data Next ------")
+    with open('../../data/p300/ex10_cycles5/2-next/1533644916870_1_baseline.json') as f:
+        baselineTraining = json.load(f)
+    with open('../../data/p300/ex10_cycles5/2-next/1533644916859_1_volts.json') as f:
+        voltsTraining = json.load(f)
+    with open('../../data/p300/ex10_cycles5/2-next/1533644916890_1_cmdIdx.json') as f:
+        cmdIdxTraining = json.load(f)
+
+    # create a numpy array
+    voltsTraining = np.array(voltsTraining, dtype='f')
+    baselineTraining = np.array(baselineTraining, dtype='f')
+
+    targetCmd = 1 # Training Target: Next
+
+    ## 1. Filter and Downsample Traingsdata
+    [filterdTraindata, filterdBaseline] = filterDownsampleData(voltsTraining, baselineTraining, cmdIdxTraining, channels, debug, targetCmd)
+
+    ##  2. Extract Features for Traingsdata
+    [X, y] = extractFeature(filterdTraindata,filterdBaseline, targetCmd)
+
+    print("\n------ Traing Data VolDown ------")
+    with open('../../data/p300/ex10_cycles5/3-prev/1533645116967_1_baseline.json') as f:
+        baselineTraining = json.load(f)
+    with open('../../data/p300/ex10_cycles5/3-prev/1533645116953_1_volts.json') as f:
+        voltsTraining = json.load(f)
+    with open('../../data/p300/ex10_cycles5/3-prev/1533645116988_1_cmdIdx.json') as f:
+        cmdIdxTraining = json.load(f)
+
+    # create a numpy array
+    voltsTraining = np.array(voltsTraining, dtype='f')
+    baselineTraining = np.array(baselineTraining, dtype='f')
+
+    targetCmd = 2 # Training Target: Prev
+
+    ## 1. Filter and Downsample Traingsdata
+    [filterdTraindata, filterdBaseline] = filterDownsampleData(voltsTraining, baselineTraining, cmdIdxTraining, channels, debug, targetCmd)
+
+    ##  2. Extract Features for Traingsdata
+    [X, y] = extractFeature(filterdTraindata,filterdBaseline, targetCmd)
+
+    print("\n------ Traing Data ------")
+    with open('../../data/p300/ex10_cycles5/4-volup/1533644839857_1_baseline.json') as f:
+        baselineTraining = json.load(f)
+    with open('../../data/p300/ex10_cycles5/4-volup/1533644839848_1_volts.json') as f:
+        voltsTraining = json.load(f)
+    with open('../../data/p300/ex10_cycles5/4-volup/1533644839882_1_cmdIdx.json') as f:
+        cmdIdxTraining = json.load(f)
+
+    # create a numpy array
+    voltsTraining = np.array(voltsTraining, dtype='f')
+    baselineTraining = np.array(baselineTraining, dtype='f')
+
+    targetCmd = 3 # Training Target: VolUp
+
+    ## 1. Filter and Downsample Traingsdata
+    [filterdTraindata, filterdBaseline] = filterDownsampleData(voltsTraining, baselineTraining, cmdIdxTraining, channels, debug, targetCmd)
+
+    ##  2. Extract Features for Traingsdata
+    [X, y] = extractFeature(filterdTraindata,filterdBaseline, targetCmd)
+
+
+    print("\n------ Traing Data ------")
+    with open('../../data/p300/ex10_cycles5/5-voldown/1533644995773_1_baseline.json') as f:
+        baselineTraining = json.load(f)
+    with open('../../data/p300/ex10_cycles5/5-voldown/1533644995766_1_volts.json') as f:
+        voltsTraining = json.load(f)
+    with open('../../data/p300/ex10_cycles5/5-voldown/1533644995801_1_cmdIdx.json') as f:
+        cmdIdxTraining = json.load(f)
+
+    # create a numpy array
+    voltsTraining = np.array(voltsTraining, dtype='f')
+    baselineTraining = np.array(baselineTraining, dtype='f')
+
+    targetCmd = 4 # Training Target: Next
+
+    ## 1. Filter and Downsample Traingsdata
+    [filterdTraindata, filterdBaseline] = filterDownsampleData(voltsTraining, baselineTraining, cmdIdxTraining, channels, debug, targetCmd)
+
+    print("\n------ Traing Data ------")
+    with open('../../data/p300/ex8_cycles5/1532426604595_1_baseline.json') as f:
+        baselineTraining = json.load(f)
+    with open('../../data/p300/ex8_cycles5/1532426604585_1_volts.json') as f:
+        voltsTraining = json.load(f)
+    with open('../../data/p300/ex8_cycles5/1532426604613_1_cmdIdx.json') as f:
+        cmdIdxTraining = json.load(f)
+
+    # create a numpy array
+    voltsTraining = np.array(voltsTraining, dtype='f')
+    baselineTraining = np.array(baselineTraining, dtype='f')
+
+    targetCmd = 0 # Training Target: Next
+
+    ## 1. Filter and Downsample Traingsdata
+    [filterdTraindata, filterdBaseline] = filterDownsampleData(voltsTraining, baselineTraining, cmdIdxTraining, channels, debug, targetCmd)
+
+    ##  2. Extract Features for Traingsdata
     [X, y] = extractFeature(filterdTraindata,filterdBaseline, targetCmd)
     if (useSavedFeatures):
         X = []
@@ -92,68 +188,68 @@ def main():
     # json.dump(X[20:len(X)].tolist(), codecs.open(outfile, 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True,
     #               indent=4)  ### this saves the array in .json format
 
-    print("\n------ Test Data ------")
-    with open('../../data/p300/ex7_1_cycles5/test/1532350012450_1_baseline.json') as f:
-        baselineTest= json.load(f)
-    with open('../../data/p300/ex7_1_cycles5/test/1532350012442_1_volts.json') as f:
-        voltsTest = json.load(f)
-    with open('../../data/p300/ex7_1_cycles5/test/1532350012477_1_cmdIdx.json') as f:
-        cmdIdxTest = json.load(f)
-
-    # create a numpy array
-    voltsTest = np.array(voltsTest, dtype='f')
-    baselineTest = np.array(baselineTest, dtype='f')
-    ## 4. Filter and Downsample Testdata
-    [filterdTestdata, filterdTestBaseline] = filterDownsampleData(voltsTest, baselineTest, cmdIdxTest, channels, debug)
-
-    ##  5. Extract Features from Testdata
-    targetCmd = 0  # Playpause
-    [X_test, y_test] = extractFeature(filterdTestdata, filterdTestBaseline, targetCmd)
-    print("Anz. Features X_Test: "+str(len(X_test)))
-    print("y_Test: " + str(y_test))
-
-
-    ##  6. Check Model Accuracy
-    print("\n------ Model Accuracy ------")
-    y_pred =  clf.predict(X_test) #Predict the response for test dataset
-    print("predicted y "+str(y_pred))
-
-    [accuracy, precision, recall] = modelAccuracy(y_test, y_pred)
-    print("Accuracy: "+str(accuracy))
-    print("Precision: " + str(precision))
-    print("Recall: " + str(recall))
-
-    print("\n------ Test Data 2 ------")
-
-    with open('../../data/p300/ex8_cycles5/1532426604595_1_baseline.json') as f:
-        baselineTest= json.load(f)
-    with open('../../data/p300/ex8_cycles5/1532426604585_1_volts.json') as f:
-        voltsTest = json.load(f)
-    with open('../../data/p300/ex8_cycles5/1532426604613_1_cmdIdx.json') as f:
-        cmdIdxTest = json.load(f)
-
-    # create a numpy array
-    voltsTest = np.array(voltsTest, dtype='f')
-    baselineTest = np.array(baselineTest, dtype='f')
-    ## 4. Filter and Downsample Testdata
-    [filterdTestdata, filterdTestBaseline] = filterDownsampleData(voltsTest, baselineTest, cmdIdxTest, channels, debug)
-
-    ##  5. Extract Features from Testdata
-    targetCmd = 0  # Playpause
-    [X_test, y_test] = extractFeature(filterdTestdata, filterdTestBaseline, targetCmd)
-    print("Anz. Features X_Test: "+str(len(X_test)))
-    print("y_Test: " + str(y_test))
-
-
-    ##  6. Check Model Accuracy
-    print("\n------ Model Accuracy ------")
-    y_pred =  clf.predict(X_test) #Predict the response for test dataset
-    print("predicted y "+str(y_pred))
-
-    [accuracy, precision, recall] = modelAccuracy(y_test, y_pred)
-    print("Accuracy: "+str(accuracy))
-    print("Precision: " + str(precision))
-    print("Recall: " + str(recall))
+    # print("\n------ Test Data ------")
+    # with open('../../data/p300/ex7_1_cycles5/test/1532350012450_1_baseline.json') as f:
+    #     baselineTest= json.load(f)
+    # with open('../../data/p300/ex7_1_cycles5/test/1532350012442_1_volts.json') as f:
+    #     voltsTest = json.load(f)
+    # with open('../../data/p300/ex7_1_cycles5/test/1532350012477_1_cmdIdx.json') as f:
+    #     cmdIdxTest = json.load(f)
+    #
+    # # create a numpy array
+    # voltsTest = np.array(voltsTest, dtype='f')
+    # baselineTest = np.array(baselineTest, dtype='f')
+    # ## 4. Filter and Downsample Testdata
+    # [filterdTestdata, filterdTestBaseline] = filterDownsampleData(voltsTest, baselineTest, cmdIdxTest, channels, debug)
+    #
+    # ##  5. Extract Features from Testdata
+    # targetCmd = 0  # Playpause
+    # [X_test, y_test] = extractFeature(filterdTestdata, filterdTestBaseline, targetCmd)
+    # print("Anz. Features X_Test: "+str(len(X_test)))
+    # print("y_Test: " + str(y_test))
+    #
+    #
+    # ##  6. Check Model Accuracy
+    # print("\n------ Model Accuracy ------")
+    # y_pred =  clf.predict(X_test) #Predict the response for test dataset
+    # print("predicted y "+str(y_pred))
+    #
+    # [accuracy, precision, recall] = modelAccuracy(y_test, y_pred)
+    # print("Accuracy: "+str(accuracy))
+    # print("Precision: " + str(precision))
+    # print("Recall: " + str(recall))
+    #
+    # print("\n------ Test Data 2 ------")
+    #
+    # with open('../../data/p300/ex8_cycles5/1532426604595_1_baseline.json') as f:
+    #     baselineTest= json.load(f)
+    # with open('../../data/p300/ex8_cycles5/1532426604585_1_volts.json') as f:
+    #     voltsTest = json.load(f)
+    # with open('../../data/p300/ex8_cycles5/1532426604613_1_cmdIdx.json') as f:
+    #     cmdIdxTest = json.load(f)
+    #
+    # # create a numpy array
+    # voltsTest = np.array(voltsTest, dtype='f')
+    # baselineTest = np.array(baselineTest, dtype='f')
+    # ## 4. Filter and Downsample Testdata
+    # [filterdTestdata, filterdTestBaseline] = filterDownsampleData(voltsTest, baselineTest, cmdIdxTest, channels, debug)
+    #
+    # ##  5. Extract Features from Testdata
+    # targetCmd = 0  # Playpause
+    # [X_test, y_test] = extractFeature(filterdTestdata, filterdTestBaseline, targetCmd)
+    # print("Anz. Features X_Test: "+str(len(X_test)))
+    # print("y_Test: " + str(y_test))
+    #
+    #
+    # ##  6. Check Model Accuracy
+    # print("\n------ Model Accuracy ------")
+    # y_pred =  clf.predict(X_test) #Predict the response for test dataset
+    # print("predicted y "+str(y_pred))
+    #
+    # [accuracy, precision, recall] = modelAccuracy(y_test, y_pred)
+    # print("Accuracy: "+str(accuracy))
+    # print("Precision: " + str(precision))
+    # print("Recall: " + str(recall))
 
 
 

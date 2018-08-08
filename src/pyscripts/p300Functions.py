@@ -3,18 +3,20 @@ import json, os, sys, numpy as np, matplotlib.pyplot as plt
 
 substractBaseline = True
 
-def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
+def filterDownsampleData(volts, baseline, cmdIdx, channels, debug, cmdTarget):
     # Define sample rate and desired cutoff frequencies (in Hz).
     fs = 250.0
     lowcut = 1
     highcut = 12.0
-    order = 4
+    order = 6
     cmdCount = len(cmdIdx)
-    slotSize = 124 #500 ms
+    slotSize = 150 #500 ms
     downsampleSize = 16
     cycles = len(cmdIdx[0])
     channels = len(channels)
-
+    commands = ['playpause','next','prev','volup', 'voldown'];
+    colors = ['b','g','r','c','m','y','k','w'];
+    channelNames = ['O1','Oz','O2','P3','Pz','P4','Cz','Fz']
     ## BP FILTER DATA
     channelDataBP = []
     baselineDataBP = []
@@ -25,14 +27,14 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
         # cut off baseline again
         channelDataBP.append(dataFilterd[len(baseline[:, channel])-1:])
         baselineDataBP.append(dataFilterd[1000:len(baseline)])# baseline is 9000 samples
-        if (debug):
-            plt.figure(channel + 1)
-            plt.title("filterd Baseline - Channel " + str(channel))
-            plt.plot(baselineDataBP[channel]*1000000, color='g')
-            plt.figure(channel + 2)
-            plt.plot(channelDataBP[channel] * 1000000, color='r')
-            plt.title("Baseline Data - Channel " + str(channel))
-            plt.show()
+        # if (debug):
+        #     plt.figure(channel + 1)
+        #     plt.title("filterd Baseline - Channel " + str(channel))
+        #     plt.plot(baselineDataBP[channel]*1000000, color='g')
+        #     plt.figure(channel + 2)
+        #     plt.plot(channelDataBP[channel] * 1000000, color='r')
+        #     plt.title("Baseline Data - Channel " + str(channel))
+        #     plt.show()
 
     ## SPLIT VOLTS DATA IN COMMAND EPOCHES AND DOWNSAMPLE
     ## collect volt for each cmd in dataP300[CMD][CYCLE][CHANNEL][VOLTS] of all cycles
@@ -53,24 +55,30 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug):
                 channelData.append(resample(volts, downsampleSize))
 
 
-                if(cmd == 0):
-                    plt.figure(cycle + 10)
-                    plt.plot(channelData[channel] * 1000000, color='r')
-                    plt.title("Playpause Data - Channel 0 - Cycle " + str(cycle))
+                if(cmd == cmdTarget):
+                    fig1 = plt.figure(cycle + 10)
+                    plt.plot(volts * 1000000,  label="Channel "+str(channelNames[channel-1]),  color=colors[channel])
+                    plt.legend(loc='lower right')
                     axes = plt.gca()
-                    axes.set_ylim([-25, 25])
+                    axes.set_ylim([-30, 30])
+                    fig1.add_subplot(1, 1, 1, facecolor='lightgray')
+
+                    plt.title(str(commands[cmdTarget])+"Data - Channel 0 - Cycle " + str(cycle))
+
             ## save median from  all channels
             # median = np.median(channelData, axis=0)
 
             cycleData.append(channelData)
-            if (cmd == 0):
-                avg = np.average(cycleData[cycle], axis=0)
-                plt.figure(cycle + 10)
-                plt.plot(avg * 1000000, label="Avg Channels", color='b')
-                plt.title("Playpause AVG Data - All Channel - Cycle " + str(cycle))
-                plt.figure(cycle + 10)
-                # plt.plot(median * 1000000, label="Median Channels", color='g')
-                plt.legend(loc='lower right')
+            # if (cmd == cmdTarget):
+                # avg = np.average(cycleData[cycle], axis=0)
+                # plt.figure(cycle + 20)
+                # axes = plt.gca()
+                # axes.set_ylim([-25, 25])
+                # plt.plot(avg * 1000000, label="Avg Channels", color='b')
+                # plt.title(str(commands[cmdTarget])+" AVG Data - All Channel - Cycle " + str(cycle))
+                # plt.figure(cycle + 10)
+                # # plt.plot(median * 1000000, label="Median Channels", color='g')
+                # plt.legend(loc='lower right')
             if (debug):
                 plt.show()
         dataDownSampleP300.append(cycleData)

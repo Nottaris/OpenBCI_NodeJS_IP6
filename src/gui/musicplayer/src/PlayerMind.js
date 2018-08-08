@@ -105,7 +105,7 @@ export default class PlayerBlink extends React.Component {
     trainingFinished() {
         let cmdIcons = document.getElementsByClassName('cmd');
         for (var i = 0; i < cmdIcons.length; i++) {
-            cmdIcons[i].style.color = "#1c456e";
+            cmdIcons[i].style.color = "#17394b";
         }
         let infotext = document.getElementById('infotext');
         let finishedText = "Training finished. Have fun."
@@ -118,7 +118,7 @@ export default class PlayerBlink extends React.Component {
     trainingPause(info) {
         let cmdIcons = document.getElementsByClassName('cmd');
         for (var i = 0; i < cmdIcons.length; i++) {
-            cmdIcons[i].style.color = "#1c456e";
+            cmdIcons[i].style.color = "#17394b";
         }
         let infotext = document.getElementById('infotext');
         infotext.innerText = "...relax - stay calm...";
@@ -158,7 +158,7 @@ export default class PlayerBlink extends React.Component {
         //reset all icons to default color
         let cmdIcons = document.getElementsByClassName('cmd');
         for (var i = 0; i < cmdIcons.length; i++) {
-            cmdIcons[i].style.color = "#1c456e";
+            cmdIcons[i].style.color = "#17394b";
         }
         //highlight current training cmd icon
         let cmdIcon = document.getElementById(command).getElementsByClassName('fa')[0];
@@ -206,7 +206,7 @@ export default class PlayerBlink extends React.Component {
         let elem = document.getElementById(this.state.currentCmd).getElementsByClassName('fa')[0];
         elem.style.color = "#037e09";
         setTimeout(function () {
-            elem.style.color = "#1c456e";
+            elem.style.color = "#17394b";
         }, 250);
     }
 
@@ -216,7 +216,7 @@ export default class PlayerBlink extends React.Component {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
             setTimeout(function () {
-                elem.style.color = "#1c456e";
+                elem.style.color = "#17394b";
             }, 1000);
         }
     }

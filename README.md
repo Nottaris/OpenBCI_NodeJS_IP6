@@ -9,6 +9,7 @@ In this project 3 different approches were developed to control a web music play
 3. Install python 3.6
 
 # How to use it
+To use this demo you need to start the musicplayer and additonaly start the EEG Control that you would like to use.
 
 ## 1. Start Musicplayer
 Run ``` npm run player ```  to start the react music player. 

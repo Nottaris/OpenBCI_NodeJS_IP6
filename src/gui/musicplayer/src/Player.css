@@ -180,7 +180,7 @@ body {
 }
 
 .Player .Button {
-    color: #1c456e;
+    color: #17394b;
     font-size: 80px;
 }
 
@@ -191,7 +191,7 @@ body {
 
 /* Custom CSS for Blink */
 .PlayerBlink .Controls .Button {
-    color: #1c456e;
+    color: #17394b;
 }
 .PlayerBlink .Controls {
     border-spacing: 25px;
@@ -211,7 +211,7 @@ body {
 }
 
 .PlayerBlink .cam {
-    color: #1c456e;
+    color: #17394b;
     position: relative;
     cursor: pointer;
 }
@@ -271,7 +271,7 @@ body {
     align-content: center;
     width: 700px;
     border-radius: 5px;
-    background-color: #1c456e;
+    background-color: #17394b;
     max-width: 700px;
     display: inline-block;
 }

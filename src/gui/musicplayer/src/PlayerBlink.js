@@ -49,7 +49,7 @@ export default class PlayerBlink extends React.Component {
         let elem = document.getElementById(data.docommand).getElementsByClassName('fa')[0];
         elem.style.color = "#037e09";
         setTimeout(function () {
-            elem.style.color = "#1c456e";
+            elem.style.color = "#17394b";
         }, 1000);
     };
 
@@ -59,7 +59,7 @@ export default class PlayerBlink extends React.Component {
             let elem = document.getElementById(command).getElementsByClassName('fa')[0];
             elem.style.color = "#ffffff";
             setTimeout(function () {
-                elem.style.color = "#1c456e";
+                elem.style.color = "#17394b";
             }, 1000);
         }
     }
