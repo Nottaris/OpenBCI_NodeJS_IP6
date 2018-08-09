@@ -1,21 +1,24 @@
-# OpenBCI NodeJS IP6
+# OpenBCI Music Player
 In this project 3 different approches were developed to control a web music player with a Brain Computer Interface. 
 
-## Installation
+### Installation
 1. Clone the source code:
 ``` git clone https://github.com/Nottaris/OpenBCI_NodeJS_IP6.git ```   
 2. Install required node packages:  
 ``` npm install ``` 
 3. Install python 3.6
 
-# How to use it
-To use this demo you need to start the musicplayer and additonaly start the EEG Control that you would like to use.
+### Documentation
+[IP6-IIT15-bciMusicInterface-IW-MJ.pdf](/docs/IP6-IIT15-bciMusicInterface-IW-MJ.pdf) (German)
 
-## 1. Start Musicplayer
+## How to use it
+To use this demo you need to start the musicplayer, connect the OpenBCI board and additonaly start the EEG Control that you would like to use.
+
+### 1. Start Musicplayer
 Run ``` npm run player ```  to start the react music player. 
 With the Dropdown in the title of the musicplayer you can switch between the player for Blink, P300 and Mind Control
 
-## 2. Connect with OpenBCI Cyton Board
+### 2. Connect with OpenBCI Cyton Board
 In every control folder is a app.js file prepared, where the board can be configured. 
 ```javascript
 const boardSettings = {
@@ -28,21 +31,21 @@ const boardSettings = {
 }
 ```
 
-## 3. Start EEG Controls
+### 3. Start EEG Controls
 3 different approaches where developed to control the music player with the OpenBCI Heasdset
 
-#### Blink control
+##### Blink control
 ``` npm run blink ``` 
 
-#### P300 control - beta
+##### P300 control - beta
 ``` npm run p300 ```
 
-#### Mind control - beta
+##### Mind control - beta
 ``` npm run mind ``` 
 
 
-### Helpers
-#### Save Data
+#### Helpers
+##### Save Data
 ``` npm run save ``` 
-#### Plot Data
+##### Plot Data
 ``` npm run plot ``` 
