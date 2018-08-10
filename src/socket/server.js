@@ -21,7 +21,7 @@ function startSocketServer() {
     app = http.createServer(function (req, res) {
     });
     io = require('socket.io').listen(app);
-    io.set('origins', 'http://localhost:3000');
+    io.set('origins', 'http://localhost:*');
 
     app.listen(port, function () {
         console.log('listening on *:' + port);

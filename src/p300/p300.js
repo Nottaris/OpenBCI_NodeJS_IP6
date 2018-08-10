@@ -19,7 +19,7 @@ const detectP300 = require('./detectP300');
 const defaultSettings = {
     sampleRate: 250,        // 250Hz
     //ToDo: Set correct baselineLength
-    baselineLength: 8000,    // baseline 3s = 750 samples
+    baselineLength: 5000,    // baseline 3s = 750 samples
     voltsMaxLength: 100000,  //max length of volts array
     cycles: 5,              //nr of cycles that will be analysed together
     commands: ['playpause','next','prev','volup', 'voldown'],

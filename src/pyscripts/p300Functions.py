@@ -10,7 +10,7 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug, cmdTarget):
     highcut = 12.0
     order = 6
     cmdCount = len(cmdIdx)
-    slotSize = 150 #500 ms
+    slotSize = 100 #400 ms
     downsampleSize = 16
     cycles = len(cmdIdx[0])
     channels = len(channels)
@@ -55,15 +55,15 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug, cmdTarget):
                 channelData.append(resample(volts, downsampleSize))
 
 
-                if(cmd == cmdTarget):
-                    fig1 = plt.figure(cycle + 10)
-                    plt.plot(volts * 1000000,  label="Channel "+str(channelNames[channel-1]),  color=colors[channel])
-                    plt.legend(loc='lower right')
-                    axes = plt.gca()
-                    axes.set_ylim([-30, 30])
-                    fig1.add_subplot(1, 1, 1, facecolor='lightgray')
-
-                    plt.title(str(commands[cmdTarget])+"Data - Channel 0 - Cycle " + str(cycle))
+                # if(cmd == cmdTarget):
+                    # fig1 = plt.figure(cycle + 10)
+                    # plt.plot(volts * 1000000,  label="Channel "+str(channelNames[channel-1]),  color=colors[channel])
+                    # plt.legend(loc='lower right')
+                    # axes = plt.gca()
+                    # axes.set_ylim([-30, 30])
+                    # fig1.add_subplot(1, 1, 1, facecolor='lightgray')
+                    #
+                    # plt.title(str(commands[cmdTarget])+"Data - Channel 0 - Cycle " + str(cycle))
 
             ## save median from  all channels
             # median = np.median(channelData, axis=0)
@@ -79,8 +79,8 @@ def filterDownsampleData(volts, baseline, cmdIdx, channels, debug, cmdTarget):
                 # plt.figure(cycle + 10)
                 # # plt.plot(median * 1000000, label="Median Channels", color='g')
                 # plt.legend(loc='lower right')
-            if (debug):
-                plt.show()
+        if (debug):
+            plt.show()
         dataDownSampleP300.append(cycleData)
     if(debug):
         print("\n-- Command Data (Downsampled) ---")
