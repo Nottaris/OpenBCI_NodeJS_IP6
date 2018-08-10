@@ -255,6 +255,7 @@ body {
 }
 .PlayerMind .infotext {
     font-size: 24px;
+    font-weight: 300;
     font-family: "Roboto", sans-serif;
     color: #fff;
 }
@@ -265,6 +266,10 @@ body {
 
 .PlayerMind .AdditonalControls .Button {
     display: block;
+}
+
+.PlayerMind #trainingbar {
+    padding: 15px 0;
 }
 
 .PlayerMind #progress {
@@ -283,6 +288,6 @@ body {
     background-color: ghostwhite;
 }
 
-.PlayerMind .Controls div.row .Button{
+.PlayerMind .Controls .Button{
     padding: 30px 60px;
 }
