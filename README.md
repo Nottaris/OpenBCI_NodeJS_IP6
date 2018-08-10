@@ -49,3 +49,6 @@ const boardSettings = {
 ``` npm run save ``` 
 ##### Plot Data
 ``` npm run plot ``` 
+to http://localhost:8888/
+##### Stream Data
+``` npm run stream ``` 

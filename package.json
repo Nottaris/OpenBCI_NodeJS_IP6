@@ -10,6 +10,7 @@
     "mind": "node src/mind/app",
     "save": "node src/functions/saveData.js start",
     "plot": "node src/gui/plot/plot.js",
+    "stream": "node src/functions/streamData.js",
     "test": "mocha",
     "player": "cd src/gui/musicplayer && react-scripts start",
     "playerBuild": "cd src/gui/musicplayer && react-scripts build"

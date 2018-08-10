@@ -10,7 +10,7 @@ var plotdata = [{
     "startByte": 160,
     "stopByte": 192,
     "valid": true,
-    "timestamp": 1523041989391,
+    "timestamp": Date.now()*1000,
     "boardTime": 0,
     "_count": 0
 }];
