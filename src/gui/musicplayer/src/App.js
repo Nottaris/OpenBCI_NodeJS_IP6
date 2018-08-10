@@ -66,6 +66,15 @@ class App extends Component {
 App.defaultProps = {
     tracks: [
         {
+            name: "A New Beginning",
+            artist: "Bensound",
+            album: "Summer's Gone",
+            year: 2014,
+            artwork: "https://www.bensound.com/bensound-img/anewbeginning.jpg",
+            duration: 155,
+            source: mp3File_anewbeginning
+        },
+        {
             name: "Violin Spider",
             artist: "Marco Trovatello ",
             album: "Not At All",
@@ -91,15 +100,6 @@ App.defaultProps = {
             artwork: "https://www.bensound.com/bensound-img/summer.jpg",
             duration: 217,
             source: mp3File_summer
-        },
-        {
-            name: "A New Beginning",
-            artist: "Bensound",
-            album: "Summer's Gone",
-            year: 2014,
-            artwork: "https://www.bensound.com/bensound-img/anewbeginning.jpg",
-            duration: 155,
-            source: mp3File_anewbeginning
         },
         {
             name: "Happy Rock",

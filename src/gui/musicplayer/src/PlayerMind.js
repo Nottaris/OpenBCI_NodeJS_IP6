@@ -11,7 +11,6 @@ import Training from './components/Training';
 export default class PlayerBlink extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             playpauseToggle: 'play',
             trainingTime: 12000,  //TODO: set final time, (?) 6 sec. recording (pause will be added)
