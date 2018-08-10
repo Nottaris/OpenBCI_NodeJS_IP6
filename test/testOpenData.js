@@ -10,17 +10,17 @@ describe('openData', function () {
 
     before(function () {
 
-        var streamJson = fs.createWriteStream(testfilepath + 'OpenDataTestJson.json', {flags: 'a'});
-        streamJson.write(JSON.stringify({key: 123}));
-        streamJson.close;
+        let filepath = testfilepath + 'OpenDataTestJson.json';
+        fs.writeFileSync(filepath, JSON.stringify({key: 123}), (err) =>{
+            if (err) throw err;
+        });
 
-        var streamTxt = fs.createWriteStream(testfilepath + 'OpenDataTestTxT.txt', {flags: 'a'});
-        streamTxt.write("123,456,789");
-        streamTxt.close;
-
+        let filepath2 = testfilepath + 'OpenDataTestTxT.txt';
+        fs.writeFileSync(filepath2, "123,456,789", (err) =>{
+            if (err) throw err;
+        });
     });
 
-    this.timeout(15000);
 
 
     describe('#getFiledata()', function () {
@@ -38,7 +38,6 @@ describe('openData', function () {
 
     after(function () {
 
-        this.timeout(15000);
 
         fs.unlink(testfilepath + 'OpenDataTestJson.json', (err) => {
             if (err) throw err;
