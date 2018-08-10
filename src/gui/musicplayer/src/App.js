@@ -68,8 +68,8 @@ App.defaultProps = {
         {
             name: "A New Beginning",
             artist: "Bensound",
-            album: "Summer's Gone",
-            year: 2014,
+            album: "Music: www.bensound.com",
+            year: 2018,
             artwork: "https://www.bensound.com/bensound-img/anewbeginning.jpg",
             duration: 155,
             source: mp3File_anewbeginning
@@ -95,8 +95,8 @@ App.defaultProps = {
         {
             name: "Summer",
             artist: "Bensound",
-            album: "Summer's Gone",
-            year: 2013,
+            album: "Music: www.bensound.com",
+            year: 2018,
             artwork: "https://www.bensound.com/bensound-img/summer.jpg",
             duration: 217,
             source: mp3File_summer
@@ -104,8 +104,8 @@ App.defaultProps = {
         {
             name: "Happy Rock",
             artist: "Bensound",
-            album: "Summer's Gone",
-            year: 2015,
+            album: "Music: www.bensound.com",
+            year: 2018,
             artwork: "https://www.bensound.com/bensound-img/happyrock.jpg",
             duration: 106,
             source: mp3File_happyrock
