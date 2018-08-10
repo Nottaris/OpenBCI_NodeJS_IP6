@@ -1,5 +1,5 @@
 module.exports = {
-    compareAverages: detectBlinkOld
+    compareAverages: detectBlink
 };
 
 const mathFunctions = require('../functions/mathFunctions');
@@ -25,7 +25,7 @@ var currentCommand = "play";
  * @params: baseline: Array of last window medians, currentMedian: current median to compare with baseline
  */
 
-function detectBlinkOld(baseline, currentMedian) {
+function detectBlink(baseline, currentMedian) {
 
     var baselineMedian = mathFunctions.getMedian(baseline);
     var standardDeviation = mathFunctions.getStandardDeviation(baseline);
