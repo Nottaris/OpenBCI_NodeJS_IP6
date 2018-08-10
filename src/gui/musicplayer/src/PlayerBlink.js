@@ -208,7 +208,7 @@ export default class PlayerBlink extends React.Component {
                         <i className="fas fa-video"></i>
                     </div>
                     <div id="vid" className="vid">
-                        <video id="video" width="160" height="120" preload autoPlay loop></video>
+                        <video id="video" width="160" height="120" autoPlay loop></video>
                     </div>
                 </div>
             </div>
