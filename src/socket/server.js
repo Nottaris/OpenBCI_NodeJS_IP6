@@ -78,7 +78,7 @@ function sendCmd(command) {
 }
 
 /**
- * send execute command for all controls
+ * send execute command for Blink control
  *
  */
 function doBlinkCmd(doBlinkcommand) {
@@ -87,7 +87,7 @@ function doBlinkCmd(doBlinkcommand) {
 }
 
 /**
- * send execute command for all controls
+ * send execute command for P300 control
  *
  */
 function doP300Cmd(doP300command) {
@@ -96,7 +96,7 @@ function doP300Cmd(doP300command) {
 }
 
 /**
- * send execute command for all controls
+ * send execute command for mind control
  *
  */
 function doMindCmd(doMindcommand) {
