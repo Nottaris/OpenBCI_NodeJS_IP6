@@ -2,7 +2,7 @@
  * import data from eeg signal csv of json file
  *
  */
-// mymodule.js
+
 module.exports = {
     getFiledata,
     loadJSON
@@ -14,7 +14,11 @@ const defaultFilename = "data/data.txt"
 //json
 const defaultJson = "data/jsondata.json";
 
-//read csv
+
+/**
+ * read csv
+ *
+ */
 function getFiledata(filename) {
     if (filename == null) {
         filename = defaultFilename;
@@ -25,7 +29,11 @@ function getFiledata(filename) {
     return cells;
 }
 
-//read json
+
+/**
+ * read json
+ *
+ */
 function loadJSON(filename) {
     if (filename == null) {
         filename = defaultJson;

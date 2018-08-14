@@ -1,3 +1,8 @@
+/**
+ * Math Functions
+ *
+ */
+
 module.exports = {
     percentageChange,
     getAverage,
@@ -9,17 +14,28 @@ module.exports = {
     clone
 };
 
-// Percentage Change (newValue - oldValue) / |oldValue| *100
+
+/**
+ * Percentage Change (newValue - oldValue) / |oldValue| *100
+ *
+ */
 function percentageChange(newValue, oldValue) {
     return (newValue - oldValue) / Math.abs(oldValue) * 100;
 }
 
-// average value from array
+
+/**
+ * average value from array
+ *
+ */
 function getAverage(array) {
     return array.reduce((total, num) => total + num, 0) / array.length;
 }
 
-// median value from array
+/**
+ * median value from array
+ *
+ */
 function getMedian(array) {
     array.sort(function (a, b) {
         return a - b;
@@ -32,7 +48,10 @@ function getMedian(array) {
     return array[half];
 }
 
-//  deviation of average value from array
+/**
+ * deviation of average value from array
+ *
+ */
 function getVariance(array) {
     let mean = getAverage(array);
     return array.reduce(function (pre, cur) {
@@ -41,26 +60,38 @@ function getVariance(array) {
     }, 0) / array.length;
 }
 
-// standard deviation as square root of variance
+/**
+ *  standard deviation as square root of variance
+ *
+ */
 function getStandardDeviation(array) {
     return Math.sqrt(getVariance(array));
 }
 
-// Get max value form array
+/**
+ * Get max value form array
+ *
+ */
 function getMaxValue(array) {
     return array.reduce(function (a, b) {
         return Math.max(a, b);
     });
 }
 
-// Get min value form array
+/**
+ * Get min value form array
+ *
+ */
 function getMinValue(array) {
     return array.reduce(function (a, b) {
         return Math.min(a, b);
     });
 }
 
-// Get deep copy of array
+/**
+ * Get deep copy of array
+ *
+ */
 function clone(array) {
     return JSON.parse(JSON.stringify(array));
 }

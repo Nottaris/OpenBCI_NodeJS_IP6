@@ -1,7 +1,6 @@
 /**
  * generic openboard gets called from various controls to connect to the board and process samples with sampleFunction
- * @param {sampleFunction} function for processing the eeg samples
- * @param {boardSettings} config settings for the board
+ *
  */
 module.exports = {
     start
@@ -10,7 +9,11 @@ module.exports = {
 const saveData = require("./../functions/saveData"); //to fix JsonFiles in cleanup
 const server = require("./../socket/server");
 
-
+/**
+ * start OpenBCI Board with generic params
+ * @param {sampleFunction} function for processing the eeg samples
+ * @param {boardSettings} config settings for the board
+ */
 function start(sampleFunction, boardSettings) {
     const debug = boardSettings.debug; // Pretty print any bytes in and out
     const verbose = boardSettings.verbose; // Adds verbosity to functions
@@ -120,6 +123,10 @@ function start(sampleFunction, boardSettings) {
 
     }
 
+    /**
+     * hack for windows to use stdin, stdout
+     *
+     */
     if (process.platform === "win32") {
         const rl = require("readline").createInterface({
             input: process.stdin,
@@ -131,17 +138,29 @@ function start(sampleFunction, boardSettings) {
         });
     }
 
-    // do something when app is closing
+
+    /**
+     * do something when app is closing
+     *
+     */
     process.on("exit", exitHandler.bind(null, {
         cleanup: true
     }));
 
-    // catches ctrl+c event
+
+    /**
+     * catches ctrl+c event
+     *
+     */
     process.on("SIGINT", exitHandler.bind(null, {
         exit: true
     }));
 
-    // catches uncaught exceptions
+
+    /**
+     * catches uncaught exceptions
+     *
+     */
     process.on("uncaughtException", exitHandler.bind(null, {
         exit: true
     }));

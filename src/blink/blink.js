@@ -1,3 +1,8 @@
+/**
+ * extract blink-data from eeg signal
+ *
+ */
+
 module.exports = {
     getBlinks,
     setBlinkcount,
@@ -7,11 +12,6 @@ module.exports = {
     reset
 };
 
-/**
- * extract blinks from eeg signal
- *
- *
- */
 const mathFunctions = require("../functions/mathFunctions");
 const detectBlink = require("./detectBlink");
 
@@ -35,7 +35,10 @@ let blinkCount = 0;
 let settings = defaultSettings;
 let baselineSlots = settings.baselineLengthSec * settings.sampleRate / settings.slots; // number of slots in baseline (at 250Hz)
 
-
+/**
+ * fetch samples for baseline and send to detect if slotsize is fetched
+ *
+ */
 function getBlinks(sample) {
 
     baseline = getBaseline();
@@ -59,7 +62,10 @@ function getBlinks(sample) {
 
 }
 
-// sliding window
+/**
+ * fetch baseline as sliding window
+ *
+ */
 function getBaseline() {
     if (medianValues.length > baselineSlots + 30) {   // skip first 30 data slots
         let slidingWindow = mathFunctions.clone(medianValues);
@@ -86,6 +92,10 @@ function setSettings(newSettings) {
     settings = newSettings;
 }
 
+/**
+ * for testing
+ *
+ */
 function reset() {
     settings = defaultSettings;
     medianValues = [];

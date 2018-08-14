@@ -1,41 +1,19 @@
 /**
  * export (save) data from eeg signal to a json file
+ * additional functions to fix json file after sample stream
+ * (if stream gets cut off, the closing "]" is missing)
  *
- * sample ===
- *       { accelData: [ 0, 0, 0 ],
- *       channelData:
- *       [ -9.834767560335107e-7,
- *           -0.0000468492563783236,
- *           -0.000045038765077443725,
- *           -0.000019222500231564074,
- *           0.000023156407255698115,
- *           0.000003330409923840752,
- *           0.000018753113598002625,
- *           0.000029794875358924313 ],
- *       auxData: <Buffer 00 00 00 00 00 00>,
- *       sampleNumber: 27,
- *       startByte: 160,
- *       stopByte: 192,
- *       valid: true,
- *       timestamp: 1522762092162,
- *       boardTime: 0,
- *       _count: 283 }
  */
 
 module.exports = {
     saveData,
     fixJsonFile,
     getNewestFile,
-    getChannelDatafromJSON,
     start
 };
 
 const openBoard = require("./../board/openBoard");
-const openData = require("./../functions/openData");
-
 const fs = require("fs");
-
-
 
 const boardSettings = {
     verbose: true,                                                  //  Print out useful debugging events
@@ -51,9 +29,12 @@ if (process.argv[2] === "start") {
     start();
 }
 
+/**
+ * connect to the board and process samples with sampleFunction
+ *
+ */
 function start() {
     console.log(start);
-    // connect to the board and process samples with sampleFunction
     let sampleFunction = saveData;
     openBoard.start(sampleFunction, boardSettings);
 
@@ -71,14 +52,20 @@ function start() {
 }
 
 
-//save incoming sample"s to json file with current date time in filename
+/**
+ * save incoming sample"s to json file with current date time in filename
+ *
+ */
 function saveData(sample) {
     let record = JSON.stringify(sample);
     stream.write(record + ",\n");
     process.stdout.write("save data...\r");
 }
 
-//add [] brackets around file from saveData()
+/**
+ * add [] brackets around file from saveData()
+ *
+ */
 function fixJsonFile() {
     const fs = require("fs");
     let path = "./data/";
@@ -91,8 +78,11 @@ function fixJsonFile() {
     fs.writeFileSync(pathToFile, fixed, "utf8");
 }
 
-//get latest file from ./data/
-//Source: https://stackoverflow.com/a/37014317
+/**
+ * get latest file from ./data/
+ * Source: https://stackoverflow.com/a/37014317
+ * @return {string} latest filepath
+ */
 function getNewestFile() {
     let path = "./data/";
     let files = fs.readdirSync(path);
@@ -107,12 +97,4 @@ function getNewestFile() {
         return b.mtime - a.mtime;
     })
     return (out.length > 0) ? out[0].file : "";
-}
-
-function getChannelDatafromJSON() {
-    let stream = fs.createWriteStream("data/dataChannelfromJSON.txt", {flags: "a"});
-    let data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
-    data.forEach(function (d) {
-        stream.write(d.channelData[0] + ",\n");
-    });
 }

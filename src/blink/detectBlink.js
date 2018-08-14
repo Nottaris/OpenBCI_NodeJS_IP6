@@ -1,3 +1,8 @@
+/**
+ * Blink Detection and flash, execute commands
+ *
+ */
+
 module.exports = {
     compareAverages: detectBlink
 };
@@ -12,11 +17,10 @@ let skip = 0;
 
 let currentCommand = "prev";
 
-/*
+/**
  * init Blink Detection, log baseline
  * @params: baseline: Array of last window medians, currentMedian: current median to compare with baseline
  */
-
 function detectBlink(baseline, currentMedian) {
 
     let baselineMedian = mathFunctions.getMedian(baseline);
@@ -62,6 +66,10 @@ function detectBlink(baseline, currentMedian) {
 
 }
 
+/**
+ * interval for flashing icons in gui
+ *
+ */
 function startFlashCmd() {
     setInterval(function () {
         //send next command to flash on player
@@ -70,6 +78,10 @@ function startFlashCmd() {
     }, settings.flashInterval);
 }
 
+/**
+ * iterate through commands
+ *
+ */
 function setNextCommand() {
     let idx = settings.commands.indexOf(currentCommand);
     if(idx >= settings.commands.length -1) {
