@@ -1,6 +1,12 @@
+/**
+ * stream eeg data from board
+ *
+ */
+
 module.exports = {
     streamData
 };
+
 const openBoard = require("./../board/openBoard");
 const server = require("../socket/server");
 let init = true;
@@ -17,7 +23,10 @@ const boardSettings = {
 let sampleFunction = streamData;
 openBoard.start(sampleFunction, boardSettings);
 
-
+/**
+ * stream eeg data to socket server
+ * used for plot
+ */
 function streamData(sample) {
      if (init) {
          server.startSocketServer();

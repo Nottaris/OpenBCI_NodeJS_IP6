@@ -1,3 +1,7 @@
+/**
+ * eeg Functions to subtract baseline data
+ *
+ */
 module.exports = {
     subtractBaseline,
     subtractBaselineAllChannels
@@ -5,7 +9,11 @@ module.exports = {
 
 const mathFunctions = require("../functions/mathFunctions");
 
-// returns average minus baseline averages for one Channel Data
+
+/**
+ * returns average minus baseline averages for one Channel Data
+ *
+ */
 function subtractBaseline(baseline, average) {
     let absBaseline = Math.abs(mathFunctions.getAverage(baseline));
     let result;
@@ -17,7 +25,10 @@ function subtractBaseline(baseline, average) {
     return result;
 }
 
-// returns average minus baseline averages for all Channels
+/**
+ * returns average minus baseline averages for all Channels
+ *
+ */
 function subtractBaselineAllChannels(baseline, average) {
     let absBaseline = [];
 
