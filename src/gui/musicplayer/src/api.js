@@ -4,7 +4,7 @@ const socket = openSocket("http://localhost:3001");
 
 //******** socket.io to listen to commands from node apps *****
 
-function subscribeToP300Cmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd) {
+function subscribeToP300Cmds(callbackFlashCmd, callbackExecCmd) {
     socket.on("command", command => callbackFlashCmd(command));
     socket.on("docommand", docommand => callbackExecCmd(docommand));
 
@@ -12,9 +12,9 @@ function subscribeToP300Cmds(callbackFlashCmd, callbackExecCmd, callbackBlinkCmd
     socket.on("message", console.log.bind(console));
 }
 
-function subscribeToBlinkCmds(callbackFlashCmd, callbackBlinkCmd) {
+function subscribeToBlinkCmds(callbackFlashCmd, callbackExecCmd) {
     socket.on("command", command => callbackFlashCmd(command));
-    socket.on("blinkcommand", docommand => callbackBlinkCmd(docommand));
+    socket.on("docommand", docommand => callbackExecCmd(docommand));
 
     socket.on("error", console.error.bind(console));
     socket.on("message", console.log.bind(console));

@@ -44,8 +44,18 @@ let cmdTimestamps = {
 };
 
 
-server.startSocketServer();
 
+/**
+ * connect with server
+ *
+ */
+server.startSocketServer();
+server.subscribeToP300Cmds(getCmdTimefromPlayer);
+
+/**
+ * fetch flashing command with timestamp
+ *
+ */
 function getCmdTimefromPlayer(data) {
 
     //save cmd and timestamp from socket event
@@ -112,9 +122,10 @@ function getCmdTimefromPlayer(data) {
 
 }
 
-server.subscribeToP300Cmds(getCmdTimefromPlayer);
-
-// process data from openbci board
+/**
+ * process data from openbci board
+ *
+ */
 function digestSamples(sample) {
 
     if(volts.length<settings.baselineLength) {
@@ -136,18 +147,27 @@ function digestSamples(sample) {
     }
 }
 
-// find timestamp idx in timestamp array
+/**
+ * find timestamp idx in timestamp array
+ *
+ */
 function getIdxForTimestamp(timestamps, currentTime) {
     return timestamps.findIndex((timestamp) => timestamp === currentTime);
 }
 
-// check if for each cycles data are in every command
+
+/**
+ * check if for each cycles data are in every command
+ *
+ */
 function enoughDataForP300(cmdTimestamps, commands, compareCycles) {
     return commands.filter((cmd) => cmdTimestamps[cmd].length > compareCycles).length === commands.length;
 }
 
-//used by testing
-
+/**
+ * used by testing
+ *
+ */
 function getSettings() {
     return settings;
 }

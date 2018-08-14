@@ -2,7 +2,7 @@
  * plot file data with d3js
  *
  */
-var path = 'data/jsondata.json';
+var path = 'data/plot/jsondata.json';
 var plotdata = null;
 
 function loadJSON(callback) {

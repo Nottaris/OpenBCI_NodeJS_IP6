@@ -1,6 +1,7 @@
-// show File in python filter
-
-
+/**
+ * show File of recorded P300 eeg data in python filter
+ *
+ */
 const openData = require("./../functions/openData");
 const server = require("../socket/server");
 
@@ -20,7 +21,10 @@ let data = JSON.stringify({volts: volts, baseline: baseline, cmdIdx: cmdIdx});
 
 server.startSocketServer();
 
-// sends channel data to the Python script via stdin
+/**
+ * sends channel data to the Python script via stdin
+ *
+ */
 pyshell.send(data).end(function (err) {
     if (err) {
         console.log("pyshell send err: " + err);
@@ -28,7 +32,10 @@ pyshell.send(data).end(function (err) {
 });
 
 
-// received a message sent from the Python script (a simple "print" statement)
+/**
+ * received a message sent from the Python script (a simple "print" statement)
+ *
+ */
 pyshell.stdout.on("data", function (data) {
         // Remove all new lines
         console.log(data);
@@ -41,7 +48,11 @@ pyshell.stdout.on("data", function (data) {
              server.doCmd(cmd);
         }
 });
-// end the input stream and allow the process to exit
+
+/**
+ * end the input stream and allow the process to exit
+ *
+ */
 pyshell.end(function (err) {
     if (err) {
         throw err;

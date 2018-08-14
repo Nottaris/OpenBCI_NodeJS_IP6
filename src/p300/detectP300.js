@@ -1,3 +1,7 @@
+/**
+ * call python script to detect P300
+ *
+ */
 module.exports = {
     detectP300
 };
@@ -13,6 +17,13 @@ let settings;
 let init = true;
 let fileNr = 1;
 
+/**
+ * call python script to detect P300
+ * @param {array} volts - eeg data signal
+ * @param {array} baseline - eeg data baseline
+ * @param {array} timestamps - of data
+ * @param {array} cmdTimestamps - of commands
+ */
 function detectP300(volts, baseline, timestamps, cmdTimestamps) {
 
     if (init) {
@@ -21,7 +32,7 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
         init = false;
     }
 
-    //get get index for each timestamp
+    //get index for each timestamp
     let cmdIdx = [[], [], [], [], []];
     cmdTimestamps.forEach(function(cmd, i) {
         cmd.forEach(function(currentTime) {
@@ -34,7 +45,6 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
             } else {
                 console.log("No index for timestamp was found " + currentTime);
             }
-
         });
     });
 
@@ -58,7 +68,6 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
         }
     });
 
-
     // received a message sent from the Python script (a simple "print" statement)
     pyshell.stdout.on("data", function (data) {
         // Remove all new lines
@@ -71,7 +80,6 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
             //send doCommand to execute
             server.doCmd(cmd);
         }
-
     });
 
     // end the input stream and allow the process to exit
@@ -83,7 +91,10 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
 
 }
 
-// find timestamp idx in timestamp array
+/**
+ * find timestamp idx in timestamp array
+ *
+ */
 function getIdxForTimestamp(timestamps, currentTime) {
     return timestamps.findIndex((timestamp) => timestamp === currentTime);
 }
