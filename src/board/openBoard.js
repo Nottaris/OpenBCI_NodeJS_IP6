@@ -1,3 +1,8 @@
+/**
+ * generic openboard gets called from various controls to connect to the board and process samples with sampleFunction
+ * @param {sampleFunction} function for processing the eeg samples
+ * @param {boardSettings} config settings for the board
+ */
 module.exports = {
     start
 };
@@ -8,7 +13,7 @@ const server = require('./../socket/server');
 
 
 function start(sampleFunction, boardSettings) {
-    const debug = boardSettings.debug; // Pretty print any bytes in and out... it's amazing...
+    const debug = boardSettings.debug; // Pretty print any bytes in and out
     const verbose = boardSettings.verbose; // Adds verbosity to functions
     const simulate = boardSettings.simulate;
     const resyncPeriodMin = 5; // re sync every five minutes

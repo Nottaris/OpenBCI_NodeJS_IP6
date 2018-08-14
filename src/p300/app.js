@@ -17,5 +17,9 @@ const boardSettings = {
     control: "p300"                                             // Control type
 }
 
-// connect to the board and process samples with sampleFunction
+/**
+ * connect to the board and process samples with sampleFunction
+ * @param {sampleFunction} function for processing the eeg samples
+ * @param {boardSettings} config settings for the board
+ */
 openBoard.start(sampleFunction, boardSettings);
