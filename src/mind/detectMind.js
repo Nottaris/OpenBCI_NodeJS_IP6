@@ -41,7 +41,7 @@ function detectMind(volts) {
            throw err;
         }
         //process python result, send cmd if detected
-        if (docommand !== "nop") {
+        if (doMindcommand !== "nop") {
             console.log("doMindcommand was not nop:" + doMindcommand);
             //send doCommand to execute
             server.doMindCmd(doMindcommand);
