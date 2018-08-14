@@ -21,8 +21,8 @@ export default class P300 extends React.Component {
             //real cmds in order, empty slots random (20 flashes, if each 250 ms = 5000 ms = 2 cycles)
             commands: ["noCmd1", "next", "noCmd2", "voldown", "noCmd3", "playpause", "noCmd4", "prev", "noCmd5", "volup",
                        "noCmd1", "next", "noCmd5", "voldown", "noCmd3", "playpause", "noCmd2", "prev", "noCmd4", "volup"],
-            cmdInterval: 175, //interval of new flashes, real cmds twice this time
-            flashCmdInterval: 100 //duration of flash
+            cmdInterval: 250, //interval of new flashes, real cmds twice this time
+            flashCmdInterval: 125 //duration of flash
         };
 
         this.clickCommand = this.clickCommand.bind(this);
@@ -30,7 +30,6 @@ export default class P300 extends React.Component {
         this.generateCommands = this.generateCommands.bind(this);
 
         subscribeToP300Cmds(
-            this.flashCommand,
             this.execCommand
         );
 
