@@ -12,27 +12,28 @@ import json, sys, numpy as np, matplotlib.pyplot as plt
 
 def main():
 
-    # get data as an array from read_in()
-    datainput = json.loads(sys.stdin.read())
-    volts = datainput['volts']
-    baseline = datainput['baseline']
-
-    # create a numpy array
-    volts = np.array(volts, dtype='f')
-    baseline = np.array(baseline, dtype='f')
-
-    # active channels
-    channels = [0, 1, 2, 3, 4, 5, 6, 7]  # 0-7 channels
-
-    # filter and downsample data
-    voltsF = filterDownsampleData(volts)
-    baselineF = filterDownsampleData(baseline)
-
-    detectMind(voltsF, baselineF)
+    # # get data as an array from read_in()
+    # datainput = json.loads(sys.stdin.read())
+    # volts = datainput['volts']
+    # baseline = datainput['baseline']
+    #
+    # # create a numpy array
+    # volts = np.array(volts, dtype='f')
+    # baseline = np.array(baseline, dtype='f')
+    #
+    # # active channels
+    # channels = [0, 1, 2, 3, 4, 5, 6, 7]  # 0-7 channels
+    #
+    # # filter and downsample data
+    # voltsF = filterDownsampleData(volts)
+    # baselineF = filterDownsampleData(baseline)
+    #
+    # detectMind(voltsF, baselineF)
+    print("beta")
 
 
 def detectMind(voltsF, baselineF):
-    # TODO: implement detection based on ml
+    # # TODO: implement detection based on ml
     print("beta")
 
 # start process

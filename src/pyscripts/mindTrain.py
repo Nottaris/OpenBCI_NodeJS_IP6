@@ -54,9 +54,9 @@ def main():
     baseline = np.array(bl, dtype='f')
 
     ## read in test data
-    with open('../../data/mind/test-baseline.json') as f:
+    with open(traindataFolder + 'test-baseline.json') as f:
         baselineTest = json.load(f)
-    with open('../../data/mind/test-volts.json') as f:
+    with open(traindataFolder + 'test-volts.json') as f:
         voltsTest = json.load(f)
 
     # create a numpy array
