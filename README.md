@@ -2,8 +2,8 @@
 In this project, opportunities to control a web-based music player with an OpenBCI were evaluated. Different approaches – based on blinking, P300 and motor imagery, using common data processing as well as machine learning algorithms to analyse the EEG data are described. In the absence of laboratory conditions and by using available hardware, the concept of controlling the player by blinking was successfully implemented. Conceptually described and partially implemented are the concepts of P300 as well as training and detecting mental commands with motor imagery. 
 
 ### Documentation
-[IP6-IIT15-bciMusicInterface-IW-MJ.pdf](/docs/IP6-IIT15-bciMusicInterface-IW-MJ.pdf) (German)
-[jsDocs](/docs/jsdocs/)
+[IP6-IIT15-bciMusicInterface-IW-MJ.pdf](/docs/IP6-IIT15-bciMusicInterface-IW-MJ.pdf) (German)  
+[jsDocs](/docs/jsdocs/index.html)
 
 
 ### Installation
