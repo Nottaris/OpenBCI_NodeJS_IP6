@@ -1,6 +1,8 @@
 /**
  * plot live data with d3js
+ *
  */
+
 //data to plot - default start values before samples are coming in
 var plotdata = [{
     "accelData": [0, 0, 0],

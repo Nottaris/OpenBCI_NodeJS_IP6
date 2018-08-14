@@ -1,5 +1,6 @@
 /**
- * use mind to control musicplayer
+ * mind control
+ * fetch eeg data, init training of ml
  *
  */
 
@@ -37,21 +38,27 @@ server.startSocketServer();
 server.subscribeToTrainingCmds(getTrainingCmd);
 
 
-//receive training commands with slotsize, or training init from GUI
+/**
+ * receive training commands with slotsize, or training init from GUI
+ *
+ */
 function getTrainingCmd(data) {
     console.log("mind got training cmd from player: " + data.command.command);
     //get cmd and slotsize
     trainingCmd = data.command.command;
     settings.slotsize = data.command.slots;
     //if init Training command is comming start training of ml
-    if (trainingCmd === "init"){
+    if (trainingCmd === "init") {
         initTraining();
-    }else{   //if a cmd is comming save volts in file
+    } else {   //if a cmd is comming save volts in file
         saveTrainingData();
     }
 }
 
-// process data from openbci board
+/**
+ * process data from openbci board
+ *
+ */
 function digestSamples(sample) {
     // fetch samples for slottime from all channels
     if (count < settings.slots) {
@@ -77,22 +84,26 @@ function digestSamples(sample) {
     }
 }
 
-//on trainingCmd save samples for past trainingtime to file
+
+/**
+ * on trainingCmd save samples for past trainingtime to file
+ *
+ */
 function saveTrainingData() {
     // get latest samples for slottime from all channels
-    console.log("trainvolts: "+trainvolts.length);
+    console.log("trainvolts: " + trainvolts.length);
     let sendvolts = trainvolts.slice(-settings.slotsize);
-    console.log("sendvolts: "+sendvolts.length);
+    console.log("sendvolts: " + sendvolts.length);
 
     //save to file
     let values = sendvolts.map((v) => v.channelData);
     let record = JSON.stringify(values);
     fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, reportTrainingsData(trainingCmd));
     // Save baseline
-    if(!baseline) {
-        if(trainvolts.length>3*settings.slotsize) {
-            let baselinevolts = trainvolts.slice(-3*settings.slotsize,-settings.slotsize);
-            console.log("baseline: "+baselinevolts.length);
+    if (!baseline) {
+        if (trainvolts.length > 3 * settings.slotsize) {
+            let baselinevolts = trainvolts.slice(-3 * settings.slotsize, -settings.slotsize);
+            console.log("baseline: " + baselinevolts.length);
             //save to file
             let baselineValues = baselinevolts.map((v) => v.channelData);
             let baselineRecord = JSON.stringify(baselineValues);
@@ -104,19 +115,24 @@ function saveTrainingData() {
 }
 
 
-//report file write in callback of file write
+/**
+ * report file write in callback of file write
+ *
+ */
 function reportTrainingsData(trainingCmd) {
     console.log("training file for " + trainingCmd + " written");
 }
 
-//init processing of trainings data
+
+/**
+ * init processing of trainings data
+ *
+ */
 function initTraining() {
     console.log("training started");
     trainMind.trainMind();
 }
 
-
-//used by testing
 function getSettings() {
     return settings;
 }

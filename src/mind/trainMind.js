@@ -1,5 +1,5 @@
 /**
- * training of MindCmd from eeg signal
+ * call python scripts to train mind controls
  *
  */
 

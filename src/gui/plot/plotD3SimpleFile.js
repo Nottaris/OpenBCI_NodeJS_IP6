@@ -1,8 +1,8 @@
 /**
  * plot file data with d3js
+ *
  */
 var path = 'data/jsondata.json';
-//var path = 'data/data-2018-4-17-21-30-56.json';
 var plotdata = null;
 
 function loadJSON(callback) {
