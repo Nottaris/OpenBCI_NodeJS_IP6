@@ -73,7 +73,6 @@ function closeSocketServer() {
 function sendCmd(command) {
     //emmit command event for each
     io.emit("command", {command: command});
-    process.stdout.write("sending commands...\r");
 }
 
 /**
@@ -83,7 +82,6 @@ function sendCmd(command) {
 function doCmd(docommand) {
     //emmit command event to execute after its detection
     io.emit("docommand", {docommand: docommand});
-    console.log("sent docommand: " + docommand);
 }
 
 /**

@@ -18,12 +18,22 @@ const fs = require("fs");
 const boardSettings = {
     verbose: true,                                                  //  Print out useful debugging events
     debug: false,                                                   //  Print out a raw dump of bytes sent and received
-    simulate: false,                                                // Full functionality, just mock data. Must attach Daisy module by setting
+    simulate: true,                                                // Full functionality, just mock data. Must attach Daisy module by setting
     channelsOff: [false, false, false, false, false, false, false, false],  // power down unused channel 1 - 8
     control: "save"                                                 // Control type
 }
 
 let stream;
+
+//get date in format for file name like "data-2018-4-6-21-13-08.json"
+options = {
+    year: "numeric", month: "numeric", day: "numeric",
+    hour: "numeric", minute: "numeric", second: "numeric",
+    hour12: false
+};
+
+datetime = new Intl.DateTimeFormat("de-CH", options).format(new Date());
+formatDate = datetime.replace(" ", "-").replace(/:/g, "-");
 
 if (process.argv[2] === "start") {
     start();
@@ -37,18 +47,6 @@ function start() {
     console.log(start);
     let sampleFunction = saveData;
     openBoard.start(sampleFunction, boardSettings);
-
-    //get date in format for file name like "data-2018-4-6-21-13-08.json"
-    options = {
-        year: "numeric", month: "numeric", day: "numeric",
-        hour: "numeric", minute: "numeric", second: "numeric",
-        hour12: false
-    };
-
-    datetime = new Intl.DateTimeFormat("de-CH", options).format(new Date());
-    formatDate = datetime.replace(" ", "-").replace(/:/g, "-");
-
-    stream = fs.createWriteStream("data/data-" + formatDate + ".json", {flags: "a"});
 }
 
 
@@ -57,6 +55,10 @@ function start() {
  *
  */
 function saveData(sample) {
+    if(stream === undefined) {
+        stream = fs.createWriteStream("data/data-" + formatDate + ".json", {flags: "a"});
+        console.log("stream");
+    }
     let record = JSON.stringify(sample);
     stream.write(record + ",\n");
     process.stdout.write("save data...\r");
