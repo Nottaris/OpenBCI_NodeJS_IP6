@@ -56,7 +56,9 @@ function getBlinks(sample) {
         if (baseline.length >= baselineSlots) {
             detectBlink.compareAverages(baseline, currentMedian);
         } else {
-            process.stdout.write("waiting for baseline...\r");
+            if(settings.debug) {
+                process.stdout.write("waiting for baseline...\r");
+            }
         }
     }
 

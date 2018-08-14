@@ -11,7 +11,7 @@ describe('blink - with Paste', function () {
     this.timeout(15000);
 
     before(function () {
-        const testfile = "../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json";
+        const testfile = "../../test/data/blink/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json";
         data = openData.loadJSON(testfile);
 
     });
@@ -71,7 +71,7 @@ describe('blink - with Paste', function () {
 
 describe('blink - no Paste', function () {
     before(function () {
-        const testfile2 = "../../test/data/data-2018-5-1-19-32-11-TESTDATA-5-BLINKS-NoPaste.json";
+        const testfile2 = "../../test/data/blink/data-2018-5-1-19-32-11-TESTDATA-5-BLINKS-NoPaste.json";
         data = openData.loadJSON(testfile2);
 
     });
