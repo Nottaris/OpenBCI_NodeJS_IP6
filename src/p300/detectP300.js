@@ -71,7 +71,6 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
     // received a message sent from the Python script (a simple "print" statement)
     pyshell.stdout.on("data", function (data) {
         // Remove all new lines
-        console.log(data);
         let idx = data.replace(/\r?\n|\r/g, "");
         //process python result, send cmd if detected
         if (idx !== "nop") {
