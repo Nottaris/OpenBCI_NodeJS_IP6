@@ -3,8 +3,8 @@
  *
  */
 
-const mind = require('./mind');
-const openBoard = require('./../board/openBoard');
+const mind = require("./mind");
+const openBoard = require("./../board/openBoard");
 
 let sampleFunction = mind.getMind;
 
@@ -15,7 +15,7 @@ const boardSettings = {
     channelsOff: [false, false, false, false, false, false, false, false],    // power down unused channel 1 - 8
     port: "COM13",                                               // COM Port OpenBCI dongle
     control: "mind"                                             // Control type
-}
+};
 
 /**
  * connect to the board and process samples with sampleFunction

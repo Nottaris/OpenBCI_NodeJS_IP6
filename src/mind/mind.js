@@ -10,29 +10,31 @@ module.exports = {
     getSettings,
     setSettings,
     reset
-}
+};
 
-const server = require('../socket/server');
-const detectMind = require('./detectMind');
-const trainMind = require('./trainMind');
-const fs = require('fs');
+const server = require("../socket/server");
+const detectMind = require("./detectMind");
+const trainMind = require("./trainMind");
+const fs = require("fs");
 
 
 const defaultSettings = {
     sampleRate: 250,        // 250Hz
     slots: 112,             // data points per slot ( 450ms === 112 )
+    trainvoltsMaxLength: 2000000,
+    slotsize: 1000,
     debug: true             // show console.log
-}
+};
 
 let volts = [];
 let trainvolts = [];
 let count = 0;
 let settings = defaultSettings;
 let trainingCmd = "none";
-let slotsize = 1000;
 let baseline = false;
 
 server.startSocketServer();
+server.subscribeToTrainingCmds(getTrainingCmd);
 
 
 //receive training commands with slotsize, or training init from GUI
@@ -40,16 +42,14 @@ function getTrainingCmd(data) {
     console.log("mind got training cmd from player: " + data.command.command);
     //get cmd and slotsize
     trainingCmd = data.command.command;
-    slotsize = data.command.slots;
+    settings.slotsize = data.command.slots;
     //if init Training command is comming start training of ml
-    if (trainingCmd === 'init'){
+    if (trainingCmd === "init"){
         initTraining();
     }else{   //if a cmd is comming save volts in file
         saveTrainingData();
     }
-};
-
-server.subscribeToTrainingCmds(getTrainingCmd);
+}
 
 // process data from openbci board
 function digestSamples(sample) {
@@ -63,8 +63,7 @@ function digestSamples(sample) {
         trainvolts.push({
             channelData: sample.channelData
         });
-        count++;
-         process.stdout.write("trainvolts.length: "+trainvolts.length+"\r");
+        count += 1;
     } else {
         //send data to evaluate
         detectMind.detectMind(volts);
@@ -73,8 +72,8 @@ function digestSamples(sample) {
         count = 0;
     }
     // downsize trainvolts
-    if (trainvolts.length > 2000000) {
-        trainvolts = trainvolts.slice(2000000 * 0.5);
+    if (trainvolts.length > settings.trainvoltsMaxLength) {
+        trainvolts = trainvolts.slice(settings.trainvoltsMaxLength * 0.5);
     }
 }
 
@@ -82,21 +81,22 @@ function digestSamples(sample) {
 function saveTrainingData() {
     // get latest samples for slottime from all channels
     console.log("trainvolts: "+trainvolts.length);
-    sendvolts = trainvolts.slice(-slotsize);
+    let sendvolts = trainvolts.slice(-settings.slotsize);
     console.log("sendvolts: "+sendvolts.length);
+
     //save to file
-    let values = sendvolts.map(v => v.channelData);
+    let values = sendvolts.map((v) => v.channelData);
     let record = JSON.stringify(values);
     fs.writeFile("data/mind/training-" + trainingCmd + ".json", record, reportTrainingsData(trainingCmd));
     // Save baseline
     if(!baseline) {
-        if(trainvolts.length>3*slotsize) {
-            baselinevolts = trainvolts.slice(-3*slotsize,-slotsize);
+        if(trainvolts.length>3*settings.slotsize) {
+            let baselinevolts = trainvolts.slice(-3*settings.slotsize,-settings.slotsize);
             console.log("baseline: "+baselinevolts.length);
             //save to file
-            let values = baselinevolts.map(v => v.channelData);
-            let record = JSON.stringify(values);
-            fs.writeFile("data/mind/training-baseline.json", record, reportTrainingsData("baseline"));
+            let baselineValues = baselinevolts.map((v) => v.channelData);
+            let baselineRecord = JSON.stringify(baselineValues);
+            fs.writeFile("data/mind/training-baseline.json", baselineRecord, reportTrainingsData("baseline"));
             baseline = true;
         }
     }
@@ -117,7 +117,6 @@ function initTraining() {
 
 
 //used by testing
-
 function getSettings() {
     return settings;
 }
