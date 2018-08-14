@@ -1,5 +1,6 @@
 /**
- * plot data
+ * plot eeg data in browser
+ *
  */
 
 function start() {

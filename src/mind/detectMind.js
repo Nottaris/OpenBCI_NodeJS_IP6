@@ -12,6 +12,10 @@ const server = require("../socket/server");
 let PythonShell = require("python-shell");
 let docommand = "nop";
 
+/**
+ * call python script to detect mind controls
+ * @param eeg volts
+ */
 function detectMind(volts) {
 
     const options = {mode: "text"};
