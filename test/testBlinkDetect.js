@@ -1,4 +1,7 @@
-// test the openData
+/**
+ * test the openData
+ *
+ */
 const blink = require('./../src/blink/blink');
 const openData = require('./../src/functions/openData');
 

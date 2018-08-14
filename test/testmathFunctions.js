@@ -1,4 +1,7 @@
-// test the mathFunctions
+/**
+ * test the mathFunctions
+ *
+ */
 const mathFunctions = require('./../src/functions/mathFunctions');
 var assert = require('assert');
 

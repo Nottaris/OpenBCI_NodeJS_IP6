@@ -1,4 +1,7 @@
-// test the saveData
+/**
+ * test the saveData
+ *
+ */
 const saveData = require('./../src/functions/saveData');
 const openData = require('./../src/functions/openData');
 var assert = require('assert');
