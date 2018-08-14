@@ -1,66 +1,39 @@
-from scipy import sparse
-from scipy._lib.six import xrange
+##
+# detect mind commands
+# (beta, unfinished as eeg data did not show motor imagery)
+#
+##
+
+import numpy as np
+from mindFunctions import filterDownsampleData
 from scipy.signal import butter, lfilter
-from scipy.sparse.linalg import spsolve
-from scipy.stats import norm
-from tempfile import TemporaryFile
 import json, sys, numpy as np, matplotlib.pyplot as plt
 
 
-# Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
-
-def butter_bandpass(lowcut, highcut, fs, order):
-    nyq = 0.5 * fs
-    low = lowcut / nyq
-    high = highcut / nyq
-    b, a = butter(order, [low, high], btype='band')
-    return b, a
-
-
-def butter_bandpass_filter(data, lowcut, highcut, fs, order):
-    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
-
-
 def main():
-    channel = 0  # channel 0-7
 
-    # Get channel data
+    # get data as an array from read_in()
+    datainput = json.loads(sys.stdin.read())
+    volts = datainput['volts']
+    baseline = datainput['baseline']
 
+    # create a numpy array
+    volts = np.array(volts, dtype='f')
+    baseline = np.array(baseline, dtype='f')
 
-def detectMind(data1, data2, data3, cmdRow, cycle, focus, focusCmd):
-    # Define sample rate and desired cutoff frequencies (in Hz).
-    fs = 250.0
-    lowcut = 0.1
-    highcut = 15.0
-    order = 4
-    slotSize = 125  # 0.5s
+    # active channels
+    channels = [0, 1, 2, 3, 4, 5, 6, 7]  # 0-7 channels
 
-    allData = []
-    for i in range(len(data1)):
-        allData.append(np.mean([data2[i], data3[i]]))
+    # filter and downsample data
+    voltsF = filterDownsampleData(volts)
+    baselineF = filterDownsampleData(baseline)
 
-    ## FILTER DATA
-    # allDataFilterd = data    // if no bandpass desired
-    allDataFilterd1 = filterData(data1, lowcut, highcut, fs, order)
-    allDataFilterd2 = filterData(data2, lowcut, highcut, fs, order)
-    allDataFilterd3 = filterData(data3, lowcut, highcut, fs, order)
-    allDataFilterd = filterData(allData, lowcut, highcut, fs, order)
+    detectMind(voltsF, baselineF)
 
 
-def getChannelData(data, channel):
-    channelData = []
-    for val in data:
-        channelData.append(val["channelData"][channel])
-    return channelData
-
-
-def filterData(data, lowcut, highcut, fs, order):
-    # filter data with butter bandpass
-    filterdData = butter_bandpass_filter(data, lowcut, highcut, fs, order)
-    return filterdData
-
+def detectMind(voltsF, baselineF):
+    # TODO: implement detection based on ml
+    print("beta")
 
 # start process
 if __name__ == '__main__':

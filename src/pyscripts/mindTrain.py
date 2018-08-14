@@ -1,3 +1,10 @@
+##
+# train eeg data of mind commands
+# (beta)
+#
+##
+
+
 import json
 import os
 import sys
@@ -46,7 +53,6 @@ def main():
         bl = json.load(blf)
     baseline = np.array(bl, dtype='f')
 
-    # TODO: generate testdata from live session (current ones are fake copies)
     ## read in test data
     with open('../../data/mind/test-baseline.json') as f:
         baselineTest = json.load(f)

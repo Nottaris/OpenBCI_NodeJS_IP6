@@ -1,3 +1,11 @@
+##
+# detect mind commands
+# (beta, unfinished)
+#
+# Source butter_bandpass http://scipy-cookbook.readthedocs.io/items/ButterworthBandpass.html
+#
+##
+
 from scipy.signal import butter, lfilter, decimate, resample
 import json, os, sys, numpy as np, matplotlib.pyplot as plt
 from sklearn import svm, preprocessing, metrics
@@ -76,8 +84,7 @@ def filterDownsampleData(volts, baseline, commands, debug):
             #         plt.show()
         dataMind.append(channelData)
 
-    # ToDo: Implement common spacial pattern
-    ## SPACIAL PATTERM
+    ## ToDo: Implement common spacial pattern
 
     return dataMind, baselineBP
 
