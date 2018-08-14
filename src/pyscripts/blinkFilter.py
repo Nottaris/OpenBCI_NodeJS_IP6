@@ -1,3 +1,8 @@
+##
+# bandpass for blink, plot filtered data
+# (currently unused)
+##
+
 from scipy.signal import butter, lfilter
 import sys, numpy as np, matplotlib.pyplot as plt
 

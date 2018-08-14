@@ -1,3 +1,10 @@
+##
+# train eeg data of mind commands
+# (beta)
+#
+##
+
+
 import json
 import os
 import sys
@@ -12,7 +19,7 @@ from sklearn.model_selection import GridSearchCV, StratifiedShuffleSplit
 from pathlib import Path
 
 # enable/disable debug Mode
-debug = True
+debug = False
 
 # the 5 commands from player
 commands = ['volup', 'playpause', 'next', 'prev', 'voldown']
@@ -46,11 +53,10 @@ def main():
         bl = json.load(blf)
     baseline = np.array(bl, dtype='f')
 
-    # TODO: generate testdata from live session (current ones are fake copies)
     ## read in test data
-    with open('../../data/mind/test-baseline.json') as f:
+    with open(traindataFolder + 'test-baseline.json') as f:
         baselineTest = json.load(f)
-    with open('../../data/mind/test-volts.json') as f:
+    with open(traindataFolder + 'test-volts.json') as f:
         voltsTest = json.load(f)
 
     # create a numpy array
@@ -84,8 +90,9 @@ def main():
 
     ##  2. Extract Features for Trainingdata (only commands)
     [X, y] = extractFeature(filterdTraindata)
-    print("Anz. Features: " + str(len(X)))
-    print("y: " + str(y))
+    if debug:
+        print("Anz. Features: " + str(len(X)))
+        print("y: " + str(y))
 
     ##  3. Train Model with features
 
@@ -131,8 +138,8 @@ def main():
         print("Recall: " + str(recall))
 
     # send success back to node
-    # TODO: uncomment / implement success boolean return and
-    # print('true')
+    # TODO: implement real success boolean return
+    print('true')
 
 
 def extractFeature(dataFilterd):

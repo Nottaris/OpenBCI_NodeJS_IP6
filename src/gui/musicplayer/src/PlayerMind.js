@@ -70,7 +70,7 @@ export default class PlayerBlink extends React.Component {
             let preinfotext = this.state.commandpreinfos[0];
             infotext.innerText = preinfotext;
             window.responsiveVoice.speak(preinfotext);
-        }.bind(this), 4000);
+        }.bind(this), 6000);
 
         //train each command
         let i = 0;
