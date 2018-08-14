@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import logo from './img/logo.png';
-import mp3File_summer from './music/bensound-summer.mp3';
-import mp3File_anewbeginning from './music/bensound-anewbeginning.mp3';
-import mp3File_happyrock from './music/bensound-happyrock.mp3';
-import mp3File_violinspider from './music/Marco_Trovatello_-_06_-_Violin_Spider.mp3';
-import PlayerBlink from './PlayerBlink';
-import PlayerP300 from './PlayerP300';
-import PlayerMind from './PlayerMind';
-import './App.css';
+import React, {Component} from "react";
+import logo from "./img/logo.png";
+import mp3File_summer from "./music/bensound-summer.mp3";
+import mp3File_anewbeginning from "./music/bensound-anewbeginning.mp3";
+import mp3File_happyrock from "./music/bensound-happyrock.mp3";
+import mp3File_violinspider from "./music/Marco_Trovatello_-_06_-_Violin_Spider.mp3";
+import PlayerBlink from "./PlayerBlink";
+import PlayerP300 from "./PlayerP300";
+import PlayerMind from "./PlayerMind";
+import "./App.css";
 
 class App extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class App extends Component {
         this.state = {
             selectedPlayer: ["PlayerBlink"],
             playerTypes: ["PlayerP300", "PlayerMind", "PlayerBlink"]
-        }
+        };
         this.showPlayer = this.getPlayerCompoonent(this.state.selectedPlayer)
         this.changePlayer = this.changePlayer.bind(this);
     }
@@ -29,11 +29,11 @@ class App extends Component {
     getPlayerCompoonent(player) {
         switch (player) {
             case "PlayerP300":
-                return <PlayerP300 tracks={this.props.tracks}/>;
+                return <PlayerP300 tracks={this.props.tracks} />;
             case "PlayerMind":
-                return <PlayerMind tracks={this.props.tracks}/>;
+                return <PlayerMind tracks={this.props.tracks} />;
             default:
-                return <PlayerBlink tracks={this.props.tracks}/>;
+                return <PlayerBlink tracks={this.props.tracks} />;
         }
     }
 
@@ -44,7 +44,7 @@ class App extends Component {
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h5 className="App-title">bci Music Player
                         <span className="selectPlayer">
-                            <select onChange={this.changePlayer} value={this.state.value} id='guiSelector'>
+                            <select onChange={this.changePlayer} value={this.state.value} id="guiSelector">
                             <option value="PlayerBlink">Blink</option>
                             <option value="PlayerP300">P300</option>
                             <option value="PlayerMind">Mind</option>
@@ -53,8 +53,6 @@ class App extends Component {
                     </h5>
 
                 </header>
-
-
                 {this.showPlayer}
             </div>
         );

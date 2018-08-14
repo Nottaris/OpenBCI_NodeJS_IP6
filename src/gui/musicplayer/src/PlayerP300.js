@@ -1,10 +1,10 @@
-import React from 'react';
-import './Player.css';
-import {subscribeToP300Cmds, sendP300Cmd} from './api';
-import TrackInformation from './components/TrackInformation';
-import Timestamps from './components/Timestamps';
-import AudioVolume from './components/AudioVolume';
-import ControlsP300 from './components/ControlsP300';
+import React from "react";
+import "./Player.css";
+import {subscribeToP300Cmds, sendP300Cmd} from "./api";
+import TrackInformation from "./components/TrackInformation";
+import Timestamps from "./components/Timestamps";
+import AudioVolume from "./components/AudioVolume";
+import ControlsP300 from "./components/ControlsP300";
 
 
 // Player
@@ -12,12 +12,12 @@ export default class P300 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            playpauseToggle: 'play',
+            playpauseToggle: "play",
             currentTime: 0,
             audioVolume: 0.5,
             trackNr: 0,
-            currentCmd: 'no',
-            colors: ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#e6beff', '#aaffc3', '#ffd8b1'],
+            currentCmd: "no",
+            colors: ["#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#d2f53c", "#e6beff", "#aaffc3", "#ffd8b1"],
             //real cmds in order, empty slots random (20 flashes, if each 250 ms = 5000 ms = 2 cycles)
             commands: ["noCmd1", "next", "noCmd2", "voldown", "noCmd3", "playpause", "noCmd4", "prev", "noCmd5", "volup",
                        "noCmd1", "next", "noCmd5", "voldown", "noCmd3", "playpause", "noCmd2", "prev", "noCmd4", "volup"],
@@ -41,15 +41,15 @@ export default class P300 extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.state.playpauseToggle === 'play') {
-            let audio = document.getElementById('audio');
+        if (this.state.playpauseToggle === "play") {
+            let audio = document.getElementById("audio");
             this.pause(audio);
         }
         clearInterval(this.blinkInterval);
     }
 
     generateCommands() {
-        var commandIdx = 0;
+        let commandIdx = 0;
 
         this.blinkInterval = setInterval(function () {
             this.flashCommandButton(this.state.commands[commandIdx]);
@@ -62,8 +62,8 @@ export default class P300 extends React.Component {
     }
 
     generateShuffleCommands() {
-        var commandIdx = 0;
-        var shuffleCmds = this.state.commands.slice(10); //clone
+        let commandIdx = 0;
+        let shuffleCmds = this.state.commands.slice(10); //clone
         shuffleCmds = shuffleCmds.sort(function() { return 0.5 - Math.random() });
         setInterval(function () {
             if (shuffleCmds.length < 1) {
@@ -84,6 +84,11 @@ export default class P300 extends React.Component {
     execCommand = (data) => {
         this.clickCommand(data.docommand);
         console.log("p300: " + data.docommand);
+        let elem = document.getElementById(data.docommand).getElementsByClassName("fa")[0];
+        elem.style.color = "lightpink";
+        setTimeout(function () {
+            elem.style.color = "#FFF";
+        }, this.state.highlightExecCmd);
     };
 
     //Set the color of the command to white for X seconds
@@ -99,7 +104,6 @@ export default class P300 extends React.Component {
                 sendP300Cmd(command, time);
             }
 
-
             setTimeout(function () {
                 elem.style.color = "#1c456e";
                 elem.style.background = "#000";
@@ -108,7 +112,7 @@ export default class P300 extends React.Component {
     }
 
     clickCommand = (state) => {
-        let audio = document.getElementById('audio');
+        let audio = document.getElementById("audio");
         switch (state) {
             case "next":
                 this.next(audio);
@@ -123,9 +127,9 @@ export default class P300 extends React.Component {
                 this.voldown(audio);
                 break;
             case "playpause":
-                if (this.state.playpauseToggle === 'play') {
+                if (this.state.playpauseToggle === "play") {
                     this.play(audio);
-                } else if (this.state.playpauseToggle === 'pause') {
+                } else if (this.state.playpauseToggle === "pause") {
                     this.pause(audio);
                 }
                 break;
@@ -144,7 +148,7 @@ export default class P300 extends React.Component {
 
 
     updateVolumeProgressBar(volume) {
-        var elem = document.getElementById("ProgressVolume");
+        let elem = document.getElementById("ProgressVolume");
         elem.style.width = 100 * volume + "%";
     }
 
@@ -157,17 +161,17 @@ export default class P300 extends React.Component {
             // Calculate percent of song
             that.updateTime(currentTime);
         }, 100);
-        this.setState({playpauseToggle: 'pause'});
+        this.setState({playpauseToggle: "pause"});
     }
 
     pause(audio) {
         audio.pause();
-        this.setState({playpauseToggle: 'play'});
+        this.setState({playpauseToggle: "play"});
     }
 
     next(audio) {
         this.setState({trackNr: this.mod((this.state.trackNr + 1), this.props.tracks.length)});
-        audio = document.getElementById('audio');
+        audio = document.getElementById("audio");
         //load new audio file
         audio.load();
         this.play(audio);
@@ -175,7 +179,7 @@ export default class P300 extends React.Component {
 
     prev(audio) {
         this.setState({trackNr: this.mod((this.state.trackNr - 1), this.props.tracks.length)});
-        audio = document.getElementById('audio');
+        audio = document.getElementById("audio");
         //load new audio file
         audio.load();
         this.play(audio);
@@ -206,11 +210,11 @@ export default class P300 extends React.Component {
 
     render() {
         return (
-            <div className="Player P300">
+            <div className="Player">
                 <div className="Info">
                     <div className="PlayerCover">
                         <div className="Artwork"
-                             style={{'backgroundImage': 'url(' + this.props.tracks[this.state.trackNr].artwork + ')'}}></div>
+                             style={{"backgroundImage": "url(" + this.props.tracks[this.state.trackNr].artwork + ")"}}></div>
                     </div>
                     <div className="PlayerInformation">
                         <TrackInformation tracks={this.props.tracks} state={this.state}/>
@@ -223,7 +227,6 @@ export default class P300 extends React.Component {
                             <source src={this.props.tracks[this.state.trackNr].source} type="audio/mpeg"/>
                         </audio>
                     </div>
-
                 </div>
                 <ControlsP300 playpauseToggle={this.state.playpauseToggle} clickCommand={this.clickCommand}/>
             </div>

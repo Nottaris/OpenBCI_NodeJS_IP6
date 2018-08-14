@@ -15,7 +15,7 @@ export default class Training extends React.Component {
             <div className="AdditonalControls">
                 <div className="row">
                     <div onClick={() => this.trainingInit()} id="training" className="Button">
-                        <i className='fa fa-fw fa-graduation-cap'></i>
+                        <i className="fa fa-fw fa-graduation-cap"></i>
                     </div>
                     <div>
                         <div id="trainingbar">
