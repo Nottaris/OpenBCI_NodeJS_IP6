@@ -46,9 +46,9 @@ export default class PlayerBlink extends React.Component {
     };
 
     execCommand = (data) => {
-        console.log("exec: " + data.docommand);
-        this.clickCommand(data.docommand);
-        let elem = document.getElementById(data.docommand).getElementsByClassName("fa")[0];
+        console.log("exec: " + data.doBlinkcommand);
+        this.clickCommand(data.doBlinkcommand);
+        let elem = document.getElementById(data.doBlinkcommand).getElementsByClassName("fa")[0];
         elem.style.color = "lightpink";
         setTimeout(function () {
             elem.style.color = "#17394b";

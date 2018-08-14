@@ -82,9 +82,9 @@ export default class P300 extends React.Component {
     }
 
     execCommand = (data) => {
-        this.clickCommand(data.docommand);
-        console.log("p300: " + data.docommand);
-        let elem = document.getElementById(data.docommand).getElementsByClassName("fa")[0];
+        this.clickCommand(data.doP300command);
+        console.log("p300: " + data.doP300command);
+        let elem = document.getElementById(data.doP300command).getElementsByClassName("fa")[0];
         elem.style.color = "lightpink";
         setTimeout(function () {
             elem.style.color = "#FFF";
