@@ -28,13 +28,11 @@ def main():
     # voltsF = filterDownsampleData(volts)
     # baselineF = filterDownsampleData(baseline)
     #
+    # TODO: implement detection based on ml
     # detectMind(voltsF, baselineF)
-    print("beta")
+    # no command found is "nop"
+    print("nop")
 
-
-def detectMind(voltsF, baselineF):
-    # # TODO: implement detection based on ml
-    print("beta")
 
 # start process
 if __name__ == '__main__':
