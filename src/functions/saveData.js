@@ -31,9 +31,11 @@ module.exports = {
 };
 
 const openBoard = require("./../board/openBoard");
+const openData = require("./../functions/openData");
+
 const fs = require("fs");
 
-const openData = require("./../functions/openData");
+
 
 const boardSettings = {
     verbose: true,                                                  //  Print out useful debugging events
@@ -48,7 +50,6 @@ let stream;
 if (process.argv[2] === "start") {
     start();
 }
-;
 
 function start() {
     console.log(start);
@@ -73,7 +74,7 @@ function start() {
 //save incoming sample"s to json file with current date time in filename
 function saveData(sample) {
     let record = JSON.stringify(sample);
-    stream.write(record + ",\n")
+    stream.write(record + ",\n");
     process.stdout.write("save data...\r");
 }
 
@@ -93,7 +94,6 @@ function fixJsonFile() {
 //get latest file from ./data/
 //Source: https://stackoverflow.com/a/37014317
 function getNewestFile() {
-    const fs = require("fs");
     let path = "./data/";
     let files = fs.readdirSync(path);
     let out = [];
@@ -110,7 +110,6 @@ function getNewestFile() {
 }
 
 function getChannelDatafromJSON() {
-    const fs = require("fs");
     let stream = fs.createWriteStream("data/dataChannelfromJSON.txt", {flags: "a"});
     let data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
     data.forEach(function (d) {

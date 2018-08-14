@@ -52,7 +52,9 @@ function subscribeToTrainingCmds(callbackTrainingCmd) {
 }
 
 function closeSocketServer() {
-    app.close();
+    if(app != undefined){
+        app.close();
+    }
 }
 
 

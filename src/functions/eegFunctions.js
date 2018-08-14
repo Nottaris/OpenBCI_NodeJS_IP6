@@ -20,17 +20,20 @@ function subtractBaseline(baseline, average) {
 // returns average minus baseline averages for all Channels
 function subtractBaselineAllChannels(baseline, average) {
     let absBaseline = [];
-    for (let index = 0; index < baseline.length; index++) {
-        let element = Math.abs(mathFunctions.getAverage(baseline[index]));
+
+    baseline.forEach(function(baselineSample) {
+        let element = Math.abs(mathFunctions.getAverage(baselineSample));
         absBaseline.push(element);
-    }
+    });
+
     let result = [];
-    for (let index = 0; index < absBaseline.length; index++) {
+
+    absBaseline.forEach(function(absSample, index) {
         if (average[index] > 0) {
-            result.push(average[index] - absBaseline[index]);
+            result.push(average[index] - absSample);
         } else {
-            result.push(average[index] + absBaseline[index]);
+            result.push(average[index] + absSample);
         }
-    }
+    });
     return result;
 }
