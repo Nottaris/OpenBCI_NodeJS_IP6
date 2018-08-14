@@ -3,7 +3,7 @@ In this project, opportunities to control a web-based music player with an OpenB
 
 ### Documentation
 [IP6-IIT15-bciMusicInterface-IW-MJ.pdf](/docs/IP6-IIT15-bciMusicInterface-IW-MJ.pdf) (German)  
-[jsDocs](/docs/jsdocs/index.html)
+[jsDoc](/docs/jsdoc/index.html)
 
 
 ### Installation
