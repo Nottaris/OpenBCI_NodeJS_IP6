@@ -75,9 +75,10 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
         //process python result, send cmd if detected
         if (idx !== "nop") {
             let cmd = settings.commands[idx];
-            console.log("doCmd was: " + cmd);
-            //send doCommand to execute
+            //send doCommand to player to execute
             server.doP300Cmd(cmd);
+        } else {
+            console.log("doCmd was: " + idx);
         }
     });
 
