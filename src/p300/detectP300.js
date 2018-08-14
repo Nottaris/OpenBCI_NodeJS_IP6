@@ -78,7 +78,7 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
             let cmd = settings.commands[idx];
             console.log("doCmd was: " + cmd);
             //send doCommand to execute
-            server.doCmd(cmd);
+            server.doP300Cmd(cmd);
         }
     });
 

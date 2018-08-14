@@ -43,15 +43,6 @@ let cmdTimestamps = {
     voldown: []
 };
 
-
-
-/**
- * connect with server
- *
- */
-server.startSocketServer();
-server.subscribeToP300Cmds(getCmdTimefromPlayer);
-
 /**
  * fetch flashing command with timestamp
  *
@@ -121,6 +112,15 @@ function getCmdTimefromPlayer(data) {
     }
 
 }
+
+
+/**
+ * connect with server
+ *
+ */
+server.startSocketServer();
+server.subscribeToP300Cmds(getCmdTimefromPlayer);
+
 
 /**
  * process data from openbci board

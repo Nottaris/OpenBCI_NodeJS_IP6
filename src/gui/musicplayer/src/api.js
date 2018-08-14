@@ -4,8 +4,7 @@ const socket = openSocket("http://localhost:3001");
 
 //******** socket.io to listen to commands from node apps *****
 
-function subscribeToP300Cmds(callbackFlashCmd, callbackExecCmd) {
-    socket.on("command", command => callbackFlashCmd(command));
+function subscribeToP300Cmds(callbackExecCmd) {
     socket.on("docommand", docommand => callbackExecCmd(docommand));
 
     socket.on("error", console.error.bind(console));

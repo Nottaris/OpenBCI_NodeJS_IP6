@@ -55,7 +55,7 @@ function detectBlink(baseline, currentMedian) {
         blink.setBlinkcount();
 
         //send doCommand to execute
-        server.doCmd(currentCommand);
+        server.doBlinkCmd(currentCommand);
 
         skip = settings.slots * settings.skipAfterBlink;
     }

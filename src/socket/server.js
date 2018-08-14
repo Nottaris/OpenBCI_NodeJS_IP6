@@ -5,7 +5,9 @@
 
 module.exports = {
     sendCmd,
-    doCmd,
+    doBlinkCmd,
+    doP300Cmd,
+    doMindCmd,
     streamData,
     startSocketServer,
     closeSocketServer,
@@ -79,9 +81,27 @@ function sendCmd(command) {
  * send execute command for all controls
  *
  */
-function doCmd(docommand) {
+function doBlinkCmd(doBlinkcommand) {
     //emmit command event to execute after its detection
-    io.emit("docommand", {docommand: docommand});
+    io.emit("doBlinkcommand", {doBlinkcommand: doBlinkcommand});
+}
+
+/**
+ * send execute command for all controls
+ *
+ */
+function doP300Cmd(doP300command) {
+    //emmit command event to execute after its detection
+    io.emit("doP300command", {doP300command: doP300command});
+}
+
+/**
+ * send execute command for all controls
+ *
+ */
+function doMindCmd(doMindcommand) {
+    //emmit command event to execute after its detection
+    io.emit("doMindcommand", {doMindcommand: doMindcommand});
 }
 
 /**

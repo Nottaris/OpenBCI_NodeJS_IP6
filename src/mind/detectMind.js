@@ -10,7 +10,7 @@ module.exports = {
 const server = require("../socket/server");
 
 let PythonShell = require("python-shell");
-let docommand = "nop";
+let doMindcommand = "nop";
 
 /**
  * call python script to detect mind controls
@@ -32,7 +32,7 @@ function detectMind(volts) {
     // received a message sent from the Python script (a simple "print" statement)
     pyshell.stdout.on("data", function (data) {
         // Remove all new lines
-        docommand = data.replace(/\r?\n|\r/g, "");
+        doMindcommand = data.replace(/\r?\n|\r/g, "");
     });
 
     // end the input stream and allow the process to exit
@@ -42,9 +42,9 @@ function detectMind(volts) {
         }
         //process python result, send cmd if detected
         if (docommand !== "nop") {
-            console.log("doCmd was not nop:" + docommand);
+            console.log("doMindcommand was not nop:" + doMindcommand);
             //send doCommand to execute
-            server.doCmd(docommand);
+            server.doMindCmd(doMindcommand);
         }
     });
 }
