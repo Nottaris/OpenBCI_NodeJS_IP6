@@ -112,7 +112,7 @@ function getCmdTimefromPlayer(data) {
 
 }
 
-server.subscribeToCmds(getCmdTimefromPlayer);
+server.subscribeToP300Cmds(getCmdTimefromPlayer);
 
 // process data from openbci board
 function digestSamples(sample) {
