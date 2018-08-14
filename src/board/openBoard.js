@@ -1,5 +1,5 @@
 /**
- * generic openboard gets called from various controls to connect to the board and process samples with sampleFunction
+ * @fileOverview generic openboard gets called from various controls to connect to the board and process samples with sampleFunction
  *
  */
 module.exports = {

@@ -1,5 +1,5 @@
 /**
- * server socket.io to connect GUI musicplayer with neode.js eeg data processing backend
+ * @fileOverview server socket.io to connect GUI musicplayer with neode.js eeg data processing backend
  *
  */
 

@@ -1,5 +1,5 @@
 /**
- * plot eeg data in browser
+ * @fileOverview plot eeg data in browser
  *
  */
 

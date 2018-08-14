@@ -1,5 +1,5 @@
 /**
- * Start OpenBCI Nodejs - Mind Control
+ * @fileOverview Start OpenBCI Nodejs - Mind Control
  *
  */
 
