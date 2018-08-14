@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: board/openBoard.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: board/openBoard.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * generic openboard gets called from various controls to connect to the board and process samples with sampleFunction
+ * @param {sampleFunction} function for processing the eeg samples
+ * @param {boardSettings} config settings for the board
+ */
+module.exports = {
+    start
+};
+
+
+const saveData = require('./../functions/saveData'); //to fix JsonFiles in cleanup
+const server = require('./../socket/server');
+
+
+function start(sampleFunction, boardSettings) {
+    const debug = boardSettings.debug; // Pretty print any bytes in and out
+    const verbose = boardSettings.verbose; // Adds verbosity to functions
+    const simulate = boardSettings.simulate;
+    const resyncPeriodMin = 5; // re sync every five minutes
+    const secondsInMinute = 60;
+    let sampleRate = 250;
+    const Cyton = require('openbci-cyton');
+    let ourBoard = new Cyton({
+        simulate: simulate,
+        debug: debug,
+        verbose: verbose
+    });
+
+
+    ourBoard.autoFindOpenBCIBoard()
+        .then(portName => {
+            if (portName) {
+                connectToBoard(portName);
+            } else {
+                /** Unable to auto find OpenBCI board */
+                console.log('Unable to auto find OpenBCI board');
+            }
+        })
+        .catch((err) => {
+            //Workaraound: If autofind board doesn't work(windows 10) try it with COM13
+            connectToBoard(boardSettings.port);
+        });
+
+    function connectToBoard(portName) {
+        /**
+         * Connect to the board with portName
+         * Only works if one board is plugged in
+         * i.e. ourBoard.connect(portName).....
+         */
+
+        ourBoard.connect(portName) // Port name is a serial port name, see `.listPorts()`
+            .then(() => {
+                ourBoard.syncRegisterSettings()
+                    .then((cs) => {
+                        return ourBoard.streamStart();
+                    })
+                    .catch((err) => {
+                        return ourBoard.streamStart();
+                    })
+                    .catch((err) => {
+                        console.log('fatal err', err);
+                        process.exit(0);
+                    });
+
+                //log firmware version
+                if (debug) {
+                    console.log("Firmware:");
+                    console.log("== v2: " + ourBoard.usingVersionTwoFirmware());
+                    console.log("== v3: " + ourBoard.usingVersionThreeFirmware());
+                    console.log(">= v2: " + ourBoard.usingAtLeastVersionTwoFirmware());
+                }
+
+                //.channelSet(channelNumber,powerDown,gain,inputType,bias,srb2,srb1)
+                // deactivate unused channels and activate bias and srb2
+                boardSettings.channelsOff.forEach(function (channelState, index) {
+                    ourBoard.channelSet(index + 1, channelState, 24, 'normal', true, true, false);
+                });
+
+                ourBoard.on('sample', (sample) => {
+                    // Resynchronize every every 5 minutes (only if simulate === false)
+                    if (!simulate) {
+                        if (sample._count % (sampleRate * resyncPeriodMin * secondsInMinute) === 0) {
+                            ourBoard.syncClocksFull()
+                                .then(syncObj => {
+                                    // Sync was successful
+                                    if (syncObj.valid) {
+                                        // Log the object to check it out!
+                                        console.log(`syncObj`, syncObj);
+
+                                        // Sync was not successful
+                                    } else {
+                                        // Retry it
+                                        console.log(`Was not able to sync, please retry?`);
+                                    }
+                                });
+                        }
+                    }
+                    sampleFunction(sample);
+                });
+            });
+    }
+
+    function exitHandler(options, err) {
+        if (options.cleanup) {
+            if (verbose) console.log('clean');
+            ourBoard.removeAllListeners();
+            /** Do additional clean up here */
+            if (boardSettings.control === 'save') {
+                console.log("fix is called");
+                saveData.fixJsonFile();
+            }
+        }
+        if (err) console.log(err.stack);
+        if (options.exit) {
+            if (verbose) {
+                console.log('exit');
+                server.closeSocketServer();
+            }
+            ourBoard.disconnect().catch(console.log);
+        }
+
+    }
+
+    if (process.platform === 'win32') {
+        const rl = require('readline').createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+
+        rl.on('SIGINT', function () {
+            process.emit('SIGINT');
+        });
+    }
+
+    // do something when app is closing
+    process.on('exit', exitHandler.bind(null, {
+        cleanup: true
+    }));
+
+    // catches ctrl+c event
+    process.on('SIGINT', exitHandler.bind(null, {
+        exit: true
+    }));
+
+    // catches uncaught exceptions
+    process.on('uncaughtException', exitHandler.bind(null, {
+        exit: true
+    }));
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#mind">mind</a></li><li><a href="global.html#p300">p300</a></li><li><a href="global.html#path">path</a></li><li><a href="global.html#start">start</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 14 2018 10:22:02 GMT+0200 (W. Europe Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

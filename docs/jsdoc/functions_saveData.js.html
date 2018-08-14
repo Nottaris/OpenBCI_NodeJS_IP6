@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: functions/saveData.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: functions/saveData.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * export (save) data from eeg signal to a json file
+ *
+ * sample ===
+ *       { accelData: [ 0, 0, 0 ],
+ *       channelData:
+ *       [ -9.834767560335107e-7,
+ *           -0.0000468492563783236,
+ *           -0.000045038765077443725,
+ *           -0.000019222500231564074,
+ *           0.000023156407255698115,
+ *           0.000003330409923840752,
+ *           0.000018753113598002625,
+ *           0.000029794875358924313 ],
+ *       auxData: &lt;Buffer 00 00 00 00 00 00>,
+ *       sampleNumber: 27,
+ *       startByte: 160,
+ *       stopByte: 192,
+ *       valid: true,
+ *       timestamp: 1522762092162,
+ *       boardTime: 0,
+ *       _count: 283 }
+ */
+
+module.exports = {
+    saveData,
+    fixJsonFile,
+    getNewestFile,
+    getChannelDatafromJSON,
+    start
+}
+
+const openBoard = require('./../board/openBoard');
+const fs = require('fs');
+
+const openData = require('./../functions/openData');
+
+const boardSettings = {
+    verbose: true,                                                  //  Print out useful debugging events
+    debug: false,                                                   //  Print out a raw dump of bytes sent and received
+    simulate: false,                                                // Full functionality, just mock data. Must attach Daisy module by setting
+    channelsOff: [false, false, false, false, false, false, false, false],  // power down unused channel 1 - 8
+    control: "save"                                                 // Control type
+}
+
+let stream;
+
+if (process.argv[2] === 'start') {
+    start();
+}
+;
+
+function start() {
+    console.log(start);
+    // connect to the board and process samples with sampleFunction
+    let sampleFunction = saveData;
+    openBoard.start(sampleFunction, boardSettings);
+
+    //get date in format for file name like "data-2018-4-6-21-13-08.json"
+    options = {
+        year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', second: 'numeric',
+        hour12: false
+    };
+
+    datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
+    formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
+
+    stream = fs.createWriteStream("data/data-" + formatDate + ".json", {flags: 'a'});
+}
+
+
+//save incoming sample's to json file with current date time in filename
+function saveData(sample) {
+    var record = JSON.stringify(sample);
+    stream.write(record + ",\n")
+    process.stdout.write("save data...\r");
+}
+
+//add [] brackets around file from saveData()
+function fixJsonFile() {
+    const fs = require('fs');
+    var path = "./data/";
+    var files = fs.readdirSync(path);
+    var newestfile = getNewestFile();
+    var pathToFile = path + newestfile;
+    var content = fs.readFileSync(pathToFile, 'utf8');
+    var contentCut = content.substring(0, content.length - 2); //remove last ,\n
+    var fixed = '[' + contentCut + ']';
+    fs.writeFileSync(pathToFile, fixed, 'utf8');
+}
+
+//get latest file from ./data/
+//Source: https://stackoverflow.com/a/37014317
+function getNewestFile() {
+    const fs = require('fs');
+    var path = "./data/";
+    var files = fs.readdirSync(path);
+    var out = [];
+    files.forEach(function (file) {
+        var stats = fs.statSync(path + "/" + file);
+        if (stats.isFile()) {
+            out.push({"file": file, "mtime": stats.mtime.getTime()});
+        }
+    });
+    out.sort(function (a, b) {
+        return b.mtime - a.mtime;
+    })
+    return (out.length > 0) ? out[0].file : "";
+}
+
+function getChannelDatafromJSON() {
+    const fs = require('fs');
+    let stream = fs.createWriteStream("data/dataChannelfromJSON.txt", {flags: 'a'});
+    let data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
+    data.forEach(function (d) {
+        stream.write(d.channelData[0] + ",\n");
+    });
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#mind">mind</a></li><li><a href="global.html#p300">p300</a></li><li><a href="global.html#path">path</a></li><li><a href="global.html#start">start</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 14 2018 10:22:02 GMT+0200 (W. Europe Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

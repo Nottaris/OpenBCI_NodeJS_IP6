@@ -1,0 +1,24 @@
+{
+     "opts": {
+        "encoding": "utf8",               // same as -e utf8
+        "destination": "./docs/jsdoc/",          // same as -d ./out/
+        "recurse": true                  // same as -r
+    },
+    "plugins": ["plugins/markdown"],
+    "recurseDepth": 10,
+    "source": {
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_",
+        "include": ["README.md","src/"],
+        "exclude": ["src/gui/musicplayer/node_modules","src/gui/musicplayer/src/music"]
+    },
+    "sourceType": "module",
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false
+    }
+}
