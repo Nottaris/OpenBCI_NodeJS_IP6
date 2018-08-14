@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>OpenBCI Music Player</h1><p>In this project, opportunities to control a web-based music player with an OpenBCI were evaluated. Different approaches – based on blinking, P300 and motor imagery, using common data processing as well as machine learning algorithms to analyse the EEG data are described. In the absence of laboratory conditions and by using available hardware, the concept of controlling the player by blinking was successfully implemented. Conceptually described and partially implemented are the concepts of P300 as well as training and detecting mental commands with motor imagery. </p>
+<h3>Documentation</h3><p><a href="/docs/IP6-IIT15-bciMusicInterface-IW-MJ.pdf">IP6-IIT15-bciMusicInterface-IW-MJ.pdf</a> (German BSc Thesis)<br>jsDoc can be found here: /docs/jsdoc/index.html</p>
+<h3>Installation</h3><ol>
+<li>Clone the source code:
+<code>git clone https://github.com/Nottaris/OpenBCI_NodeJS_IP6.git</code>   </li>
+<li>Install required node packages:<br><code>npm install</code> </li>
+<li>Install python 3.6</li>
+</ol>
+<h2>How to use it</h2><p>To use this demo you need to start the musicplayer, connect the OpenBCI board and additonaly start the EEG Control that you would like to use.</p>
+<h3>1. Start Musicplayer</h3><p>Run <code>npm run player</code>  to start the react music player. 
+With the Dropdown in the title of the musicplayer you can switch between the player for Blink, P300 and Mind Control</p>
+<h3>2. Connect with OpenBCI Cyton Board</h3><p>In every control folder is a app.js file prepared, where the board can be configured. </p>
+<pre class="prettyprint source lang-javascript"><code>const boardSettings = {
+    verbose: true,                                             //  Print out useful debugging events
+    debug: false,                                              //  Print out a raw dump of bytes sent and received
+    simulate: false,                                           // Full functionality, just mock data. Must attach Daisy module by setting
+    channelsOff: [false, true, true, true, true, true, true, true],    // power down unused channel 1 - 8
+    port: &quot;COM3&quot;,                                              // COM Port OpenBCI dongle
+    control: &quot;blink&quot;                                           // Control type
+}</code></pre><h3>3. Start EEG Controls</h3><p>3 different approaches where developed to control the music player with the OpenBCI Heasdset</p>
+<h5>Blink control:</h5><p><code>npm run blink</code> </p>
+<h5>P300 control - beta</h5><p><code>npm run p300</code></p>
+<h5>Mind control - beta</h5><p><code>npm run mind</code> </p>
+<h4>Helpers</h4><h5>Save Data</h5><p><code>npm run save</code> </p>
+<h5>Plot Data</h5><p><code>npm run plot</code> 
+to http://localhost:8888/</p>
+<h5>Stream Data</h5><p><code>npm run stream</code> </p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#blink">blink</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#closeSocketServer">closeSocketServer</a></li><li><a href="global.html#detectBlink">detectBlink</a></li><li><a href="global.html#detectMind">detectMind</a></li><li><a href="global.html#detectP300">detectP300</a></li><li><a href="global.html#digestSamples">digestSamples</a></li><li><a href="global.html#doBlinkCmd">doBlinkCmd</a></li><li><a href="global.html#doMindCmd">doMindCmd</a></li><li><a href="global.html#doP300Cmd">doP300Cmd</a></li><li><a href="global.html#enoughDataForP300">enoughDataForP300</a></li><li><a href="global.html#fixJsonFile">fixJsonFile</a></li><li><a href="global.html#getAverage">getAverage</a></li><li><a href="global.html#getBaseline">getBaseline</a></li><li><a href="global.html#getBlinks">getBlinks</a></li><li><a href="global.html#getCmdTimefromPlayer">getCmdTimefromPlayer</a></li><li><a href="global.html#getFiledata">getFiledata</a></li><li><a href="global.html#getIdxForTimestamp">getIdxForTimestamp</a></li><li><a href="global.html#getMaxValue">getMaxValue</a></li><li><a href="global.html#getMedian">getMedian</a></li><li><a href="global.html#getMinValue">getMinValue</a></li><li><a href="global.html#getNewestFile">getNewestFile</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getStandardDeviation">getStandardDeviation</a></li><li><a href="global.html#getTrainingCmd">getTrainingCmd</a></li><li><a href="global.html#getVariance">getVariance</a></li><li><a href="global.html#initTraining">initTraining</a></li><li><a href="global.html#loadJSON">loadJSON</a></li><li><a href="global.html#mind">mind</a></li><li><a href="global.html#openData">openData</a></li><li><a href="global.html#p300">p300</a></li><li><a href="global.html#path">path</a></li><li><a href="global.html#percentageChange">percentageChange</a></li><li><a href="global.html#reportTrainingsData">reportTrainingsData</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#saveData">saveData</a></li><li><a href="global.html#saveTrainingData">saveTrainingData</a></li><li><a href="global.html#sendCmd">sendCmd</a></li><li><a href="global.html#setNextCommand">setNextCommand</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#startFlashCmd">startFlashCmd</a></li><li><a href="global.html#startSocketServer">startSocketServer</a></li><li><a href="global.html#streamData">streamData</a></li><li><a href="global.html#subscribeToP300Cmds">subscribeToP300Cmds</a></li><li><a href="global.html#subscribeToTrainingCmds">subscribeToTrainingCmds</a></li><li><a href="global.html#subtractBaseline">subtractBaseline</a></li><li><a href="global.html#subtractBaselineAllChannels">subtractBaselineAllChannels</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 14 2018 16:56:15 GMT+0200 (W. Europe Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
