@@ -12,20 +12,22 @@ module.exports = {
     getSettings,
     setSettings,
     reset
-}
+};
 
 const mathFunctions = require('../functions/mathFunctions');
-const saveData = require('../functions/saveData');
 const detectBlink = require('./detectBlink');
 
 const defaultSettings = {
     baselineLengthSec: 5,       // time in seconds for baseline
     channel:           1,       // number of channel ( from 1 to 8 )
     sampleRate:      250,       // 250Hz
-    slots:            10,       // data points per slot
+    slots:            10,       // samples per slot
     threshold:         3,       // deviation factor with paste upper bound
+    flashInterval:  1500,       // interval in ms to flash commands in player
+    skipAfterBlink:    5,       // number of slots skipped after blink
+    commands:       ['prev','playpause','next','voldown', 'volup'],
     debug:          true        // show console.log
-}
+};
 
 let slotValues = [];
 let medianValues = [];
@@ -35,7 +37,6 @@ let blinkCount = 0;
 let settings = defaultSettings;
 let baselineSlots = settings.baselineLengthSec * settings.sampleRate / settings.slots; // number of slots in baseline (at 250Hz)
 
-saveData.getChannelDatafromJSON();
 
 function getSampleAverages(sample) {
 

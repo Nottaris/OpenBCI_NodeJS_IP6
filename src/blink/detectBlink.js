@@ -7,18 +7,10 @@ const blink = require('./blink');
 const server = require('../socket/server');
 
 let settings;
-var init = true;
+let init = true;
 let skip = 0;
 
-const commands = [
-    "prev",
-    "playpause",
-    "next",
-    "voldown",
-    "volup",
-    "prev"
-];
-var currentCommand = "play";
+let currentCommand = "prev";
 
 /*
  * init Blink Detection, log baseline
@@ -27,8 +19,8 @@ var currentCommand = "play";
 
 function detectBlink(baseline, currentMedian) {
 
-    var baselineMedian = mathFunctions.getMedian(baseline);
-    var standardDeviation = mathFunctions.getStandardDeviation(baseline);
+    let baselineMedian = mathFunctions.getMedian(baseline);
+    let standardDeviation = mathFunctions.getStandardDeviation(baseline);
 
     if (init) {
         server.startSocketServer();
@@ -52,7 +44,7 @@ function detectBlink(baseline, currentMedian) {
     }
 
     //if current value is bigger then  median - standardDeviation * threshold  it is a blink
-    if (Number(baselineMedian - standardDeviation * settings.threshold) > currentMedian && skip == 0) {
+    if (Number(baselineMedian - standardDeviation * settings.threshold) > currentMedian && skip === 0) {
         if (settings.debug) {
             console.log("BLINK: \t value: " + currentMedian.toFixed(2) + "\t at " + new Date());
         }
@@ -61,7 +53,7 @@ function detectBlink(baseline, currentMedian) {
         //send doCommand to execute
         server.doBlinkCmd(currentCommand);
 
-        skip = settings.slots * 5;
+        skip = settings.slots * settings.skipAfterBlink;
     }
 
     if (skip > 0) {
@@ -75,10 +67,14 @@ function startFlashCmd() {
         //send next command to flash on player
         setNextCommand();
         server.sendCmd(currentCommand);
-    }, 1500);
+    }, settings.flashInterval);
 }
 
 function setNextCommand() {
-    let idx = commands.indexOf(currentCommand);
-    currentCommand = commands[idx + 1];
+    let idx = settings.commands.indexOf(currentCommand);
+    if(idx >= settings.commands.length -1) {
+        currentCommand = settings.commands[0];
+    } else {
+        currentCommand = settings.commands[idx + 1];
+    }
 }

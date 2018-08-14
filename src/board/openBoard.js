@@ -18,9 +18,9 @@ function start(sampleFunction, boardSettings) {
     const simulate = boardSettings.simulate;
     const resyncPeriodMin = 5; // re sync every five minutes
     const secondsInMinute = 60;
-    let sampleRate = 250;
+    const sampleRate = 250;
     const Cyton = require('openbci-cyton');
-    let ourBoard = new Cyton({
+    const ourBoard = new Cyton({
         simulate: simulate,
         debug: debug,
         verbose: verbose
@@ -90,7 +90,7 @@ function start(sampleFunction, boardSettings) {
                                         // Sync was not successful
                                     } else {
                                         // Retry it
-                                        console.log(`Was not able to sync, please retry?`);
+                                        console.log(`Was not able to sync, please retry.`);
                                     }
                                 });
                         }
