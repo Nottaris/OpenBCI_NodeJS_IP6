@@ -1,5 +1,6 @@
 ##
 # create Features form live data and compare them with trained SVM Model
+#
 ##
 
 import json
@@ -40,7 +41,7 @@ def main():
         print("\n------ Filter and Downsample Data ------")
 
     ## 1. Filter and Downsample Traingsdata
-    [dataDownSampleP300, dataBaseline] = filterDownsampleData(volts, baseline, cmdIdx, channels, debug, 0)
+    [dataDownSampleP300, dataBaseline] = filterDownsampleData(volts, baseline, cmdIdx, channels, debug)
 
     if (debug):
        print("\n------ Create Features ------")

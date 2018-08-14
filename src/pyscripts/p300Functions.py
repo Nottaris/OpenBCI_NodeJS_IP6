@@ -1,5 +1,6 @@
 ##
 # P300 Functions to prepare data for SVM training: Bandpassfilter and Downsample Data to make features less complex
+#
 ##
 import matplotlib.pyplot as plt
 import numpy as np
