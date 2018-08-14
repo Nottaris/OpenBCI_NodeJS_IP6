@@ -1,9 +1,9 @@
-const mathFunctions = require('../functions/mathFunctions');
-
 module.exports = {
     subtractBaseline,
     subtractBaselineAllChannels
-}
+};
+
+const mathFunctions = require("../functions/mathFunctions");
 
 // returns average minus baseline averages for one Channel Data
 function subtractBaseline(baseline, average) {

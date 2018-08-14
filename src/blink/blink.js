@@ -1,12 +1,5 @@
-/**
- * extract blinks from eeg signal
- *
- *
- */
 module.exports = {
-    getBlinks: function (sample) {
-        getSampleAverages(sample);
-    },
+    getBlinks,
     setBlinkcount,
     getBlinkcount,
     getSettings,
@@ -14,8 +7,13 @@ module.exports = {
     reset
 };
 
-const mathFunctions = require('../functions/mathFunctions');
-const detectBlink = require('./detectBlink');
+/**
+ * extract blinks from eeg signal
+ *
+ *
+ */
+const mathFunctions = require("../functions/mathFunctions");
+const detectBlink = require("./detectBlink");
 
 const defaultSettings = {
     baselineLengthSec: 5,       // time in seconds for baseline
@@ -25,7 +23,7 @@ const defaultSettings = {
     threshold:         3,       // deviation factor with paste upper bound
     flashInterval:  1500,       // interval in ms to flash commands in player
     skipAfterBlink:    5,       // number of slots skipped after blink
-    commands:       ['prev','playpause','next','voldown', 'volup'],
+    commands:       ["prev","playpause","next","voldown", "volup"], // musicplayer commands
     debug:          true        // show console.log
 };
 
@@ -38,13 +36,13 @@ let settings = defaultSettings;
 let baselineSlots = settings.baselineLengthSec * settings.sampleRate / settings.slots; // number of slots in baseline (at 250Hz)
 
 
-function getSampleAverages(sample) {
+function getBlinks(sample) {
 
     baseline = getBaseline();
 
     if (count < settings.slots) {
-        slotValues.push(Number((sample.channelData[settings.channel - 1] * 1000000))); //microVolts
-        count++;
+        slotValues.push(Number(sample.channelData[settings.channel - 1] * 1000000)); //microVolts
+        count += 1;
     } else if (count === settings.slots) {
         let currentMedian = mathFunctions.getMedian(slotValues);
         medianValues.push(currentMedian);

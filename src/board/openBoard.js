@@ -7,9 +7,8 @@ module.exports = {
     start
 };
 
-
-const saveData = require('./../functions/saveData'); //to fix JsonFiles in cleanup
-const server = require('./../socket/server');
+const saveData = require("./../functions/saveData"); //to fix JsonFiles in cleanup
+const server = require("./../socket/server");
 
 
 function start(sampleFunction, boardSettings) {
@@ -19,7 +18,7 @@ function start(sampleFunction, boardSettings) {
     const resyncPeriodMin = 5; // re sync every five minutes
     const secondsInMinute = 60;
     const sampleRate = 250;
-    const Cyton = require('openbci-cyton');
+    const Cyton = require("openbci-cyton");
     const ourBoard = new Cyton({
         simulate: simulate,
         debug: debug,
@@ -33,11 +32,11 @@ function start(sampleFunction, boardSettings) {
                 connectToBoard(portName);
             } else {
                 /** Unable to auto find OpenBCI board */
-                console.log('Unable to auto find OpenBCI board');
+                console.log("Unable to auto find OpenBCI board");
             }
         })
         .catch((err) => {
-            //Workaraound: If autofind board doesn't work(windows 10) try it with COM13
+            //Workaraound: If autofind board doesn"t work(windows 10) try it with COM13
             connectToBoard(boardSettings.port);
         });
 
@@ -58,7 +57,7 @@ function start(sampleFunction, boardSettings) {
                         return ourBoard.streamStart();
                     })
                     .catch((err) => {
-                        console.log('fatal err', err);
+                        console.log("fatal err", err);
                         process.exit(0);
                     });
 
@@ -73,10 +72,10 @@ function start(sampleFunction, boardSettings) {
                 //.channelSet(channelNumber,powerDown,gain,inputType,bias,srb2,srb1)
                 // deactivate unused channels and activate bias and srb2
                 boardSettings.channelsOff.forEach(function (channelState, index) {
-                    ourBoard.channelSet(index + 1, channelState, 24, 'normal', true, true, false);
+                    ourBoard.channelSet(index + 1, channelState, 24, "normal", true, true, false);
                 });
 
-                ourBoard.on('sample', (sample) => {
+                ourBoard.on("sample", (sample) => {
                     // Resynchronize every every 5 minutes (only if simulate === false)
                     if (!simulate) {
                         if (sample._count % (sampleRate * resyncPeriodMin * secondsInMinute) === 0) {
@@ -102,10 +101,10 @@ function start(sampleFunction, boardSettings) {
 
     function exitHandler(options, err) {
         if (options.cleanup) {
-            if (verbose) console.log('clean');
+            if (verbose) console.log("clean");
             ourBoard.removeAllListeners();
             /** Do additional clean up here */
-            if (boardSettings.control === 'save') {
+            if (boardSettings.control === "save") {
                 console.log("fix is called");
                 saveData.fixJsonFile();
             }
@@ -113,7 +112,7 @@ function start(sampleFunction, boardSettings) {
         if (err) console.log(err.stack);
         if (options.exit) {
             if (verbose) {
-                console.log('exit');
+                console.log("exit");
                 server.closeSocketServer();
             }
             ourBoard.disconnect().catch(console.log);
@@ -121,29 +120,29 @@ function start(sampleFunction, boardSettings) {
 
     }
 
-    if (process.platform === 'win32') {
-        const rl = require('readline').createInterface({
+    if (process.platform === "win32") {
+        const rl = require("readline").createInterface({
             input: process.stdin,
             output: process.stdout
         });
 
-        rl.on('SIGINT', function () {
-            process.emit('SIGINT');
+        rl.on("SIGINT", function () {
+            process.emit("SIGINT");
         });
     }
 
     // do something when app is closing
-    process.on('exit', exitHandler.bind(null, {
+    process.on("exit", exitHandler.bind(null, {
         cleanup: true
     }));
 
     // catches ctrl+c event
-    process.on('SIGINT', exitHandler.bind(null, {
+    process.on("SIGINT", exitHandler.bind(null, {
         exit: true
     }));
 
     // catches uncaught exceptions
-    process.on('uncaughtException', exitHandler.bind(null, {
+    process.on("uncaughtException", exitHandler.bind(null, {
         exit: true
     }));
 }

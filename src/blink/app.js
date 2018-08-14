@@ -3,8 +3,8 @@
  *
  */
 
-const blink = require('./blink');
-const openBoard = require('./../board/openBoard');
+const blink = require("./blink");
+const openBoard = require("./../board/openBoard");
 
 let sampleFunction = blink.getBlinks;
 
@@ -15,7 +15,7 @@ const boardSettings = {
     channelsOff: [false, true, true, true, true, true, true, true],    // power down unused channel 1 - 8
     port: "COM13",                                               // COM Port OpenBCI dongle
     control: "blink"                                            // Control type
-}
+};
 
 
 /**

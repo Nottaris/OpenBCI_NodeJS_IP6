@@ -28,12 +28,12 @@ module.exports = {
     getNewestFile,
     getChannelDatafromJSON,
     start
-}
+};
 
-const openBoard = require('./../board/openBoard');
-const fs = require('fs');
+const openBoard = require("./../board/openBoard");
+const fs = require("fs");
 
-const openData = require('./../functions/openData');
+const openData = require("./../functions/openData");
 
 const boardSettings = {
     verbose: true,                                                  //  Print out useful debugging events
@@ -45,7 +45,7 @@ const boardSettings = {
 
 let stream;
 
-if (process.argv[2] === 'start') {
+if (process.argv[2] === "start") {
     start();
 }
 ;
@@ -58,47 +58,47 @@ function start() {
 
     //get date in format for file name like "data-2018-4-6-21-13-08.json"
     options = {
-        year: 'numeric', month: 'numeric', day: 'numeric',
-        hour: 'numeric', minute: 'numeric', second: 'numeric',
+        year: "numeric", month: "numeric", day: "numeric",
+        hour: "numeric", minute: "numeric", second: "numeric",
         hour12: false
     };
 
-    datetime = new Intl.DateTimeFormat('de-CH', options).format(new Date());
-    formatDate = datetime.replace(' ', '-').replace(/:/g, '-');
+    datetime = new Intl.DateTimeFormat("de-CH", options).format(new Date());
+    formatDate = datetime.replace(" ", "-").replace(/:/g, "-");
 
-    stream = fs.createWriteStream("data/data-" + formatDate + ".json", {flags: 'a'});
+    stream = fs.createWriteStream("data/data-" + formatDate + ".json", {flags: "a"});
 }
 
 
-//save incoming sample's to json file with current date time in filename
+//save incoming sample"s to json file with current date time in filename
 function saveData(sample) {
-    var record = JSON.stringify(sample);
+    let record = JSON.stringify(sample);
     stream.write(record + ",\n")
     process.stdout.write("save data...\r");
 }
 
 //add [] brackets around file from saveData()
 function fixJsonFile() {
-    const fs = require('fs');
-    var path = "./data/";
-    var files = fs.readdirSync(path);
-    var newestfile = getNewestFile();
-    var pathToFile = path + newestfile;
-    var content = fs.readFileSync(pathToFile, 'utf8');
-    var contentCut = content.substring(0, content.length - 2); //remove last ,\n
-    var fixed = '[' + contentCut + ']';
-    fs.writeFileSync(pathToFile, fixed, 'utf8');
+    const fs = require("fs");
+    let path = "./data/";
+    let files = fs.readdirSync(path);
+    let newestfile = getNewestFile();
+    let pathToFile = path + newestfile;
+    let content = fs.readFileSync(pathToFile, "utf8");
+    let contentCut = content.substring(0, content.length - 2); //remove last ,\n
+    let fixed = "[" + contentCut + "]";
+    fs.writeFileSync(pathToFile, fixed, "utf8");
 }
 
 //get latest file from ./data/
 //Source: https://stackoverflow.com/a/37014317
 function getNewestFile() {
-    const fs = require('fs');
-    var path = "./data/";
-    var files = fs.readdirSync(path);
-    var out = [];
+    const fs = require("fs");
+    let path = "./data/";
+    let files = fs.readdirSync(path);
+    let out = [];
     files.forEach(function (file) {
-        var stats = fs.statSync(path + "/" + file);
+        let stats = fs.statSync(path + "/" + file);
         if (stats.isFile()) {
             out.push({"file": file, "mtime": stats.mtime.getTime()});
         }
@@ -110,8 +110,8 @@ function getNewestFile() {
 }
 
 function getChannelDatafromJSON() {
-    const fs = require('fs');
-    let stream = fs.createWriteStream("data/dataChannelfromJSON.txt", {flags: 'a'});
+    const fs = require("fs");
+    let stream = fs.createWriteStream("data/dataChannelfromJSON.txt", {flags: "a"});
     let data = openData.loadJSON("../../test/data/data-2018-5-1-11-23-10-TESTDATA-5-BLINKS.json");
     data.forEach(function (d) {
         stream.write(d.channelData[0] + ",\n");

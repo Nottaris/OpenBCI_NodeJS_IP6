@@ -7,7 +7,7 @@ module.exports = {
     getMinValue,
     getMedian,
     clone
-}
+};
 
 // Percentage Change (newValue - oldValue) / |oldValue| *100
 function percentageChange(newValue, oldValue) {
@@ -25,16 +25,16 @@ function getMedian(array) {
         return a - b;
     });
 
-    if (array.length === 0) return 0;
-
-    var half = Math.floor(array.length / 2);
-
+    if (array.length === 0) {
+        return 0;
+    }
+    let half = Math.floor(array.length / 2);
     return array[half];
 }
 
 //  deviation of average value from array
 function getVariance(array) {
-    var mean = getAverage(array);
+    let mean = getAverage(array);
     return array.reduce(function (pre, cur) {
         pre = pre + Math.pow((cur - mean), 2);
         return pre;
@@ -63,4 +63,4 @@ function getMinValue(array) {
 // Get deep copy of array
 function clone(array) {
     return JSON.parse(JSON.stringify(array));
-};
+}

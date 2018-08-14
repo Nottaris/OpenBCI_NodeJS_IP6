@@ -2,9 +2,9 @@ module.exports = {
     compareAverages: detectBlink
 };
 
-const mathFunctions = require('../functions/mathFunctions');
-const blink = require('./blink');
-const server = require('../socket/server');
+const mathFunctions = require("../functions/mathFunctions");
+const blink = require("./blink");
+const server = require("../socket/server");
 
 let settings;
 let init = true;
@@ -57,7 +57,7 @@ function detectBlink(baseline, currentMedian) {
     }
 
     if (skip > 0) {
-        skip--;
+        skip -= 1;
     }
 
 }

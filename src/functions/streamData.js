@@ -1,8 +1,8 @@
 module.exports = {
     streamData
-}
-const openBoard = require('./../board/openBoard');
-const server = require('../socket/server');
+};
+const openBoard = require("./../board/openBoard");
+const server = require("../socket/server");
 let init = true;
 
 const boardSettings = {
