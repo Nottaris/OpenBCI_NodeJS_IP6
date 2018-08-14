@@ -75,7 +75,6 @@ function closeSocketServer() {
 function sendCmd(command) {
     //emmit command event for each
     io.emit("command", {command: command});
-    process.stdout.write("sending commands...\r");
 }
 
 /**
@@ -85,7 +84,6 @@ function sendCmd(command) {
 function doBlinkCmd(doBlinkcommand) {
     //emmit command event to execute after its detection
     io.emit("doBlinkcommand", {doBlinkcommand: doBlinkcommand});
-    console.log("sent doBlinkcommand: " + doBlinkcommand);
 }
 
 /**
@@ -95,7 +93,6 @@ function doBlinkCmd(doBlinkcommand) {
 function doP300Cmd(doP300command) {
     //emmit command event to execute after its detection
     io.emit("doP300command", {doP300command: doP300command});
-    console.log("sent doP300command: " + doP300command);
 }
 
 /**
@@ -105,7 +102,6 @@ function doP300Cmd(doP300command) {
 function doMindCmd(doMindcommand) {
     //emmit command event to execute after its detection
     io.emit("doMindcommand", {doMindcommand: doMindcommand});
-    console.log("sent doMindcommand: " + doMindcommand);
 }
 
 /**
