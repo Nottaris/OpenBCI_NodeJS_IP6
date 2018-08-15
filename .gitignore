@@ -35,6 +35,7 @@ desktop.ini
 Thumbs.db
 UserInterfaceState.xcuserstate
 data/
+data/mind/
 package-lock.json
 src/gui/playerP300/build
 venv

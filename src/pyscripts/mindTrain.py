@@ -19,7 +19,7 @@ from sklearn.model_selection import GridSearchCV, StratifiedShuffleSplit
 from pathlib import Path
 
 # enable/disable debug Mode
-debug = True
+debug = False
 
 # the 5 commands from player
 commands = ['volup', 'playpause', 'next', 'prev', 'voldown']
@@ -90,8 +90,9 @@ def main():
 
     ##  2. Extract Features for Trainingdata (only commands)
     [X, y] = extractFeature(filterdTraindata)
-    print("Anz. Features: " + str(len(X)))
-    print("y: " + str(y))
+    if debug:
+        print("Anz. Features: " + str(len(X)))
+        print("y: " + str(y))
 
     ##  3. Train Model with features
 
@@ -137,8 +138,8 @@ def main():
         print("Recall: " + str(recall))
 
     # send success back to node
-    # TODO: uncomment / implement success boolean return and
-    # print('true')
+    # TODO: implement real success boolean return
+    print('true')
 
 
 def extractFeature(dataFilterd):

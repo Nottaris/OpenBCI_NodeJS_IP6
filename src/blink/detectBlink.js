@@ -18,20 +18,20 @@ let skip = 0;
 let currentCommand = "prev";
 
 /**
- * init Blink Detection, log baseline
+ * get median and standard deviation for baseline and start Blink Detection, log baseline
  * @params: baseline: Array of last window medians, currentMedian: current median to compare with baseline
  */
 function detectBlink(baseline, currentMedian) {
 
+    // get median and standard deviation for baseline
     let baselineMedian = mathFunctions.getMedian(baseline);
     let standardDeviation = mathFunctions.getStandardDeviation(baseline);
 
     if (init) {
-        server.startSocketServer();
         //get Settings
         settings = blink.getSettings();
 
-        //show Baseline
+        //show Baseline data
         if (settings.debug) {
             console.log("=================Baseline=================");
             console.log("  Baseline size:\t" + baseline.length);
@@ -43,27 +43,47 @@ function detectBlink(baseline, currentMedian) {
             console.log("  Min Value:\t\t" + mathFunctions.getMinValue(baseline).toFixed(2));
             console.log("==============================================");
         }
+
+        // start socket server
+        server.startSocketServer();
+
+        // flash commands in player
         startFlashCmd();
+
         init = false;
     }
 
-    //if current value is bigger then  median - standardDeviation * threshold  it is a blink
+    // Check if current median contains a blink
+    findBlink(currentMedian, baselineMedian, standardDeviation);
+
+}
+
+/**
+ * check if current median contains a blink
+ * @params: currentMedian: current median to compare with baseline, baselineMedian: median baseline samples, standardDeviation: standard deviation baseline samples,
+ *
+ */
+function findBlink(currentMedian, baselineMedian, standardDeviation) {
+
+    // if currentMedian is smaller then  median - standardDeviation * threshold  it will be classified as a blink
     if (Number(baselineMedian - standardDeviation * settings.threshold) > currentMedian && skip === 0) {
         if (settings.debug) {
             console.log("BLINK: \t value: " + currentMedian.toFixed(2) + "\t at " + new Date());
         }
+
+        // increase blinkcount for mocha tests
         blink.setBlinkcount();
 
-        //send doCommand to execute
+        // send current command to musicplayer to execute
         server.doBlinkCmd(currentCommand);
 
+        // to prevent multiple classification for same blink skip next slots
         skip = settings.slots * settings.skipAfterBlink;
     }
 
     if (skip > 0) {
         skip -= 1;
     }
-
 }
 
 /**

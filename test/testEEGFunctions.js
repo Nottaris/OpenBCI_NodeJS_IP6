@@ -1,4 +1,7 @@
-// test the eegFunctions
+/**
+ * test the eegFunctions
+ *
+ */
 const eegFunctions = require('./../src/functions/eegFunctions');
 var assert = require('assert');
 

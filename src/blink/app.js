@@ -1,5 +1,5 @@
 /**
- * Start OpenBCI Nodejs - Blink Control
+ * @fileOverview Start OpenBCI Nodejs - Blink Control
  *
  */
 

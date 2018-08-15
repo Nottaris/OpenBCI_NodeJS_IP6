@@ -1,5 +1,5 @@
 /**
- * Start OpenBCI Nodejs - p300 Control
+ * @fileOverview Start OpenBCI Nodejs - p300 Control
  *
  */
 

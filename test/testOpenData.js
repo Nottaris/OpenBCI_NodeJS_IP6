@@ -1,4 +1,7 @@
-// test the openData
+/**
+ * test the openData
+ *
+ */
 const openData = require('./../src/functions/openData');
 const openData2 = require('./../src/functions/openData');
 const assert = require('assert');

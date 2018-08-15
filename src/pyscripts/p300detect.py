@@ -1,17 +1,27 @@
-import pickle
-from scipy.signal import butter, lfilter, decimate, resample
-import json, sys, numpy as np, matplotlib.pyplot as plt
-from sklearn import svm, preprocessing, metrics
-from p300Functions import filterDownsampleData
+##
+# create Features form live data and compare them with trained SVM Model
+#
+##
 
-# enable/disable debug Mode
-debug = False
-avgChannel = False
+import json
+import numpy as np
+import pickle
+import sys
+
+from p300Functions import filterDownsampleData
+from sklearn import preprocessing
+
+debug = False         # enable/disable debug Mode
+avgChannel = False    # avg all channel in Feature
 
 def main():
     # Load SVM Model
-    with open('data/p300/model/svm_model.txt', 'rb') as e:
-        clf = pickle.load(e)
+    if(avgChannel):
+        with open('data/p300/model/svm_model_avg.txt', 'rb') as e:
+            clf = pickle.load(e)
+    else:
+        with open('data/p300/model/svm_model.txt', 'rb') as e:
+            clf = pickle.load(e)
 
      # get data as an array from read_in()
     datainput = json.loads(sys.stdin.read())
@@ -28,19 +38,21 @@ def main():
 
     if(debug):
         print("\n------ Filter and Downsample Data ------")
+
     ## 1. Filter and Downsample Traingsdata
-    [dataDownSampleP300, dataBaseline] = filterDownsampleData(volts, baseline, cmdIdx, channels, debug, 0)
+    [dataDownSampleP300, dataBaseline] = filterDownsampleData(volts, baseline, cmdIdx, channels, debug)
 
     if (debug):
        print("\n------ Create Features ------")
+
     ## 2. Extract Features
     X_test = extractXFeature(dataDownSampleP300)
 
     ##  3. Compare Data with model
     if (debug):
         print("\n------ Model Accuracy ------")
+
     y_pred =  np.array(clf.predict(X_test)) #Predict the response for dataset
-    # print("predicted y "+str(y_pred))
 
     #  4. Get Command with most p300
     if(np.any(y_pred == 1)):
@@ -52,7 +64,6 @@ def main():
                 # increment cmd counter if classified as p300
                 cmdP300[int(y/cmdCount)] += 1
 
-        # print(cmdP300)
         # return cmd idx with most found p300 classifications
         maxIdx = np.argmax(cmdP300)
         if(cmdP300[maxIdx]>1):
