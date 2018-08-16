@@ -4,22 +4,24 @@
  */
 const openData = require("./../functions/openData");
 const server = require("../socket/server");
+server.startSocketServer();
 
 let PythonShell = require("python-shell");
 
 let commands =  ["playpause","next","prev","volup", "voldown"];
 const options = {mode: "text"};
+
 let pyshell = new PythonShell("/src/pyscripts/p300detect.py", options);
 
 // sends channel data to the Python script via stdin
-let baseline =   openData.loadJSON("../../data/p300/ex4_7_cycles5/5-voldown/1533644995773_1_baseline.json");
-let volts =   openData.loadJSON("../../data/p300/ex4_7_cycles5/5-voldown/1533644995766_1_volts.json");
-let cmdIdx =   openData.loadJSON("../../data/p300/ex4_7_cycles5/5-voldown/1533644995801_1_cmdIdx.json");
+let baseline =   openData.loadJSON("../../data/p300/ex4_5_cycles5/test/1532350012450_1_baseline.json");
+let volts =   openData.loadJSON("../../data/p300/ex4_5_cycles5/test/1532350012442_1_volts.json");
+let cmdIdx =   openData.loadJSON("../../data/p300/ex4_5_cycles5/test/1532350012477_1_cmdIdx.json");
 
 
 let data = JSON.stringify({volts: volts, baseline: baseline, cmdIdx: cmdIdx});
 
-server.startSocketServer();
+
 
 /**
  * sends channel data to the Python script via stdin
