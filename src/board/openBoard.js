@@ -97,6 +97,7 @@ function start(sampleFunction, boardSettings) {
                                 });
                         }
                     }
+
                     sampleFunction(sample);
                 });
             });
