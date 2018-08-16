@@ -15,13 +15,18 @@ module.exports = {
 const openBoard = require("./../board/openBoard");
 const fs = require("fs");
 
+// function for processing eeg samples
+let sampleFunction = saveData;
+
+// OpenBCI Board settings
 const boardSettings = {
-    verbose: true,                                                  //  Print out useful debugging events
-    debug: false,                                                   //  Print out a raw dump of bytes sent and received
-    simulate: true,                                                // Full functionality, just mock data. Must attach Daisy module by setting
-    channelsOff: [false, false, false, false, false, false, false, false],  // power down unused channel 1 - 8
-    control: "save"                                                 // Control type
-}
+    verbose: true,                     //  Print out useful debugging events
+    debug: false,                      //  Print out a raw dump of bytes sent and received
+    simulate: true,                    // Full functionality, just mock data. Must attach Daisy module by setting
+    channelsOff: [false, false, false, false, false, false, false, false],    // power down unused channel 1 - 8
+    port: "COM13",                     // COM Port OpenBCI dongle
+    control: "save"                    // Control type
+};
 
 let stream;
 
@@ -44,8 +49,6 @@ if (process.argv[2] === "start") {
  *
  */
 function start() {
-    console.log(start);
-    let sampleFunction = saveData;
     openBoard.start(sampleFunction, boardSettings);
 }
 
@@ -97,6 +100,6 @@ function getNewestFile() {
     });
     out.sort(function (a, b) {
         return b.mtime - a.mtime;
-    })
+    });
     return (out.length > 0) ? out[0].file : "";
 }
