@@ -27,11 +27,12 @@ function detectBlink(baseline, currentMedian) {
     let baselineMedian = mathFunctions.getMedian(baseline);
     let standardDeviation = mathFunctions.getStandardDeviation(baseline);
 
+    // run inital setup for blink control
     if (init) {
-        //get Settings
+        // get settings
         settings = blink.getSettings();
 
-        //show Baseline data
+        // show Baseline data
         if (settings.debug) {
             console.log("=================Baseline=================");
             console.log("  Baseline size:\t" + baseline.length);
@@ -47,7 +48,7 @@ function detectBlink(baseline, currentMedian) {
         // start socket server
         server.startSocketServer();
 
-        // flash commands in player
+        // flash commands in musicplayer
         startFlashCmd();
 
         init = false;
@@ -59,7 +60,7 @@ function detectBlink(baseline, currentMedian) {
 }
 
 /**
- * check if current median contains a blink
+ * check if current median is a blink
  * @params: currentMedian: current median to compare with baseline, baselineMedian: median baseline samples, standardDeviation: standard deviation baseline samples,
  *
  */

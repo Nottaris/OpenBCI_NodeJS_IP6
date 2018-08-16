@@ -97,7 +97,7 @@ function start(sampleFunction, boardSettings) {
                                 });
                         }
                     }
-
+                    // function for processing eeg samples
                     sampleFunction(sample);
                 });
             });

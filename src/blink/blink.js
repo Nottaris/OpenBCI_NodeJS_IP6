@@ -44,11 +44,15 @@ function getBlinks(sample) {
     baseline = getBaseline();
 
     if (count < settings.slots) {
+        // collect samples to create slot
         slotValues.push(Number(sample.channelData[settings.channel - 1] * 1000000)); //microVolts
         count += 1;
     } else if (count === settings.slots) {
+        // get median from all samples in slot
         let currentMedian = mathFunctions.getMedian(slotValues);
         medianValues.push(currentMedian);
+
+        // reset values for next slot
         count = 0;
         slotValues = [];
 
@@ -71,7 +75,7 @@ function getBlinks(sample) {
 function getBaseline() {
     if (medianValues.length > baselineSlots + 30) {   // skip first 30 data slots
         let slidingWindow = mathFunctions.clone(medianValues);
-        slidingWindow = slidingWindow.slice(-baselineSlots);    // extract baseline form medianValues
+        slidingWindow = slidingWindow.slice(-baselineSlots);    // extract baseline form medianValues (baseline = last 5s)
         return slidingWindow;
     } else {
         return medianValues;
