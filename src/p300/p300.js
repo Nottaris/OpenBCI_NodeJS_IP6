@@ -12,7 +12,6 @@ module.exports = {
     reset
 };
 
-
 const server = require("../socket/server");
 const detectP300 = require("./detectP300");
 
@@ -44,6 +43,13 @@ let cmdTimestamps = {
 };
 
 /**
+ *  start socket server und subscribe to p300 events
+ *
+ */
+server.startSocketServer();
+server.subscribeToP300Cmds(getCmdTimefromPlayer);
+
+/**
  * fetch flashing command with timestamp
  *
  */
@@ -61,14 +67,14 @@ function getCmdTimefromPlayer(data) {
                 console.log("cycle " + cycle + " " + cmdTimestamps["playpause"]);
             }
         }
-
+        // check if enough data are collected to analyse
         if (!enoughDataForP300(cmdTimestamps, settings.commands, settings.cycles)) {
             //Add current timestamp to cmd array
             cmdTimestamps[currentCommand].push(currentTime);
         } else {
-
             let voltsForCycles = volts.slice(0); //clone
             let timestampesForCycles = timestamps.slice(0);//clone
+
             let baselineForCycles = [];
             let compareCmd = [];
             let firstTimestampe = []; //timestamps of first cycle
@@ -84,7 +90,7 @@ function getCmdTimefromPlayer(data) {
             startIdx = getIdxForTimestamp(timestampesForCycles, startTimestamp);
 
             if (startIdx > 0) {
-
+                // create baseline from samples before stardIdx
                 baselineForCycles = voltsForCycles.slice(startIdx-settings.baselineLength,startIdx);
 
                 //get volts between startIdx and the end of volts array
@@ -113,17 +119,8 @@ function getCmdTimefromPlayer(data) {
 
 }
 
-
 /**
- * connect with server
- *
- */
-server.startSocketServer();
-server.subscribeToP300Cmds(getCmdTimefromPlayer);
-
-
-/**
- * process data from openbci board
+ * process samples from openbci board
  *
  */
 function digestSamples(sample) {

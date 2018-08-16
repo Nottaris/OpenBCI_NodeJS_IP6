@@ -22,8 +22,8 @@ const fs = require("fs");
 const defaultSettings = {
     sampleRate: 250,        // 250Hz
     slots: 112,             // data points per slot ( 450ms === 112 )
-    trainvoltsMaxLength: 2000000,
-    slotsize: 1000,
+    trainvoltsMaxLength: 2000000, //max length of traings array
+    slotsize: 1000,         // samples per slot
     debug: true             // show console.log
 };
 
@@ -34,6 +34,7 @@ let settings = defaultSettings;
 let trainingCmd = "none";
 let baseline = false;
 
+// start socket server und subscribe to traning events
 server.startSocketServer();
 server.subscribeToTrainingCmds(getTrainingCmd);
 

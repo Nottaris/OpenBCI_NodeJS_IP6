@@ -59,6 +59,7 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
 
     const options = {mode: "text"};
     let pyshell = new PythonShell("/src/pyscripts/p300detect.py", options);
+
     let data = JSON.stringify({volts: volts, baseline: baseline, cmdIdx: cmdIdx});
 
     // sends channel data to the Python script via stdin
@@ -75,7 +76,7 @@ function detectP300(volts, baseline, timestamps, cmdTimestamps) {
         //process python result, send cmd if detected
         if (idx !== "nop") {
             let cmd = settings.commands[idx];
-            //send doCommand to player to execute
+            //send command to musicplayer to execute
             server.doP300Cmd(cmd);
         } else {
             console.log("doCmd was: " + idx);
