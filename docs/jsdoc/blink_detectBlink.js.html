@@ -46,20 +46,21 @@ let skip = 0;
 let currentCommand = "prev";
 
 /**
- * init Blink Detection, log baseline
+ * get median and standard deviation for baseline and start Blink Detection, log baseline
  * @params: baseline: Array of last window medians, currentMedian: current median to compare with baseline
  */
 function detectBlink(baseline, currentMedian) {
 
+    // get median and standard deviation for baseline
     let baselineMedian = mathFunctions.getMedian(baseline);
     let standardDeviation = mathFunctions.getStandardDeviation(baseline);
 
+    // run inital setup for blink control
     if (init) {
-        server.startSocketServer();
-        //get Settings
+        // get settings
         settings = blink.getSettings();
 
-        //show Baseline
+        // show Baseline data
         if (settings.debug) {
             console.log("=================Baseline=================");
             console.log("  Baseline size:\t" + baseline.length);
@@ -71,27 +72,47 @@ function detectBlink(baseline, currentMedian) {
             console.log("  Min Value:\t\t" + mathFunctions.getMinValue(baseline).toFixed(2));
             console.log("==============================================");
         }
+
+        // start socket server
+        server.startSocketServer();
+
+        // flash commands in musicplayer
         startFlashCmd();
+
         init = false;
     }
 
-    //if current value is bigger then  median - standardDeviation * threshold  it is a blink
+    // Check if current median contains a blink
+    findBlink(currentMedian, baselineMedian, standardDeviation);
+
+}
+
+/**
+ * check if current median is a blink
+ * @params: currentMedian: current median to compare with baseline, baselineMedian: median baseline samples, standardDeviation: standard deviation baseline samples,
+ *
+ */
+function findBlink(currentMedian, baselineMedian, standardDeviation) {
+
+    // if currentMedian is smaller then  median - standardDeviation * threshold  it will be classified as a blink
     if (Number(baselineMedian - standardDeviation * settings.threshold) > currentMedian &amp;&amp; skip === 0) {
         if (settings.debug) {
             console.log("BLINK: \t value: " + currentMedian.toFixed(2) + "\t at " + new Date());
         }
+
+        // increase blinkcount for mocha tests
         blink.setBlinkcount();
 
-        //send doCommand to execute
+        // send current command to musicplayer to execute
         server.doBlinkCmd(currentCommand);
 
+        // to prevent multiple classification for same blink skip next slots
         skip = settings.slots * settings.skipAfterBlink;
     }
 
     if (skip > 0) {
         skip -= 1;
     }
-
 }
 
 /**
@@ -128,13 +149,13 @@ function setNextCommand() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#clone">clone</a></li><li><a href="global.html#closeSocketServer">closeSocketServer</a></li><li><a href="global.html#detectBlink">detectBlink</a></li><li><a href="global.html#detectMind">detectMind</a></li><li><a href="global.html#detectP300">detectP300</a></li><li><a href="global.html#digestSamples">digestSamples</a></li><li><a href="global.html#doBlinkCmd">doBlinkCmd</a></li><li><a href="global.html#doMindCmd">doMindCmd</a></li><li><a href="global.html#doP300Cmd">doP300Cmd</a></li><li><a href="global.html#enoughDataForP300">enoughDataForP300</a></li><li><a href="global.html#fixJsonFile">fixJsonFile</a></li><li><a href="global.html#getAverage">getAverage</a></li><li><a href="global.html#getBaseline">getBaseline</a></li><li><a href="global.html#getBlinks">getBlinks</a></li><li><a href="global.html#getCmdTimefromPlayer">getCmdTimefromPlayer</a></li><li><a href="global.html#getFiledata">getFiledata</a></li><li><a href="global.html#getIdxForTimestamp">getIdxForTimestamp</a></li><li><a href="global.html#getMaxValue">getMaxValue</a></li><li><a href="global.html#getMedian">getMedian</a></li><li><a href="global.html#getMinValue">getMinValue</a></li><li><a href="global.html#getNewestFile">getNewestFile</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getStandardDeviation">getStandardDeviation</a></li><li><a href="global.html#getTrainingCmd">getTrainingCmd</a></li><li><a href="global.html#getVariance">getVariance</a></li><li><a href="global.html#initTraining">initTraining</a></li><li><a href="global.html#loadJSON">loadJSON</a></li><li><a href="global.html#openData">openData</a></li><li><a href="global.html#path">path</a></li><li><a href="global.html#percentageChange">percentageChange</a></li><li><a href="global.html#reportTrainingsData">reportTrainingsData</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#saveData">saveData</a></li><li><a href="global.html#saveTrainingData">saveTrainingData</a></li><li><a href="global.html#sendCmd">sendCmd</a></li><li><a href="global.html#setNextCommand">setNextCommand</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#startFlashCmd">startFlashCmd</a></li><li><a href="global.html#startSocketServer">startSocketServer</a></li><li><a href="global.html#streamData">streamData</a></li><li><a href="global.html#subscribeToP300Cmds">subscribeToP300Cmds</a></li><li><a href="global.html#subscribeToTrainingCmds">subscribeToTrainingCmds</a></li><li><a href="global.html#subtractBaseline">subtractBaseline</a></li><li><a href="global.html#subtractBaselineAllChannels">subtractBaselineAllChannels</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#clone">clone</a></li><li><a href="global.html#closeSocketServer">closeSocketServer</a></li><li><a href="global.html#detectBlink">detectBlink</a></li><li><a href="global.html#detectMind">detectMind</a></li><li><a href="global.html#detectP300">detectP300</a></li><li><a href="global.html#digestSamples">digestSamples</a></li><li><a href="global.html#doBlinkCmd">doBlinkCmd</a></li><li><a href="global.html#doMindCmd">doMindCmd</a></li><li><a href="global.html#doP300Cmd">doP300Cmd</a></li><li><a href="global.html#enoughDataForP300">enoughDataForP300</a></li><li><a href="global.html#findBlink">findBlink</a></li><li><a href="global.html#fixJsonFile">fixJsonFile</a></li><li><a href="global.html#getAverage">getAverage</a></li><li><a href="global.html#getBaseline">getBaseline</a></li><li><a href="global.html#getBlinks">getBlinks</a></li><li><a href="global.html#getCmdTimefromPlayer">getCmdTimefromPlayer</a></li><li><a href="global.html#getFiledata">getFiledata</a></li><li><a href="global.html#getIdxForTimestamp">getIdxForTimestamp</a></li><li><a href="global.html#getMaxValue">getMaxValue</a></li><li><a href="global.html#getMedian">getMedian</a></li><li><a href="global.html#getMinValue">getMinValue</a></li><li><a href="global.html#getNewestFile">getNewestFile</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getStandardDeviation">getStandardDeviation</a></li><li><a href="global.html#getTrainingCmd">getTrainingCmd</a></li><li><a href="global.html#getVariance">getVariance</a></li><li><a href="global.html#initTraining">initTraining</a></li><li><a href="global.html#loadJSON">loadJSON</a></li><li><a href="global.html#openData">openData</a></li><li><a href="global.html#path">path</a></li><li><a href="global.html#percentageChange">percentageChange</a></li><li><a href="global.html#reportTrainingsData">reportTrainingsData</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#saveData">saveData</a></li><li><a href="global.html#saveTrainingData">saveTrainingData</a></li><li><a href="global.html#sendCmd">sendCmd</a></li><li><a href="global.html#setNextCommand">setNextCommand</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#startFlashCmd">startFlashCmd</a></li><li><a href="global.html#startSocketServer">startSocketServer</a></li><li><a href="global.html#streamData">streamData</a></li><li><a href="global.html#subscribeToP300Cmds">subscribeToP300Cmds</a></li><li><a href="global.html#subscribeToTrainingCmds">subscribeToTrainingCmds</a></li><li><a href="global.html#subtractBaseline">subtractBaseline</a></li><li><a href="global.html#subtractBaselineAllChannels">subtractBaselineAllChannels</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 14 2018 17:54:49 GMT+0200 (W. Europe Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 16 2018 18:20:56 GMT+0200 (Mitteleuropäische Sommerzeit   )
 </footer>
 
 <script> prettyPrint(); </script>
