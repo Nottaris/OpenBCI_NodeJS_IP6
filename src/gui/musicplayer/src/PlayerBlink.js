@@ -40,11 +40,12 @@ export default class PlayerBlink extends React.Component {
         }
     }
 
-
+    // flash command in player
     flashCommand = (data) => {
         this.blinkCommandButton(data.command);
     };
 
+    // execute command in player
     execCommand = (data) => {
         console.log("exec: " + data.doBlinkcommand);
         this.clickCommand(data.doBlinkcommand);
@@ -86,10 +87,11 @@ export default class PlayerBlink extends React.Component {
         this.setState({camcontrol: !this.state.camcontrol})
     }
 
-    clickCommand = (state) => {
+    // execute audio control for given cmd
+    clickCommand = (cmd) => {
         if (!this.state.camcontrol || (this.state.camcontrol && window.looking)) {
             let audio = document.getElementById("audio");
-            switch (state) {
+            switch (cmd) {
                 case "playpause":
                     if (this.state.playpauseToggle === "play") {
                         this.play(audio);
@@ -117,7 +119,7 @@ export default class PlayerBlink extends React.Component {
         }else{
              console.log("participant is not looking - controls are off");
         }
-    }
+    };
 
     updateTime(timestamp) {
         timestamp = Math.floor(timestamp);
