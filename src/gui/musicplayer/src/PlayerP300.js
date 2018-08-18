@@ -46,7 +46,7 @@ export default class P300 extends React.Component {
         }
         clearInterval(this.blinkInterval);
     }
-
+    // flash commands in player
     generateCommands() {
         let commandIdx = 0;
 
@@ -60,6 +60,7 @@ export default class P300 extends React.Component {
         }.bind(this), this.state.cmdInterval);
     }
 
+    // flash commands in player in random order
     generateShuffleCommands() {
         let commandIdx = 0;
         let shuffleCmds = this.state.commands.slice(10); //clone
@@ -80,6 +81,7 @@ export default class P300 extends React.Component {
         }.bind(this), this.state.cmdInterval);
     }
 
+    // execute command in player
     execCommand = (data) => {
         this.clickCommand(data.doP300command);
         console.log("p300: " + data.doP300command);
@@ -110,9 +112,10 @@ export default class P300 extends React.Component {
         }
     }
 
-    clickCommand = (state) => {
+    // execute audio control for given cmd
+    clickCommand = (cmd) => {
         let audio = document.getElementById("audio");
-        switch (state) {
+        switch (cmd) {
             case "next":
                 this.next(audio);
                 break;

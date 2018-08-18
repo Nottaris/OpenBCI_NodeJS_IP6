@@ -195,7 +195,7 @@ export default class PlayerBlink extends React.Component {
         this.trainingPause(info); //gui: show training pause
     }
 
-
+    // execute command in player
     execCommand = () => {
         console.log("exec: " + this.state.currentCmd);
         this.clickCommand(this.state.currentCmd);
@@ -204,7 +204,7 @@ export default class PlayerBlink extends React.Component {
         setTimeout(function () {
             elem.style.color = "#17394b";
         }, 250);
-    }
+    };
 
     //Set the color of the command to white for X seconds
     blinkCommandButton(command) {
@@ -217,9 +217,10 @@ export default class PlayerBlink extends React.Component {
         }
     }
 
-    clickCommand = (state) => {
+    // execute audio control for given cmd
+    clickCommand = (cmd) => {
         let audio = document.getElementById("audio");
-        switch (state) {
+        switch (cmd) {
             case "next":
                 this.next(audio);
                 break;

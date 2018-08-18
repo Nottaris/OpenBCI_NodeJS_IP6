@@ -101,8 +101,6 @@ body {
     opacity: 0.5;
 }
 
-
-
 .Player .Timestamps {
     padding: 10px 0;
     font-size: 16px;
@@ -188,11 +186,11 @@ body {
     color: #000;
 }
 
-
 /* Custom CSS for Blink */
 .PlayerBlink .Controls .Button {
     color: #17394b;
 }
+
 .PlayerBlink .Controls {
     border-spacing: 25px;
     display: table;
@@ -221,7 +219,7 @@ body {
     color: #FFF;
 }
 
-.PlayerBlink .vid{
+.PlayerBlink .vid {
     visibility: hidden;
     margin-top: -100px;
 }
@@ -243,7 +241,6 @@ body {
     height: 200px;
 }
 
-
 /* Custom CSS for Mind */
 .PlayerMind .Controls {
     background: #1D7FB0;
@@ -251,15 +248,16 @@ body {
 
 .PlayerMind .AdditonalControls {
     padding-top: 30px;
-
 }
+
 .PlayerMind .infotext {
     font-size: 24px;
     font-weight: 300;
     font-family: "Roboto", sans-serif;
     color: #fff;
 }
-.PlayerMind #trainingbar{
+
+.PlayerMind #trainingbar {
     text-align: center;
     height: 10px;
 }
@@ -288,6 +286,6 @@ body {
     background-color: ghostwhite;
 }
 
-.PlayerMind .Controls .Button{
+.PlayerMind .Controls .Button {
     padding: 30px 60px;
 }

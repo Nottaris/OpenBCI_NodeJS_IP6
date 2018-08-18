@@ -18,7 +18,7 @@ To use this demo you need to start the musicplayer, connect the OpenBCI board an
 
 ### 1. Start Musicplayer
 Run ``` npm run player ```  to start the react music player. 
-With the Dropdown in the title of the musicplayer you can switch between the player for Blink, P300 and Mind Control
+With the dropdown in the title of the musicplayer you can switch between the player for Blink, P300 and Mind Control
 
 ### 2. Connect with OpenBCI Cyton Board
 In every control folder is a app.js file prepared, where the board can be configured. 
@@ -34,23 +34,16 @@ const boardSettings = {
 ```
 
 ### 3. Start EEG Controls
-3 different approaches where developed to control the music player with the OpenBCI Heasdset
+Three different approaches where developed to control the music player with the OpenBCI Heasdset
 
-##### Blink control: 
-``` npm run blink ``` 
+* Blink control: ``` npm run blink ``` 
 
-##### P300 control - beta
-``` npm run p300 ```
+* P300 control - beta ``` npm run p300 ```
 
-##### Mind control - beta
-``` npm run mind ``` 
+* Mind control - beta ``` npm run mind ``` 
 
 
 #### Helpers
-##### Save Data
-``` npm run save ``` 
-##### Plot Data
-``` npm run plot ``` 
-to http://localhost:8888/
-##### Stream Data
-``` npm run stream ``` 
+* Save Data ``` npm run save ``` - save eeg samples in json file
+* Plot Data ``` npm run plot ``` - show plot http://localhost:8888/
+* Stream Data ``` npm run stream ``` - stream eeg data to plot
