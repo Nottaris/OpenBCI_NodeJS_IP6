@@ -1,0 +1,5 @@
+The implementation of the bci Musicplayer is based on code snippets from the tutorial by
+Jack Oliver @jackoliver
+Online tutorial: https://www.creativebloq.com/how-to/build-a-simple-music-player-with-react
+Codepen Source: https://codepen.io/collection/DVjRZr/
+March 2018
